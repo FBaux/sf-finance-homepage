@@ -101,19 +101,50 @@
     }
 
     .nav-logo {
-      font-family: var(--font-head);
-      font-weight: 800;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
-      color: var(--text);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 0.1em;
+      height: 36px;
     }
-    .nav-logo .accent {
-      color: var(--accent);
+    .nav-logo svg { height: 36px; width: auto; }
+
+    /* ── LOGO ANIMATION ── */
+    @keyframes logo-seg3 {
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
+    @keyframes logo-seg2 {
+      0%   { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 0.55; transform: translateY(0); }
+    }
+    @keyframes logo-seg1 {
+      0%   { opacity: 0; transform: translateY(4px); }
+      100% { opacity: 0.25; transform: translateY(0); }
+    }
+    @keyframes logo-apex {
+      0%   { opacity: 0; transform: translateY(-4px) scale(0.6); }
+      60%  { opacity: 1; transform: translateY(0) scale(1.15); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes logo-sf {
+      0%   { opacity: 0; transform: translateX(-6px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes logo-fin {
+      0%   { opacity: 0; transform: translateX(8px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes logo-pulse {
+      0%, 100% { filter: drop-shadow(0 0 3px rgba(240,192,64,0.4)); }
+      50%       { filter: drop-shadow(0 0 8px rgba(240,192,64,0.7)); }
+    }
+
+    .logo-seg3 { animation: logo-seg3 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+    .logo-seg2 { animation: logo-seg2 0.5s cubic-bezier(0.22,1,0.36,1) 0.25s both; }
+    .logo-seg1 { animation: logo-seg1 0.5s cubic-bezier(0.22,1,0.36,1) 0.4s both; }
+    .logo-apex { animation: logo-apex 0.6s cubic-bezier(0.22,1,0.36,1) 0.55s both, logo-pulse 3s ease-in-out 1.2s infinite; }
+    .logo-sf   { animation: logo-sf  0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+    .logo-fin  { animation: logo-fin 0.5s cubic-bezier(0.22,1,0.36,1) 0.4s both; }
 
     .nav-links {
       display: flex;
@@ -886,7 +917,64 @@
 
   <!-- ── NAVIGATION ── -->
   <nav class="nav" id="nav">
-    <a href="#" class="nav-logo">SF <span class="accent">Finance</span></a>
+    <a href="#" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" height="36" role="img" aria-label="SF Finance">
+        <defs>
+          <linearGradient id="nl_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c9a84c"/>
+            <stop offset="50%" stop-color="#f0c040"/>
+            <stop offset="100%" stop-color="#e8b84b"/>
+          </linearGradient>
+          <linearGradient id="nl_gdim" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#f0c040" stop-opacity="0.35"/>
+          </linearGradient>
+          <linearGradient id="nl_txt" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#e8edf5"/>
+            <stop offset="100%" stop-color="#c0cfe0"/>
+          </linearGradient>
+          <filter id="nl_gg">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;800&amp;display=swap');
+            .nl-sf  { font-family:'Syne','Arial Black',sans-serif; font-weight:800; font-size:30px; letter-spacing:3px; }
+            .nl-fin { font-family:'Syne','Arial',sans-serif; font-weight:400; font-size:9px; letter-spacing:4px; fill:url(#nl_txt); }
+          </style>
+        </defs>
+        <!-- Icon -->
+        <g class="logo-seg1">
+          <polygon points="28,54 19,45 28,42 37,45" fill="url(#nl_gdim)"/>
+        </g>
+        <g class="logo-seg2">
+          <polygon points="28,43 18,33 28,30 38,33" fill="url(#nl_gold)" opacity="0.55"/>
+        </g>
+        <g class="logo-seg3">
+          <polygon points="28,32 17,20 28,17 39,20" fill="url(#nl_gold)" filter="url(#nl_gg)"/>
+        </g>
+        <line x1="17" y1="20" x2="18" y2="33" stroke="url(#nl_gold)" stroke-width="0.75" stroke-opacity="0.4"/>
+        <line x1="39" y1="20" x2="38" y2="33" stroke="url(#nl_gold)" stroke-width="0.75" stroke-opacity="0.4"/>
+        <g class="logo-apex">
+          <polygon points="28,11 31,17 28,17 25,17" fill="url(#nl_gold)" filter="url(#nl_gg)"/>
+        </g>
+        <line x1="16" y1="54" x2="40" y2="54" stroke="url(#nl_gold)" stroke-width="0.6" stroke-opacity="0.25"/>
+        <!-- Divider -->
+        <rect x="52" y="10" width="0.75" height="52" rx="0.4" fill="#1a3056"/>
+        <!-- SF -->
+        <g class="logo-sf">
+          <text x="62" y="47" class="nl-sf" fill="url(#nl_gold)">SF</text>
+        </g>
+        <!-- Separator -->
+        <rect x="116" y="14" width="1" height="42" rx="0.5" fill="url(#nl_gold)" opacity="0.2"/>
+        <circle cx="113" cy="18" r="2" fill="url(#nl_gold)" opacity="0.85" filter="url(#nl_gg)"/>
+        <!-- FINANCE -->
+        <g class="logo-fin">
+          <text x="124" y="37" class="nl-fin">FINANCE</text>
+          <text x="124" y="48" style="font-family:'Syne',sans-serif;font-size:5px;letter-spacing:2px;fill:#3d4f68;">PROP · AFFILIATE · EDUCATION</text>
+        </g>
+      </svg>
+    </a>
     <ul class="nav-links">
       <li><a href="#trading">Trading</a></li>
       <li><a href="#affiliate">Affiliate</a></li>
