@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datenschutz — SF Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-deep:  #060c1a;
+      --navy:       #0a1628;
+      --navy-card:  #0f1d33;
+      --border:     #1e2e4a;
+      --border-gold: rgba(201,168,76,.2);
+      --gold:       #f0c040;
+      --gold-mid:   #c9a84c;
+      --gold-dim:   rgba(240,192,64,.08);
+      --cream:      #f5f0e8;
+      --text:       #e8e2d4;
+      --text2:      #8a8070;
+      --text3:      #3d4050;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-head:  'Syne', sans-serif;
+      --font-body:  'DM Sans', sans-serif;
+      --font-mono:  'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy-deep);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1.5rem,5vw,3.5rem);
+      background: rgba(6,12,26,.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-gold);
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      font-family: var(--font-serif); font-size: 1.2rem; font-weight: 300;
+      color: var(--cream);
+    }
+    .nav-logo em { font-style: italic; color: var(--gold); }
+
+    .nav-back {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .8rem; font-weight: 500; letter-spacing: .04em;
+      color: var(--text2); text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--gold); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 5rem clamp(1.5rem,5vw,3.5rem) 8rem;
+    }
+
+    /* Page header */
+    .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-gold); }
+    .page-label {
+      font-family: var(--font-mono); font-size: .68rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--gold-mid); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .page-label::before { content: ''; width: 24px; height: 1px; background: var(--gold-mid); opacity: .6; }
+    .page-title {
+      font-family: var(--font-serif); font-weight: 300;
+      font-size: clamp(2.5rem,6vw,4rem);
+      letter-spacing: -.01em; color: var(--cream); line-height: 1.1;
+    }
+    .page-title em { font-style: italic; color: var(--gold); }
+    .page-sub {
+      margin-top: 1rem;
+      font-size: .85rem; color: var(--text2); font-weight: 300;
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+    .page-sub .stand {
+      font-family: var(--font-mono); font-size: .72rem;
+      color: var(--text3); letter-spacing: .06em;
+    }
+
+    /* Sections */
+    .imp-section { margin-bottom: 3rem; }
+
+    .imp-section-title {
+      font-family: var(--font-head); font-weight: 800; font-size: .75rem;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gold-mid); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .imp-section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border-gold), transparent);
+    }
+
+    .imp-block {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem 2rem;
+      position: relative;
+    }
+    .imp-block::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,.15), transparent);
+    }
+
+    .imp-row {
+      display: grid; grid-template-columns: 180px 1fr;
+      gap: .5rem 1.5rem; padding: .65rem 0;
+      border-bottom: 1px solid rgba(30,46,74,.6);
+      align-items: baseline;
+    }
+    .imp-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .imp-row:first-child { padding-top: 0; }
+
+    .imp-key {
+      font-size: .78rem; color: var(--text3); font-weight: 400;
+      flex-shrink: 0;
+    }
+    .imp-val {
+      font-size: .88rem; color: var(--text); font-weight: 300; line-height: 1.6;
+    }
+    .imp-val a { color: var(--gold-mid); text-decoration: none; transition: color .2s; }
+    .imp-val a:hover { color: var(--gold); }
+
+    /* Prose text */
+    .imp-prose {
+      font-size: .88rem; color: var(--text2); font-weight: 300;
+      line-height: 1.8;
+    }
+    .imp-prose + .imp-prose { margin-top: 1rem; }
+    .imp-prose strong { color: var(--text); font-weight: 500; }
+    .imp-prose a { color: var(--gold-mid); text-decoration: none; transition: color .2s; }
+    .imp-prose a:hover { color: var(--gold); }
+
+    /* Rights list */
+    .imp-rights {
+      list-style: none;
+      display: flex; flex-direction: column; gap: .65rem;
+    }
+    .imp-rights li {
+      font-size: .88rem; color: var(--text2); font-weight: 300;
+      line-height: 1.7;
+      padding-left: 1.25rem;
+      position: relative;
+    }
+    .imp-rights li::before {
+      content: '';
+      position: absolute; left: 0; top: .65em;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--gold-mid); opacity: .5;
+    }
+    .imp-rights li strong { color: var(--text); font-weight: 500; }
+    .imp-rights li a { color: var(--gold-mid); text-decoration: none; transition: color .2s; }
+    .imp-rights li a:hover { color: var(--gold); }
+
+    /* Hinweis box */
+    .imp-note {
+      background: var(--gold-dim);
+      border: 1px solid var(--border-gold);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-size: .82rem; color: var(--text2); line-height: 1.7;
+    }
+    .imp-note strong { color: var(--gold-mid); font-weight: 600; }
+    .imp-note a { color: var(--gold-mid); text-decoration: none; transition: color .2s; }
+    .imp-note a:hover { color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border-gold);
+      padding: 2rem clamp(1.5rem,5vw,3.5rem);
+      text-align: center;
+    }
+    footer span {
+      font-size: .75rem; color: var(--text3); font-weight: 300;
+    }
+
+    @media (max-width: 560px) {
+      .imp-row { grid-template-columns: 1fr; gap: .2rem; }
+      .imp-key { font-size: .72rem; color: var(--gold-mid); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SF <em>Finance</em></a>
+    <a href="index.html" class="nav-back">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M13 7H1M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Zurück
+    </a>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <div class="page-label">Rechtliches</div>
+      <h1 class="page-title">Daten<em>schutz</em></h1>
+      <div class="page-sub">
+        <span>Informationen gem. Art. 13, 14 DSGVO</span>
+        <span class="stand">Stand: Mai 2026</span>
+      </div>
+    </header>
+
+    <!-- 1. Verantwortlicher -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Verantwortlicher</h2>
+      <div class="imp-block">
+        <div class="imp-row">
+          <span class="imp-key">Unternehmensname</span>
+          <span class="imp-val">Diefke &amp; Sivasunthararajan GbR</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Gesellschafter</span>
+          <span class="imp-val">Fabian Diefke &amp; Shinthugan Sivasunthararajan</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Anschrift</span>
+          <span class="imp-val">Talstraße 108<br>40217 Düsseldorf<br>Deutschland</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">E-Mail</span>
+          <span class="imp-val"><a href="mailto:Info@fsfinance.de">Info@fsfinance.de</a></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Hosting & Infrastruktur -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Hosting &amp; Infrastruktur</h2>
+      <div class="imp-block">
+        <div class="imp-row">
+          <span class="imp-key">Anbieter</span>
+          <span class="imp-val">GitHub Pages<br><span style="font-size:.8rem;color:var(--text3);">GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA</span></span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Erhobene Daten</span>
+          <span class="imp-val">Server-Logfiles: IP-Adresse, Zeitstempel, aufgerufene Seite, Referrer, Browser-Typ</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Kontrolle</span>
+          <span class="imp-val">Diese Daten werden automatisch durch GitHub erhoben und liegen nicht in unserem Zugriff.</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Rechtsgrundlage</span>
+          <span class="imp-val">Art. 6 Abs. 1 lit. f DSGVO — berechtigtes Interesse am Betrieb der Website</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Datenschutz GitHub</span>
+          <span class="imp-val"><a href="https://docs.github.com/de/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">docs.github.com/de/site-policy/privacy-policies/github-privacy-statement</a></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Google Fonts -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Google Fonts</h2>
+      <div class="imp-note">
+        <strong>Hinweis:</strong> Diese Website nutzt <strong>Google Fonts</strong> (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland). Beim Aufruf der Seite werden Schriftarten direkt von Googles Servern geladen. Dabei wird Ihre IP-Adresse an Google übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Informationen zum Datenschutz bei Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>
+      </div>
+    </div>
+
+    <!-- 4. Lokale Datenspeicherung -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Lokale Datenspeicherung (localStorage)</h2>
+      <div class="imp-block">
+        <div class="imp-row">
+          <span class="imp-key">Was wird gespeichert</span>
+          <span class="imp-val">Gehashter PIN-Wert für den Zugriffsschutz des internen Dashboards sowie der Datenstatus des Dashboards</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Cookies</span>
+          <span class="imp-val">Es werden keine Cookies gesetzt.</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Weitergabe</span>
+          <span class="imp-val">Die gespeicherten Daten verlassen Ihr Gerät nicht und werden nicht an Dritte übertragen.</span>
+        </div>
+        <div class="imp-row">
+          <span class="imp-key">Löschung</span>
+          <span class="imp-val">Sie können diese Daten jederzeit über die Einstellungen Ihres Browsers löschen.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Keine Tracking-Tools -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Keine Tracking-Tools / Drittanbieter</h2>
+      <div class="imp-note">
+        <strong>Kein Tracking:</strong> Diese Website verwendet weder <strong>Google Analytics</strong> noch andere Tracking-, Analyse- oder Werbe-Tools. Es werden keine personenbezogenen Daten zu Werbezwecken erhoben oder an Dritte weitergegeben.
+      </div>
+    </div>
+
+    <!-- 6. Ihre Rechte -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Ihre Rechte gem. Art. 15–22 DSGVO</h2>
+      <div class="imp-block">
+        <ul class="imp-rights">
+          <li><strong>Auskunft (Art. 15 DSGVO):</strong> Sie können Auskunft über Ihre gespeicherten Daten verlangen.</li>
+          <li><strong>Berichtigung (Art. 16 DSGVO):</strong> Unrichtige Daten können berichtigt werden.</li>
+          <li><strong>Löschung (Art. 17 DSGVO):</strong> Sie können die Löschung Ihrer Daten verlangen.</li>
+          <li><strong>Einschränkung (Art. 18 DSGVO):</strong> Sie können die Verarbeitung einschränken lassen.</li>
+          <li><strong>Widerspruch (Art. 21 DSGVO):</strong> Sie können der Verarbeitung widersprechen.</li>
+          <li><strong>Datenübertragbarkeit (Art. 20 DSGVO):</strong> Sie können Ihre Daten in einem portablen Format erhalten.</li>
+          <li><strong>Beschwerde:</strong> Sie haben das Recht, sich bei der zuständigen Aufsichtsbehörde zu beschweren: Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen (LDI NRW) — <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">ldi.nrw.de</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. Kontakt -->
+    <div class="imp-section">
+      <h2 class="imp-section-title">Kontakt bei Datenschutzfragen</h2>
+      <div class="imp-block">
+        <div class="imp-row">
+          <span class="imp-key">E-Mail</span>
+          <span class="imp-val"><a href="mailto:Info@fsfinance.de">Info@fsfinance.de</a></span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© 2026 Diefke &amp; Sivasunthararajan GbR · <a href="index.html" style="color:inherit;text-decoration:none;">fsfinance.de</a></span>
+  </footer>
+
+</body>
+</html>

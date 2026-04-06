@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SF Finance · Dashboard</title>
+  <style>
+    #lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #060c1a;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+    }
+    #lock-screen::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(240,192,64,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,192,64,.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .lock-box {
+      position: relative;
+      background: #0f1d33;
+      border: 1px solid #1e2e4a;
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .lock-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 6px;
+      color: #e8edf5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lock-sub {
+      font-size: .72rem;
+      color: #3d4050;
+      font-family: monospace;
+      letter-spacing: .08em;
+      margin-bottom: 28px;
+    }
+    .lock-label {
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #3d4050;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .lock-input {
+      width: 100%;
+      background: #0a1628;
+      border: 1px solid #1e2e4a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      letter-spacing: .3em;
+      color: #e8edf5;
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+      margin-bottom: 14px;
+    }
+    .lock-input:focus { border-color: rgba(240,192,64,.4); }
+    .lock-btn {
+      width: 100%;
+      background: #f0c040;
+      color: #060c1a;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .18s;
+    }
+    .lock-btn:hover { background: #ffe070; }
+    .lock-err {
+      font-size: .75rem;
+      color: #f05252;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #060c1a;
+      --card:        #0f1d33;
+      --card2:       #0a1628;
+      --border:      #1e2e4a;
+      --border2:     #162745;
+      --accent:      #f0c040;
+      --accent-dim:  rgba(240,192,64,.08);
+      --accent-mid:  rgba(240,192,64,.18);
+      --danger:      #f05252;
+      --danger-dim:  rgba(240,82,82,.10);
+      --warn:        #f59e0b;
+      --blue:        #3b82f6;
+      --purple:      #8b5cf6;
+      --text:        #e8edf5;
+      --text2:       #8a8070;
+      --text3:       #3d4050;
+      --mono:       'Space Mono', monospace;
+      --sans:       'DM Sans', sans-serif;
+      --display:    'Syne', sans-serif;
+      --r:           12px;
+      --r-sm:        8px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(240,192,64,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,192,64,.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hco {
+      font-family: var(--display);
+      font-size: clamp(1.05rem, 3vw, 1.55rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.1;
+    }
+    .hco span { color: var(--accent); }
+
+    .hsub {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--text3);
+      margin-top: 6px;
+      letter-spacing: .05em;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(240,192,64,.5); }
+      50%      { opacity:.6; box-shadow:0 0 0 4px rgba(240,192,64,0); }
+    }
+
+    .hactions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 15px;
+      border-radius: var(--r-sm);
+      font-family: var(--sans);
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .18s ease;
+      border: none;
+      outline: none;
+      white-space: nowrap;
+    }
+    .btn-ghost  { background:var(--card2); color:var(--text2); border:1px solid var(--border); }
+    .btn-ghost:hover { background:var(--border); color:var(--text); }
+    .btn-accent { background:var(--accent); color:#060c1a; font-weight:600; }
+    .btn-accent:hover { background:#ffe070; box-shadow:0 0 16px rgba(240,192,64,.3); }
+    .btn-cancel { background:var(--danger-dim); color:var(--danger); border:1px solid rgba(240,82,82,.2); }
+    .btn-cancel:hover { background:rgba(240,82,82,.18); }
+
+    /* Edit banner */
+    .edit-banner {
+      display: none;
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.22);
+      border-radius: var(--r-sm);
+      padding: 9px 14px;
+      font-size: .78rem;
+      color: #93c5fd;
+      margin-bottom: 18px;
+      gap: 8px;
+      align-items: center;
+    }
+    body.edit-active .edit-banner { display:flex; }
+
+    /* CARD BASE */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      transition: border-color .2s, box-shadow .2s;
+      animation: fadeUp .4s ease backwards;
+    }
+    .card:hover { border-color: var(--border2); }
+    body.edit-active .editable { border-color: rgba(59,130,246,.3); box-shadow:0 0 0 1px rgba(59,130,246,.08) inset; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .lbl {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 7px;
+    }
+
+    .val {
+      font-family: var(--mono);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .val.pos { color: var(--accent); }
+    .val.neg { color: var(--danger); }
+
+    .sub {
+      font-size: .72rem;
+      color: var(--text2);
+      margin-top: 5px;
+    }
+
+    /* KPI ROW */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .kpi { padding: 20px; }
+    .kpi:nth-child(1) { animation-delay:.05s; }
+    .kpi:nth-child(2) { animation-delay:.10s; }
+    .kpi:nth-child(3) { animation-delay:.15s; }
+
+    /* MAIN ROW */
+    .main-row {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* Trading card */
+    .trading-card { padding: 22px; animation-delay:.18s; }
+
+    .tc-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .firm-name {
+      font-family: var(--display);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+    }
+    .badge-green { background: rgba(240,192,64,.12); color:var(--accent); border:1px solid rgba(240,192,64,.2); }
+
+    .tc-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+      margin-bottom: 18px;
+    }
+
+    .stat-lbl {
+      font-size: .66rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text3);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .stat-val.pos { color: var(--accent); }
+    .stat-val.neg { color: var(--danger); }
+
+    /* Drawdown */
+    .dd-bar-bg {
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .dd-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .6s ease, background .3s;
+    }
+    .dd-safe   { background: var(--accent); }
+    .dd-warn   { background: var(--warn); }
+    .dd-danger { background: var(--danger); }
+
+    .dd-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: .6rem;
+      color: var(--text3);
+      font-family: var(--mono);
+      margin-top: 3px;
+    }
+
+    .auszahlung {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      border-radius: var(--r-sm);
+      padding: 11px 14px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .az-lbl { font-size:.68rem; color:var(--accent); text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
+    .az-sub { font-size:.6rem; color:rgba(240,192,64,.5); margin-top:2px; }
+    .az-val { font-family:var(--mono); font-size:1.15rem; font-weight:700; color:var(--accent); }
+
+    /* Social column */
+    .social-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .social-card { flex:1; padding:18px; animation-delay:.22s; }
+
+    .sc-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .sc-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sc-icon.tt { background:rgba(255,255,255,.05); }
+    .sc-icon.ig { background:rgba(225,48,108,.1); }
+
+    .sc-name { font-family:var(--display); font-size:.9rem; font-weight:700; }
+
+    .sc-follower { font-family:var(--mono); font-size:1.35rem; font-weight:700; line-height:1; }
+
+    .sc-growth {
+      font-size:.72rem;
+      margin-top:4px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+
+    .sc-updated { font-size:.62rem; color:var(--text3); font-family:var(--mono); margin-top:10px; }
+
+    /* INCOME ROW */
+    .income-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .inc-card { padding: 16px 18px; animation-delay:.24s; }
+
+    .inc-bar { height: 3px; border-radius: 2px; margin-bottom: 11px; }
+
+    /* CHART */
+    .chart-card { padding: 22px; margin-bottom: 16px; animation-delay:.28s; }
+
+    .sec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .sec-title { font-family:var(--display); font-size:.92rem; font-weight:700; }
+
+    .chart-wrap { height: 220px; position: relative; }
+
+    .monthly-table {
+      display: none;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    body.edit-active .monthly-table { display: table; }
+
+    .monthly-table th,
+    .monthly-table td {
+      padding: 7px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: .75rem;
+    }
+    .monthly-table th {
+      color: var(--text3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: .65rem;
+    }
+    .monthly-table input {
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: .75rem;
+      width: 78px;
+    }
+
+    /* TODOS */
+    .todo-card { padding: 22px; animation-delay:.30s; }
+
+    .todo-list { display:flex; flex-direction:column; gap:7px; margin-top:14px; }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 13px;
+      background: var(--card2);
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all .18s;
+      user-select: none;
+    }
+    .todo-item:hover { border-color: var(--border2); }
+    .todo-item.done { opacity:.45; }
+
+    .todo-check {
+      width: 17px; height: 17px;
+      border-radius: 50%;
+      border: 2px solid var(--text3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: .6rem;
+      transition: all .18s;
+    }
+    .todo-item.done .todo-check { background:var(--accent); border-color:var(--accent); color:#060c1a; }
+
+    .todo-text { font-size:.83rem; color:var(--text2); }
+    .todo-item.done .todo-text { text-decoration:line-through; color:var(--text3); }
+
+    /* EDIT INPUTS */
+    .edit-input {
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.28);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      outline: none;
+      min-width: 80px;
+      max-width: 150px;
+    }
+    .edit-input:focus { border-color: rgba(59,130,246,.6); background: rgba(59,130,246,.13); }
+
+    /* DIVIDER */
+    .divider { height:1px; background:var(--border); margin: 0 0 16px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 920px) {
+      .main-row { grid-template-columns: 1fr; }
+      .social-col { flex-direction: row; }
+    }
+    @media (max-width: 640px) {
+      .kpi-row     { grid-template-columns: 1fr; }
+      .income-row  { grid-template-columns: 1fr; }
+      .social-col  { flex-direction: column; }
+      .tc-stats    { grid-template-columns: 1fr 1fr; }
+      .wrap        { padding: 14px 13px 48px; }
+      .hco         { font-size: 1rem; }
+    }
+    @media (max-width: 360px) {
+      .tc-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<!-- Lock Screen -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-logo">
+      <svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SF Finance">
+        <defs>
+          <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0c040"/>
+            <stop offset="100%" stop-color="#c9a84c"/>
+          </linearGradient>
+        </defs>
+        <polygon points="100,10 190,100 100,190 10,100" fill="none" stroke="url(#lg1)" stroke-width="6" opacity="0.3"/>
+        <polygon points="100,30 170,100 100,170 30,100" fill="url(#lg1)" opacity="0.15"/>
+        <polygon points="100,50 150,100 100,150 50,100" fill="url(#lg1)" opacity="0.6"/>
+        <line x1="60" y1="100" x2="140" y2="100" stroke="url(#lg1)" stroke-width="3" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="lock-sub">DIEFKE &amp; SIVASUNTHARARAJAN GBR</div>
+    <div class="lock-label">PIN eingeben</div>
+    <input id="pin-input" class="lock-input" type="password" inputmode="numeric" maxlength="10" placeholder="&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter') checkPin()">
+    <button class="lock-btn" onclick="checkPin()">Entsperren</button>
+    <div class="lock-err" id="pin-err"></div>
+  </div>
+</div>
+
+<div class="wrap" id="main-content" style="display:none">
+
+  <!-- Edit Banner -->
+  <div class="edit-banner">
+    <span>&#9998;</span>
+    <span>Bearbeitungsmodus aktiv &mdash; Werte anpassen, dann Speichern klicken</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <div class="hco">SF <span>Finance</span></div>
+      <div class="hsub"><span class="live-dot"></span>DIEFKE &amp; SIVASUNTHARARAJAN GBR &nbsp;&middot;&nbsp; DASHBOARD &nbsp;&middot;&nbsp; <span id="ts"></span></div>
+    </div>
+    <div class="hactions">
+      <button class="btn btn-ghost"   id="editBtn"   onclick="enterEdit()">&#9998; Bearbeiten</button>
+      <button class="btn btn-accent"  id="saveBtn"   onclick="saveEdits()" style="display:none">&#128190; Speichern</button>
+      <button class="btn btn-cancel"  id="cancelBtn" onclick="cancelEdits()" style="display:none">&times; Abbrechen</button>
+    </div>
+  </header>
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="card kpi editable">
+      <div class="lbl">Gesamteinnahmen (Monat)</div>
+      <div class="val pos" id="kpi-total">&euro; 0</div>
+      <div class="sub">Trading + Affiliate + Education</div>
+    </div>
+    <div class="card kpi editable">
+      <div class="lbl">Gesamtgewinn (kumuliert)</div>
+      <div class="val" id="kpi-cum">&euro; 0</div>
+      <div class="sub">Seit Gr&uuml;ndung 01.05.2026</div>
+    </div>
+    <div class="card kpi editable">
+      <div class="lbl">N&auml;chste Auszahlung</div>
+      <div class="val" id="kpi-next" style="font-size:1.15rem">&mdash;</div>
+      <div class="sub">Gesch&auml;tztes Datum</div>
+    </div>
+  </div>
+
+  <!-- Main Row -->
+  <div class="main-row">
+
+    <!-- Trading -->
+    <div class="card trading-card editable">
+      <div class="tc-head">
+        <div>
+          <div class="lbl" style="margin-bottom:3px">Prop Trading</div>
+          <div class="firm-name">Lucid Trading</div>
+        </div>
+        <span class="badge badge-green">&#9679; Funded</span>
+      </div>
+
+      <div class="tc-stats">
+        <div>
+          <div class="stat-lbl">Kontogr&ouml;&szlig;e</div>
+          <div class="stat-val">$100.000</div>
+        </div>
+        <div>
+          <div class="stat-lbl">Kontostand aktuell</div>
+          <div class="stat-val" id="t-kstand">$100.000</div>
+        </div>
+        <div>
+          <div class="stat-lbl">Gewinn / Verlust</div>
+          <div class="stat-val" id="t-pnl">$ 0</div>
+        </div>
+        <div>
+          <div class="stat-lbl">Profit-Split</div>
+          <div class="stat-val" id="t-split">80%</div>
+        </div>
+      </div>
+
+      <!-- Drawdown -->
+      <div>
+        <div class="stat-lbl">Drawdown aktuell</div>
+        <div class="stat-val" id="t-dd-val" style="margin-top:2px">0.00%</div>
+        <div class="dd-bar-bg">
+          <div class="dd-bar dd-safe" id="t-dd-bar" style="width:0%"></div>
+        </div>
+        <div class="dd-ticks"><span>0%</span><span>5%</span><span>7%</span><span>10%</span></div>
+      </div>
+
+      <!-- Auszahlung -->
+      <div class="auszahlung">
+        <div>
+          <div class="az-lbl">Auszahlung Netto</div>
+          <div class="az-sub">Gewinn &times; Profit-Split</div>
+        </div>
+        <div class="az-val" id="t-az">$ 0,00</div>
+      </div>
+    </div>
+
+    <!-- Social -->
+    <div class="social-col">
+
+      <!-- TikTok -->
+      <div class="card social-card editable">
+        <div class="sc-head">
+          <div class="sc-icon tt">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.88a8.18 8.18 0 0 0 4.79 1.54V7.01a4.85 4.85 0 0 1-1.02-.32z"/>
+            </svg>
+          </div>
+          <div class="sc-name">TikTok</div>
+        </div>
+        <div class="stat-lbl">Follower</div>
+        <div class="sc-follower" id="tt-f">0</div>
+        <div class="sc-growth">
+          <span id="tt-gi" style="color:var(--text3)">&rarr;</span>
+          <span id="tt-g"  style="color:var(--text3); font-size:.72rem">+0 diese Woche</span>
+        </div>
+        <div class="sc-updated">Aktualisiert: <span id="tt-upd">&mdash;</span></div>
+      </div>
+
+      <!-- Instagram -->
+      <div class="card social-card editable">
+        <div class="sc-head">
+          <div class="sc-icon ig">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="#e1306c" stroke="none"/>
+            </svg>
+          </div>
+          <div class="sc-name">Instagram</div>
+        </div>
+        <div class="stat-lbl">Follower</div>
+        <div class="sc-follower" id="ig-f">0</div>
+        <div class="sc-growth">
+          <span id="ig-gi" style="color:var(--text3)">&rarr;</span>
+          <span id="ig-g"  style="color:var(--text3); font-size:.72rem">+0 diese Woche</span>
+        </div>
+        <div class="sc-updated">Aktualisiert: <span id="ig-upd">&mdash;</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Income Row -->
+  <div class="income-row">
+    <div class="card inc-card editable">
+      <div class="inc-bar" style="background:var(--accent)"></div>
+      <div class="lbl">Trading Profit-Split</div>
+      <div class="val" id="inc-t">&euro; 0</div>
+      <div class="sub">Monatliche Auszahlung</div>
+    </div>
+    <div class="card inc-card editable">
+      <div class="inc-bar" style="background:var(--blue)"></div>
+      <div class="lbl">Affiliate Provisionen</div>
+      <div class="val" id="inc-a">&euro; 0</div>
+      <div class="sub">Laufender Monat</div>
+    </div>
+    <div class="card inc-card editable">
+      <div class="inc-bar" style="background:var(--purple)"></div>
+      <div class="lbl">Education &amp; Kurse</div>
+      <div class="val" id="inc-e">&euro; 0</div>
+      <div class="sub">Kurse + Mentoring</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card chart-card">
+    <div class="sec-head">
+      <div class="sec-title">Monatlicher Verlauf</div>
+      <div style="font-size:.7rem; color:var(--text3); font-family:var(--mono)">2026</div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chart"></canvas>
+    </div>
+
+    <!-- Monthly edit table (only in edit mode) -->
+    <table class="monthly-table" id="mTable">
+      <thead>
+        <tr>
+          <th>Monat</th>
+          <th>Trading (&euro;)</th>
+          <th>Affiliate (&euro;)</th>
+          <th>Education (&euro;)</th>
+        </tr>
+      </thead>
+      <tbody id="mBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Todos -->
+  <div class="card todo-card">
+    <div class="sec-head">
+      <div class="sec-title">Offene Aufgaben</div>
+      <div style="font-size:.73rem; color:var(--text3);" id="todo-prog">0 / 5 erledigt</div>
+    </div>
+    <div class="todo-list" id="todoList"></div>
+  </div>
+
+</div>
+
+<script>
+// PIN AUTH
+// PIN als SHA-256 Hash - Standard-PIN: 2605
+// Aendern: gewuenschten PIN hier als Hash eintragen (https://emn178.github.io/online-tools/sha256.html)
+const PIN_HASH = 'a3e3a5b4ff2a3d4e8a4d2b2e3d2c3f3e4c3e4d3a3c3b2a3d4e2f2e3d3c2b3a4';
+
+async function hashPin(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+const STORED_HASH = '5f86f16af4d5cba4b1a9b3f5c6d8a7e2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8';
+
+async function initAuth() {
+  const defaultPin = '2605';
+  const stored = localStorage.getItem('ds_pin_hash');
+  if (!stored) {
+    const h = await hashPin(defaultPin);
+    localStorage.setItem('ds_pin_hash', h);
+  }
+  if (sessionStorage.getItem('ds_auth') === 'ok') {
+    unlock();
+  }
+}
+
+async function checkPin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!pin) return;
+  const h = await hashPin(pin);
+  const stored = localStorage.getItem('ds_pin_hash');
+  if (h === stored) {
+    sessionStorage.setItem('ds_auth', 'ok');
+    unlock();
+  } else {
+    document.getElementById('pin-err').textContent = 'Falscher PIN. Bitte erneut versuchen.';
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
+  }
+}
+
+function unlock() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
+  load();
+  render();
+}
+
+// PIN aendern (aufrufbar aus Konsole: changePin('neuerPin'))
+async function changePin(newPin) {
+  const h = await hashPin(newPin);
+  localStorage.setItem('ds_pin_hash', h);
+  console.log('PIN geaendert.');
+}
+
+initAuth();
+
+// DEFAULT STATE
+const DEFAULTS = {
+  trading: { gewinn: 0, split: 80, drawdown: 0 },
+  social: {
+    tiktok:     { follower: 0, growth7d: 0, updatedAt: null },
+    instagram:  { follower: 0, growth7d: 0, updatedAt: null }
+  },
+  einnahmen: { trading: 0, affiliate: 0, education: 0 },
+  monatlich: [
+    { m:'Mai', t:0, a:0, e:0 }, { m:'Jun', t:0, a:0, e:0 },
+    { m:'Jul', t:0, a:0, e:0 }, { m:'Aug', t:0, a:0, e:0 },
+    { m:'Sep', t:0, a:0, e:0 }, { m:'Okt', t:0, a:0, e:0 },
+    { m:'Nov', t:0, a:0, e:0 }, { m:'Dez', t:0, a:0, e:0 }
+  ],
+  todos: [
+    { id:1, text:'Gewerbeanmeldung (beide Gesellschafter)',   done:false },
+    { id:2, text:'Geschaftskonto eroeffnen (Qonto)',          done:false },
+    { id:3, text:'Steuerliche Erfassung (Finanzamt)',         done:false },
+    { id:4, text:'Kurs fertigstellen',                        done:false },
+    { id:5, text:'Ersten Affiliate-Partner aktivieren',       done:false }
+  ],
+  gesamtgewinn: 0,
+  naechsteAuszahlung: '01.06.2026'
+};
+
+let S     = clone(DEFAULTS);
+let tmp   = null;
+let chart = null;
+
+// STORAGE
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+function load() {
+  try {
+    const raw = localStorage.getItem('ds_v1');
+    if (raw) {
+      const p = JSON.parse(raw);
+      S = Object.assign(clone(DEFAULTS), p);
+      if (!S.monatlich || S.monatlich.length < 8) S.monatlich = clone(DEFAULTS.monatlich);
+      if (!S.todos || S.todos.length < 5) S.todos = clone(DEFAULTS.todos);
+    }
+  } catch(e) {}
+}
+
+function save() {
+  try { localStorage.setItem('ds_v1', JSON.stringify(S)); } catch(e) {}
+}
+
+// FORMAT
+const fEur = v => {
+  const n = parseFloat(v);
+  if (isNaN(n)) return '\u20ac \u2014';
+  return '\u20ac\u00a0' + n.toLocaleString('de-DE', { minimumFractionDigits:0, maximumFractionDigits:2 });
+};
+const fUsd = v => {
+  const n = parseFloat(v);
+  if (isNaN(n)) return '$ \u2014';
+  return '$\u00a0' + n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+};
+const fNum = v => (parseInt(v)||0).toLocaleString('de-DE');
+const fDate = iso => {
+  if (!iso) return '\u2014';
+  try { return new Date(iso).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'}); }
+  catch(e) { return iso; }
+};
+
+const el = id => document.getElementById(id);
+const txt = (id, v) => { const e = el(id); if(e) e.textContent = v; };
+
+// RENDER
+function render() {
+  el('ts').textContent = new Date().toLocaleDateString('de-DE',{
+    day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
+  });
+
+  const total = (S.einnahmen.trading||0) + (S.einnahmen.affiliate||0) + (S.einnahmen.education||0);
+  txt('kpi-total', fEur(total));
+  txt('kpi-cum',   fEur(S.gesamtgewinn));
+  txt('kpi-next',  S.naechsteAuszahlung || '\u2014');
+
+  const g = S.trading.gewinn || 0;
+  txt('t-kstand', fUsd(100000 + g));
+
+  const pnlEl = el('t-pnl');
+  pnlEl.textContent = (g >= 0 ? '+\u00a0' : '\u2212\u00a0') + fUsd(Math.abs(g)).replace('$ ','');
+  pnlEl.className = 'stat-val ' + (g >= 0 ? 'pos' : 'neg');
+
+  txt('t-split', (S.trading.split || 80) + '%');
+
+  const dd = Math.max(0, Math.min(10, parseFloat(S.trading.drawdown)||0));
+  txt('t-dd-val', dd.toFixed(2) + '%');
+  const bar = el('t-dd-bar');
+  bar.style.width = (dd / 10 * 100) + '%';
+  bar.className = 'dd-bar ' + (dd > 7 ? 'dd-danger' : dd > 5 ? 'dd-warn' : 'dd-safe');
+
+  const az = g > 0 ? g * ((S.trading.split||80) / 100) : 0;
+  txt('t-az', fUsd(az));
+
+  renderSocial('tt', S.social.tiktok);
+  renderSocial('ig', S.social.instagram);
+
+  txt('inc-t', fEur(S.einnahmen.trading));
+  txt('inc-a', fEur(S.einnahmen.affiliate));
+  txt('inc-e', fEur(S.einnahmen.education));
+
+  renderChart();
+  renderTodos();
+  renderMonthlyTable();
+}
+
+function renderSocial(p, d) {
+  txt(p+'-f', fNum(d.follower));
+  const gv = d.growth7d || 0;
+  const gEl = el(p+'-g');
+  const giEl = el(p+'-gi');
+  if (gv > 0) {
+    gEl.textContent = '+' + fNum(gv) + ' diese Woche';
+    gEl.style.color = 'var(--accent)';
+    giEl.textContent = '\u2191'; giEl.style.color = 'var(--accent)';
+  } else if (gv < 0) {
+    gEl.textContent = fNum(gv) + ' diese Woche';
+    gEl.style.color = 'var(--danger)';
+    giEl.textContent = '\u2193'; giEl.style.color = 'var(--danger)';
+  } else {
+    gEl.textContent = '+0 diese Woche';
+    gEl.style.color = 'var(--text3)';
+    giEl.textContent = '\u2192'; giEl.style.color = 'var(--text3)';
+  }
+  txt(p+'-upd', d.updatedAt ? fDate(d.updatedAt) : '\u2014');
+}
+
+function renderTodos() {
+  const list = el('todoList');
+  list.innerHTML = '';
+  let done = 0;
+  S.todos.forEach(t => {
+    if (t.done) done++;
+    const item = document.createElement('div');
+    item.className = 'todo-item' + (t.done ? ' done' : '');
+
+    const check = document.createElement('div');
+    check.className = 'todo-check';
+    check.textContent = t.done ? '\u2713' : '';
+
+    const textEl = document.createElement('div');
+    textEl.className = 'todo-text';
+    textEl.textContent = t.text;
+
+    item.appendChild(check);
+    item.appendChild(textEl);
+    item.onclick = () => toggleTodo(t.id);
+    list.appendChild(item);
+  });
+  txt('todo-prog', done + ' / ' + S.todos.length + ' erledigt');
+}
+
+function renderMonthlyTable() {
+  const tbody = el('mBody');
+  tbody.innerHTML = '';
+  S.monatlich.forEach((m, i) => {
+    const tr = document.createElement('tr');
+
+    const tdM = document.createElement('td');
+    tdM.style.cssText = 'color:var(--text2);font-family:var(--mono);font-size:.75rem';
+    tdM.textContent = m.m;
+    tr.appendChild(tdM);
+
+    ['t','a','e'].forEach(f => {
+      const td = document.createElement('td');
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.className = 'mi';
+      inp.dataset.i = i;
+      inp.dataset.f = f;
+      inp.value = m[f];
+      inp.min = 0;
+      td.appendChild(inp);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderChart() {
+  const ctx = el('chart').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: S.monatlich.map(d => d.m),
+      datasets: [
+        { label:'Trading',  data: S.monatlich.map(d=>d.t), backgroundColor:'rgba(240,192,64,.65)', borderRadius:4, borderSkipped:false },
+        { label:'Affiliate',data: S.monatlich.map(d=>d.a), backgroundColor:'rgba(59,130,246,.65)', borderRadius:4, borderSkipped:false },
+        { label:'Education',data: S.monatlich.map(d=>d.e), backgroundColor:'rgba(139,92,246,.65)', borderRadius:4, borderSkipped:false }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color:'rgba(138,128,112,.9)', font:{family:"'DM Sans',sans-serif",size:11}, boxWidth:10, boxHeight:10 }
+        },
+        tooltip: {
+          backgroundColor:'#0a1628', borderColor:'#1e2e4a', borderWidth:1,
+          titleColor:'#e8edf5', bodyColor:'#8a8070',
+          titleFont:{family:"'DM Sans',sans-serif",size:12},
+          bodyFont:{family:"'Space Mono',monospace",size:11},
+          callbacks: { label: c => ' ' + c.dataset.label + ': \u20ac ' + c.parsed.y.toLocaleString('de-DE') }
+        }
+      },
+      scales: {
+        x: { stacked:true, grid:{display:false}, ticks:{color:'#3d4050',font:{family:"'Space Mono',monospace",size:10}} },
+        y: { stacked:true, grid:{color:'rgba(30,46,74,.7)'}, ticks:{color:'#3d4050',font:{family:"'Space Mono',monospace",size:10}, callback: v => '\u20ac'+v.toLocaleString('de-DE')} }
+      }
+    }
+  });
+}
+
+// TODOS
+function toggleTodo(id) {
+  const t = S.todos.find(x => x.id === id);
+  if (t) { t.done = !t.done; save(); renderTodos(); }
+}
+
+// EDIT MODE
+const EDIT_FIELDS = [
+  ['t-pnl',    'trading.gewinn',           'number'],
+  ['t-split',  'trading.split',            'number'],
+  ['t-dd-val', 'trading.drawdown',         'number'],
+  ['kpi-cum',  'gesamtgewinn',             'number'],
+  ['kpi-next', 'naechsteAuszahlung',       'text'  ],
+  ['inc-t',    'einnahmen.trading',        'number'],
+  ['inc-a',    'einnahmen.affiliate',      'number'],
+  ['inc-e',    'einnahmen.education',      'number'],
+  ['tt-f',     'social.tiktok.follower',   'number'],
+  ['tt-g',     'social.tiktok.growth7d',   'number'],
+  ['ig-f',     'social.instagram.follower','number'],
+  ['ig-g',     'social.instagram.growth7d','number'],
+];
+
+function getVal(obj, path) {
+  return path.split('.').reduce((o,k) => o?.[k], obj);
+}
+function setVal(obj, path, val) {
+  const keys = path.split('.');
+  let cur = obj;
+  for (let i=0; i<keys.length-1; i++) cur = cur[keys[i]];
+  cur[keys[keys.length-1]] = val;
+}
+
+function enterEdit() {
+  tmp = clone(S);
+  document.body.classList.add('edit-active');
+  el('editBtn').style.display   = 'none';
+  el('saveBtn').style.display   = '';
+  el('cancelBtn').style.display = '';
+
+  EDIT_FIELDS.forEach(([eid, path, type]) => {
+    const e = el(eid);
+    if (!e) return;
+    const rawVal = getVal(S, path);
+    const input = document.createElement('input');
+    input.type      = type;
+    input.className = 'edit-input';
+    input.value     = rawVal ?? '';
+    input.dataset.eid  = eid;
+    input.dataset.path = path;
+    input.dataset.tp   = type;
+    e.textContent = '';
+    e.appendChild(input);
+  });
+
+  ['tt-g', 'ig-g'].forEach(id => {
+    const inp = el(id) && el(id).querySelector('input');
+    if (inp) inp.addEventListener('change', () => {
+      const prefix = id.startsWith('tt') ? 'tiktok' : 'instagram';
+      S.social[prefix].updatedAt = new Date().toISOString();
+    });
+  });
+}
+
+function saveEdits() {
+  document.querySelectorAll('.edit-input').forEach(inp => {
+    const path = inp.dataset.path;
+    const type = inp.dataset.tp;
+    const val  = type === 'number' ? (parseFloat(inp.value) || 0) : inp.value;
+    setVal(S, path, val);
+  });
+
+  document.querySelectorAll('.mi').forEach(inp => {
+    const i = parseInt(inp.dataset.i);
+    const f = inp.dataset.f;
+    S.monatlich[i][f] = parseFloat(inp.value) || 0;
+  });
+
+  if (S.social.tiktok.follower !== tmp.social.tiktok.follower ||
+      S.social.tiktok.growth7d !== tmp.social.tiktok.growth7d) {
+    S.social.tiktok.updatedAt = new Date().toISOString();
+  }
+  if (S.social.instagram.follower !== tmp.social.instagram.follower ||
+      S.social.instagram.growth7d !== tmp.social.instagram.growth7d) {
+    S.social.instagram.updatedAt = new Date().toISOString();
+  }
+
+  save();
+  exitEdit();
+  render();
+}
+
+function cancelEdits() {
+  S = clone(tmp);
+  exitEdit();
+  render();
+}
+
+function exitEdit() {
+  document.body.classList.remove('edit-active');
+  el('editBtn').style.display   = '';
+  el('saveBtn').style.display   = 'none';
+  el('cancelBtn').style.display = 'none';
+  tmp = null;
+}
+
+// INIT - load() und render() werden von unlock() aufgerufen
+setInterval(() => txt('ts', new Date().toLocaleDateString('de-DE',{
+  day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
+})), 60000);
+</script>
+</body>
+</html>
