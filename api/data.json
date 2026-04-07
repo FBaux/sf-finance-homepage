@@ -1,25 +1,25 @@
 {
-  "updated": "2026-04-07T00:00:00Z",
+  "updated": "2026-04-07T09:43:28Z",
   "tradovate": {
     "accountBalance": 0,
     "pnl": 0,
     "drawdown": 0.0,
     "available": false,
-    "error": "Noch nicht konfiguriert"
+    "error": "TRADOVATE_USER oder TRADOVATE_PASS nicht konfiguriert"
   },
   "instagram": {
     "followers": 0,
     "available": false,
-    "error": "Noch nicht konfiguriert"
+    "error": "IG_ACCESS_TOKEN oder IG_USER_ID nicht konfiguriert"
   },
   "tiktok": {
     "followers": 0,
     "available": false,
-    "error": "TikTok API erfordert gesonderte Genehmigung"
+    "error": "TikTok API erfordert Server-seitige OAuth-Genehmigung"
   },
   "digistore": {
     "monthlyRevenue": 0,
     "available": false,
-    "error": "Noch nicht konfiguriert"
+    "error": "DIGISTORE24_API_KEY nicht konfiguriert"
   }
 }
