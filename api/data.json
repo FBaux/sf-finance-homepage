@@ -1,0 +1,25 @@
+{
+  "updated": "2026-04-07T00:00:00Z",
+  "tradovate": {
+    "accountBalance": 0,
+    "pnl": 0,
+    "drawdown": 0.0,
+    "available": false,
+    "error": "Noch nicht konfiguriert"
+  },
+  "instagram": {
+    "followers": 0,
+    "available": false,
+    "error": "Noch nicht konfiguriert"
+  },
+  "tiktok": {
+    "followers": 0,
+    "available": false,
+    "error": "TikTok API erfordert gesonderte Genehmigung"
+  },
+  "digistore": {
+    "monthlyRevenue": 0,
+    "available": false,
+    "error": "Noch nicht konfiguriert"
+  }
+}

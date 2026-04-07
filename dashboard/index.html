@@ -543,6 +543,31 @@
     /* DIVIDER */
     .divider { height:1px; background:var(--border); margin: 0 0 16px; }
 
+    /* API STATUS CARD */
+    .api-card { padding: 22px; animation-delay:.35s; margin-top: 0; }
+    .api-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+    .api-item {
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 12px 14px;
+    }
+    .api-item.active { border-color: rgba(240,192,64,.25); background: rgba(240,192,64,.04); }
+    .api-dot {
+      width: 6px; height: 6px; border-radius: 50%; display: inline-block;
+      margin-right: 5px; vertical-align: middle;
+    }
+    .api-dot.on  { background: var(--accent); }
+    .api-dot.off { background: var(--text3); }
+    .api-name { font-family: var(--mono); font-size: .65rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text2); }
+    .api-status { font-size: .7rem; color: var(--text3); margin-top: 4px; }
+    .api-val { font-family: var(--mono); font-size: .9rem; font-weight: 700; color: var(--text); margin-top: 3px; }
+    .api-sync-info { font-size: .68rem; color: var(--text3); font-family: var(--mono); margin-top: 10px; }
+    @media (max-width: 800px) { .api-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .api-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* SYNC BUTTON */
+    .btn-sync { gap: 5px; }
+    .btn-sync.syncing { opacity: .65; cursor: not-allowed; }
+
     /* RESPONSIVE */
     @media (max-width: 920px) {
       .main-row { grid-template-columns: 1fr; }
@@ -602,6 +627,10 @@
       <div class="hsub"><span class="live-dot"></span>DIEFKE &amp; SIVASUNTHARARAJAN GBR &nbsp;&middot;&nbsp; DASHBOARD &nbsp;&middot;&nbsp; <span id="ts"></span></div>
     </div>
     <div class="hactions">
+      <button class="btn btn-ghost btn-sync" id="syncBtn" onclick="manualSync()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Sync
+      </button>
       <button class="btn btn-ghost"   id="editBtn"   onclick="enterEdit()">&#9998; Bearbeiten</button>
       <button class="btn btn-accent"  id="saveBtn"   onclick="saveEdits()" style="display:none">&#128190; Speichern</button>
       <button class="btn btn-cancel"  id="cancelBtn" onclick="cancelEdits()" style="display:none">&times; Abbrechen</button>
@@ -780,6 +809,37 @@
     <div class="todo-list" id="todoList"></div>
   </div>
 
+  <!-- API Status -->
+  <div class="card api-card">
+    <div class="sec-head">
+      <div class="sec-title">API Verbindungen</div>
+      <div style="font-size:.68rem; color:var(--text3); font-family:var(--mono);" id="api-sync-ts">Letzter Sync: &mdash;</div>
+    </div>
+    <div class="api-grid" id="apiGrid">
+      <div class="api-item" id="api-tradovate">
+        <div class="api-name"><span class="api-dot off" id="dot-tv"></span>Tradovate</div>
+        <div class="api-val" id="aval-tv">&mdash;</div>
+        <div class="api-status" id="ast-tv">Nicht verbunden</div>
+      </div>
+      <div class="api-item" id="api-instagram">
+        <div class="api-name"><span class="api-dot off" id="dot-ig"></span>Instagram</div>
+        <div class="api-val" id="aval-ig">&mdash;</div>
+        <div class="api-status" id="ast-ig">Nicht verbunden</div>
+      </div>
+      <div class="api-item" id="api-tiktok">
+        <div class="api-name"><span class="api-dot off" id="dot-tt"></span>TikTok</div>
+        <div class="api-val" id="aval-tt">&mdash;</div>
+        <div class="api-status" id="ast-tt">Manuell (kein API)</div>
+      </div>
+      <div class="api-item" id="api-digistore">
+        <div class="api-name"><span class="api-dot off" id="dot-ds"></span>Digistore24</div>
+        <div class="api-val" id="aval-ds">&mdash;</div>
+        <div class="api-status" id="ast-ds">Nicht verbunden</div>
+      </div>
+    </div>
+    <div class="api-sync-info">Auto-Sync alle 30 Min via GitHub Actions &middot; Manueller Sync oben rechts</div>
+  </div>
+
 </div>
 
 <script>
@@ -827,6 +887,7 @@ function unlock() {
   document.getElementById('main-content').style.display = '';
   load();
   render();
+  fetchApiData();
 }
 
 // PIN aendern (aufrufbar aus Konsole: changePin('neuerPin'))
@@ -1161,6 +1222,90 @@ function exitEdit() {
   el('saveBtn').style.display   = 'none';
   el('cancelBtn').style.display = 'none';
   tmp = null;
+}
+
+// ── API SYNC ────────────────────────────────────────────────────────────────
+let _lastApiData = null;
+
+async function fetchApiData() {
+  try {
+    const r = await fetch('/api/data.json?t=' + Date.now(), { cache: 'no-cache' });
+    if (!r.ok) return;
+    const d = await r.json();
+    _lastApiData = d;
+
+    // Tradovate → Trading-Karte aktualisieren
+    if (d.tradovate?.available) {
+      S.trading.gewinn   = d.tradovate.pnl;
+      S.trading.drawdown = d.tradovate.drawdown;
+    }
+
+    // Instagram → Social-Karte aktualisieren
+    if (d.instagram?.available) {
+      const prev = S.social.instagram.follower;
+      S.social.instagram.follower   = d.instagram.followers;
+      S.social.instagram.growth7d   = d.instagram.followers - prev;
+      S.social.instagram.updatedAt  = d.updated;
+    }
+
+    // Digistore24 → Einnahmen aktualisieren
+    if (d.digistore?.available) {
+      S.einnahmen.affiliate = d.digistore.monthlyRevenue;
+    }
+
+    save();
+    render();
+    renderApiStatus(d);
+  } catch(e) {
+    // API-Datei nicht verfügbar (lokal / offline) — kein Problem
+    console.log('API sync nicht verfügbar:', e.message);
+  }
+}
+
+function renderApiStatus(d) {
+  if (!d) return;
+
+  // Timestamp
+  const ts = d.updated ? new Date(d.updated).toLocaleString('de-DE', {
+    day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'
+  }) : '—';
+  txt('api-sync-ts', 'Letzter Sync: ' + ts);
+
+  const items = [
+    { key: 'tradovate', dotId: 'dot-tv', valId: 'aval-tv', stId: 'ast-tv', cardId: 'api-tradovate',
+      fmt: d => d.available ? (d.pnl >= 0 ? '+' : '') + fUsd(d.pnl).replace('$ ','$ ') + ' P&L' : '—',
+      status: d => d.available ? 'Live' : (d.error || 'Nicht verbunden') },
+    { key: 'instagram', dotId: 'dot-ig', valId: 'aval-ig', stId: 'ast-ig', cardId: 'api-instagram',
+      fmt: d => d.available ? fNum(d.followers) + ' Follower' : '—',
+      status: d => d.available ? 'Live' : (d.error || 'Nicht verbunden') },
+    { key: 'tiktok',    dotId: 'dot-tt', valId: 'aval-tt', stId: 'ast-tt', cardId: 'api-tiktok',
+      fmt: () => fNum(S.social.tiktok.follower) + ' Follower',
+      status: () => 'Manuell (kein API)' },
+    { key: 'digistore', dotId: 'dot-ds', valId: 'aval-ds', stId: 'ast-ds', cardId: 'api-digistore',
+      fmt: d => d.available ? fEur(d.monthlyRevenue) : '—',
+      status: d => d.available ? 'Live' : (d.error || 'Nicht verbunden') },
+  ];
+
+  items.forEach(({ key, dotId, valId, stId, cardId, fmt, status }) => {
+    const src  = d[key] || {};
+    const on   = src.available;
+    const dot  = el(dotId);
+    const card = el(cardId);
+    if (dot) { dot.className = 'api-dot ' + (on ? 'on' : 'off'); }
+    if (card) { card.className = 'api-item' + (on ? ' active' : ''); }
+    try { txt(valId, fmt(src)); } catch(e) {}
+    try { txt(stId, status(src)); } catch(e) {}
+  });
+}
+
+async function manualSync() {
+  const btn = el('syncBtn');
+  if (!btn) return;
+  btn.classList.add('syncing');
+  btn.textContent = '…';
+  await fetchApiData();
+  btn.classList.remove('syncing');
+  btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> Sync';
 }
 
 // INIT - load() und render() werden von unlock() aufgerufen
