@@ -564,6 +564,49 @@
     @media (max-width: 800px) { .api-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .api-grid { grid-template-columns: 1fr 1fr; } }
 
+    /* CLIP PERFORMANCE */
+    .clips-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .clip-card { padding: 18px 20px; animation-delay:.32s; }
+    .clip-bar { height: 3px; border-radius: 2px; margin-bottom: 11px; background: var(--accent); }
+    .clip-stat-row { display: flex; gap: 14px; margin-top: 10px; }
+    .clip-stat { text-align: center; flex: 1; }
+    .clip-stat .cs-val { font-family: var(--mono); font-size: .88rem; font-weight: 700; color: var(--text); }
+    .clip-stat .cs-lbl { font-size: .62rem; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+    .clip-countdown { font-family: var(--mono); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-top: 8px; }
+    .clip-next-lbl { font-size: .72rem; color: var(--text3); margin-top: 4px; }
+    .clip-next-title { font-size: .8rem; color: var(--text2); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .platform-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .62rem; font-family: var(--mono);
+      background: rgba(240,192,64,.1); color: var(--accent);
+      border: 1px solid rgba(240,192,64,.2);
+      border-radius: 4px; padding: 2px 6px; margin-top: 4px; margin-right: 3px;
+    }
+
+    /* CLIP HISTORY TABLE */
+    .clip-history-card { padding: 22px; animation-delay:.34s; margin-bottom: 16px; }
+    .clip-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .clip-table th {
+      font-size: .62rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text3); padding: 6px 10px;
+      border-bottom: 1px solid var(--border); text-align: left;
+    }
+    .clip-table td { font-size: .78rem; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
+    .clip-table td:nth-child(3),
+    .clip-table td:nth-child(4),
+    .clip-table td:nth-child(5) { font-family: var(--mono); font-size: .75rem; color: var(--text); }
+    .clip-table tr:last-child td { border-bottom: none; }
+    .clip-table .clip-title-cell { max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .empty-clips { font-size: .8rem; color: var(--text3); text-align: center; padding: 20px 0; }
+
+    @media (max-width: 800px) { .clips-row { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .clips-row { grid-template-columns: 1fr; } }
+
     /* SYNC BUTTON */
     .btn-sync { gap: 5px; }
     .btn-sync.syncing { opacity: .65; cursor: not-allowed; }
@@ -776,6 +819,80 @@
     </div>
   </div>
 
+  <!-- Clip Performance Row -->
+  <div class="clips-row">
+    <div class="card clip-card">
+      <div class="clip-bar" style="background:#fe2c55"></div>
+      <div class="lbl">TikTok Clips</div>
+      <div class="val" id="clip-tt-views">— Views</div>
+      <div class="sub" id="clip-tt-count">Keine Clips gepostet</div>
+      <div class="clip-stat-row">
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-tt-likes">—</div>
+          <div class="cs-lbl">Likes</div>
+        </div>
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-tt-shares">—</div>
+          <div class="cs-lbl">Shares</div>
+        </div>
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-tt-clips">—</div>
+          <div class="cs-lbl">Clips</div>
+        </div>
+      </div>
+    </div>
+    <div class="card clip-card">
+      <div class="clip-bar" style="background:#ff0000"></div>
+      <div class="lbl">YouTube</div>
+      <div class="val" id="clip-yt-views">— Views</div>
+      <div class="sub" id="clip-yt-subs">— Abonnenten</div>
+      <div class="clip-stat-row">
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-yt-likes">—</div>
+          <div class="cs-lbl">Likes</div>
+        </div>
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-yt-clips">—</div>
+          <div class="cs-lbl">Clips</div>
+        </div>
+        <div class="clip-stat">
+          <div class="cs-val" id="clip-yt-subs-num">—</div>
+          <div class="cs-lbl">Abos</div>
+        </div>
+      </div>
+    </div>
+    <div class="card clip-card">
+      <div class="clip-bar" style="background:var(--blue)"></div>
+      <div class="lbl">Nächster Post</div>
+      <div class="clip-countdown" id="clip-next-countdown">—</div>
+      <div class="clip-next-lbl" id="clip-next-time">Kein Post geplant</div>
+      <div class="clip-next-title" id="clip-next-title"></div>
+      <div id="clip-next-platforms" style="margin-top:6px"></div>
+    </div>
+  </div>
+
+  <!-- Clip History -->
+  <div class="card clip-history-card">
+    <div class="sec-head">
+      <div class="sec-title">Gepostete Clips</div>
+      <div style="font-size:.68rem; color:var(--text3); font-family:var(--mono);" id="clip-total-label">0 Clips total</div>
+    </div>
+    <table class="clip-table" id="clipTable">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Titel / Hook</th>
+          <th>TikTok Views</th>
+          <th>YT Views</th>
+          <th>Likes</th>
+        </tr>
+      </thead>
+      <tbody id="clipTableBody">
+        <tr><td colspan="5" class="empty-clips">Noch keine Clips gepostet.<br>Starte die Pipeline mit einem Video-Upload.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Chart -->
   <div class="card chart-card">
     <div class="sec-head">
@@ -815,7 +932,7 @@
       <div class="sec-title">API Verbindungen</div>
       <div style="font-size:.68rem; color:var(--text3); font-family:var(--mono);" id="api-sync-ts">Letzter Sync: &mdash;</div>
     </div>
-    <div class="api-grid" id="apiGrid">
+    <div class="api-grid" id="apiGrid" style="grid-template-columns: repeat(3,1fr)">
       <div class="api-item" id="api-tradovate">
         <div class="api-name"><span class="api-dot off" id="dot-tv"></span>Tradovate</div>
         <div class="api-val" id="aval-tv">&mdash;</div>
@@ -826,18 +943,28 @@
         <div class="api-val" id="aval-ig">&mdash;</div>
         <div class="api-status" id="ast-ig">Nicht verbunden</div>
       </div>
-      <div class="api-item" id="api-tiktok">
-        <div class="api-name"><span class="api-dot off" id="dot-tt"></span>TikTok</div>
-        <div class="api-val" id="aval-tt">&mdash;</div>
-        <div class="api-status" id="ast-tt">Manuell (kein API)</div>
-      </div>
       <div class="api-item" id="api-digistore">
         <div class="api-name"><span class="api-dot off" id="dot-ds"></span>Digistore24</div>
         <div class="api-val" id="aval-ds">&mdash;</div>
         <div class="api-status" id="ast-ds">Nicht verbunden</div>
       </div>
+      <div class="api-item" id="api-tiktok">
+        <div class="api-name"><span class="api-dot off" id="dot-tt"></span>TikTok</div>
+        <div class="api-val" id="aval-tt">&mdash;</div>
+        <div class="api-status" id="ast-tt">Nicht verbunden</div>
+      </div>
+      <div class="api-item" id="api-yt-clips">
+        <div class="api-name"><span class="api-dot off" id="dot-ytc"></span>YouTube Clips</div>
+        <div class="api-val" id="aval-ytc">&mdash;</div>
+        <div class="api-status" id="ast-ytc">Nicht verbunden</div>
+      </div>
+      <div class="api-item" id="api-clip-pipeline">
+        <div class="api-name"><span class="api-dot off" id="dot-pipe"></span>Clip-Pipeline</div>
+        <div class="api-val" id="aval-pipe">&mdash;</div>
+        <div class="api-status" id="ast-pipe">Keine Clips</div>
+      </div>
     </div>
-    <div class="api-sync-info">Auto-Sync alle 30 Min via GitHub Actions &middot; Manueller Sync oben rechts</div>
+    <div class="api-sync-info">Auto-Sync alle 30 Min via GitHub Actions &middot; Video-Pipeline täglich 07:00 CET &middot; Manueller Sync oben rechts</div>
   </div>
 
 </div>
@@ -1253,6 +1380,9 @@ async function fetchApiData() {
       S.einnahmen.affiliate = d.digistore.monthlyRevenue;
     }
 
+    // Clip Analytics → neue Widgets aktualisieren
+    if (d.clips) renderClipApiStats(d.clips);
+
     save();
     render();
     renderApiStatus(d);
@@ -1260,6 +1390,118 @@ async function fetchApiData() {
     // API-Datei nicht verfügbar (lokal / offline) — kein Problem
     console.log('API sync nicht verfügbar:', e.message);
   }
+
+  // Clips-JSON separat laden (Posting-Queue + History)
+  try {
+    const cr = await fetch('/api/clips.json?t=' + Date.now(), { cache: 'no-cache' });
+    if (cr.ok) {
+      const cd = await cr.json();
+      renderClipsData(cd);
+    }
+  } catch(e) {
+    console.log('Clips-API nicht verfügbar:', e.message);
+  }
+}
+
+function renderClipApiStats(clips) {
+  const tt = clips.tiktok || {};
+  const yt = clips.youtube || {};
+
+  // TikTok Clip-Karte
+  if (tt.available) {
+    txt('clip-tt-views', fNum(tt.last_30d_views) + ' Views');
+    txt('clip-tt-count', fNum(tt.total_clips_posted) + ' Clips gepostet');
+    txt('clip-tt-likes', fNum(tt.last_30d_likes));
+    txt('clip-tt-shares', fNum(tt.last_30d_shares));
+    txt('clip-tt-clips', fNum(tt.total_clips_posted));
+  }
+
+  // YouTube Clip-Karte
+  if (yt.available) {
+    txt('clip-yt-views', fNum(yt.shorts_views_30d) + ' Views');
+    txt('clip-yt-subs', fNum(yt.channel_subscribers) + ' Abonnenten');
+    txt('clip-yt-subs-num', fNum(yt.channel_subscribers));
+    txt('clip-yt-clips', fNum(yt.total_clips_posted));
+    if (yt.last_clip) txt('clip-yt-likes', fNum(yt.last_clip.likes));
+  }
+}
+
+function renderClipsData(cd) {
+  const queue  = cd.queue  || [];
+  const posted = cd.posted || [];
+  const stats  = cd.stats_summary || {};
+
+  // Gesamt-Label
+  txt('clip-total-label', fNum(posted.length) + ' Clip' + (posted.length !== 1 ? 's' : '') + ' total');
+
+  // Pipeline-API Status
+  const pipeEl = el('dot-pipe');
+  const pipeCard = el('api-clip-pipeline');
+  const hasQueue = queue.length > 0 || posted.length > 0;
+  if (pipeEl) pipeEl.className = 'api-dot ' + (hasQueue ? 'on' : 'off');
+  if (pipeCard) pipeCard.className = 'api-item' + (hasQueue ? ' active' : '');
+  txt('aval-pipe', fNum(queue.length) + ' in Queue');
+  txt('ast-pipe', posted.length + ' gepostet');
+
+  // Nächsten geplanten Post finden
+  const scheduledClips = queue
+    .filter(c => c.scheduled_at)
+    .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
+
+  if (scheduledClips.length > 0) {
+    const next = scheduledClips[0];
+    const nextTime = new Date(next.scheduled_at);
+    const now = new Date();
+    const diffMs = nextTime - now;
+
+    if (diffMs > 0) {
+      const h = Math.floor(diffMs / 3600000);
+      const m = Math.floor((diffMs % 3600000) / 60000);
+      txt('clip-next-countdown', h > 0 ? `${h}h ${m}m` : `${m}m`);
+      txt('clip-next-time', nextTime.toLocaleString('de-DE', {
+        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+      }));
+    } else {
+      txt('clip-next-countdown', 'Jetzt fällig');
+      txt('clip-next-time', 'Wartet auf Pipeline-Lauf');
+    }
+
+    txt('clip-next-title', next.hook || '');
+
+    // Platform-Badges
+    const badgeEl = el('clip-next-platforms');
+    if (badgeEl) {
+      const platforms = next.platforms_to_post || {};
+      badgeEl.innerHTML = Object.keys(platforms).map(p =>
+        `<span class="platform-badge">${p === 'tiktok' ? '▶ TikTok' : p === 'youtube_shorts' ? '▶ YT Shorts' : '▶ YouTube'}</span>`
+      ).join('');
+    }
+  }
+
+  // Clip-Tabelle rendern (letzten 10 geposteten Clips)
+  const tbody = el('clipTableBody');
+  if (!tbody) return;
+
+  if (posted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-clips">Noch keine Clips gepostet.<br>Starte die Pipeline mit einem Video-Upload.</td></tr>';
+    return;
+  }
+
+  const recent = [...posted].reverse().slice(0, 10);
+  tbody.innerHTML = recent.map(clip => {
+    const date = (clip.tiktok_posted_at || clip.youtube_posted_at || '').slice(0, 10);
+    const hook = (clip.hook || '').slice(0, 60);
+    const ttViews = clip.analytics?.tiktok?.views ?? '—';
+    const ytViews = clip.analytics?.youtube?.views ?? '—';
+    const ttLikes = clip.analytics?.tiktok?.likes ?? '—';
+    return `<tr>
+      <td>${date}</td>
+      <td class="clip-title-cell" title="${clip.hook || ''}">${hook}${hook.length >= 60 ? '…' : ''}</td>
+      <td>${typeof ttViews === 'number' ? fNum(ttViews) : ttViews}</td>
+      <td>${typeof ytViews === 'number' ? fNum(ytViews) : ytViews}</td>
+      <td>${typeof ttLikes === 'number' ? fNum(ttLikes) : ttLikes}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderApiStatus(d) {
@@ -1278,13 +1520,30 @@ function renderApiStatus(d) {
     { key: 'instagram', dotId: 'dot-ig', valId: 'aval-ig', stId: 'ast-ig', cardId: 'api-instagram',
       fmt: d => d.available ? fNum(d.followers) + ' Follower' : '—',
       status: d => d.available ? 'Live' : (d.error || 'Nicht verbunden') },
-    { key: 'tiktok',    dotId: 'dot-tt', valId: 'aval-tt', stId: 'ast-tt', cardId: 'api-tiktok',
-      fmt: () => fNum(S.social.tiktok.follower) + ' Follower',
-      status: () => 'Manuell (kein API)' },
     { key: 'digistore', dotId: 'dot-ds', valId: 'aval-ds', stId: 'ast-ds', cardId: 'api-digistore',
       fmt: d => d.available ? fEur(d.monthlyRevenue) : '—',
       status: d => d.available ? 'Live' : (d.error || 'Nicht verbunden') },
   ];
+
+  // Clip-spezifische API-Items (aus clips.tiktok und clips.youtube)
+  const clipItems = [
+    { src: d.clips?.tiktok, dotId: 'dot-tt', valId: 'aval-tt', stId: 'ast-tt', cardId: 'api-tiktok',
+      fmt: s => s?.available ? fNum(s.last_30d_views) + ' Views' : '—',
+      status: s => s?.available ? 'Live · TikTok API' : (s?.error || 'Nicht verbunden') },
+    { src: d.clips?.youtube, dotId: 'dot-ytc', valId: 'aval-ytc', stId: 'ast-ytc', cardId: 'api-yt-clips',
+      fmt: s => s?.available ? fNum(s.channel_subscribers) + ' Abos' : '—',
+      status: s => s?.available ? 'Live · YouTube API' : (s?.error || 'Nicht verbunden') },
+  ];
+
+  clipItems.forEach(({ src, dotId, valId, stId, cardId, fmt, status }) => {
+    const on   = src?.available;
+    const dot  = el(dotId);
+    const card = el(cardId);
+    if (dot) { dot.className = 'api-dot ' + (on ? 'on' : 'off'); }
+    if (card) { card.className = 'api-item' + (on ? ' active' : ''); }
+    try { txt(valId, fmt(src)); } catch(e) {}
+    try { txt(stId, status(src)); } catch(e) {}
+  });
 
   items.forEach(({ key, dotId, valId, stId, cardId, fmt, status }) => {
     const src  = d[key] || {};

@@ -4,14 +4,16 @@ Läuft via GitHub Actions alle 30 Minuten.
 Schreibt Ergebnisse nach api/data.json.
 
 Benötigte GitHub Secrets:
-  IG_ACCESS_TOKEN     — Instagram Graph API Long-Lived Token
-  IG_USER_ID          — Instagram Business User ID (z.B. 17841400000000000)
-  TRADOVATE_USER      — Tradovate Benutzername
-  TRADOVATE_PASS      — Tradovate Passwort
-  DIGISTORE24_API_KEY — Digistore24 API Key (aus Account-Einstellungen)
+  IG_ACCESS_TOKEN      — Instagram Graph API Long-Lived Token
+  IG_USER_ID           — Instagram Business User ID (z.B. 17841400000000000)
+  TRADOVATE_USER       — Tradovate Benutzername
+  TRADOVATE_PASS       — Tradovate Passwort
+  DIGISTORE24_API_KEY  — Digistore24 API Key (aus Account-Einstellungen)
+  TIKTOK_ACCESS_TOKEN  — TikTok API Token (für Clip-Analytics)
+  YOUTUBE_TOKEN_JSON   — YouTube OAuth Token JSON (Base64-kodiert)
 """
 
-import os, json, requests
+import os, json, base64, requests
 from datetime import datetime, timezone
 
 # ── INITIAL DATA STRUCTURE ──────────────────────────────────────────────────
@@ -38,6 +40,25 @@ data = {
         "monthlyRevenue": 0,
         "available": False,
         "error": None
+    },
+    "clips": {
+        "tiktok": {
+            "total_clips_posted": 0,
+            "last_30d_views": 0,
+            "last_30d_likes": 0,
+            "last_30d_shares": 0,
+            "last_clip": None,
+            "available": False,
+            "error": None
+        },
+        "youtube": {
+            "total_clips_posted": 0,
+            "shorts_views_30d": 0,
+            "channel_subscribers": 0,
+            "last_clip": None,
+            "available": False,
+            "error": None
+        }
     }
 }
 
@@ -179,6 +200,141 @@ if DS_KEY:
 else:
     data["digistore"]["error"] = "DIGISTORE24_API_KEY nicht konfiguriert"
 
+# ── TIKTOK CLIP ANALYTICS ────────────────────────────────────────────────────
+TT_TOKEN = os.environ.get("TIKTOK_ACCESS_TOKEN", "")
+
+if TT_TOKEN:
+    try:
+        # Liste der letzten Videos abrufen
+        list_r = requests.post(
+            "https://open.tiktokapis.com/v2/video/list/",
+            headers={
+                "Authorization": f"Bearer {TT_TOKEN}",
+                "Content-Type": "application/json; charset=UTF-8"
+            },
+            json={"max_count": 20},
+            timeout=15
+        )
+        list_r.raise_for_status()
+        list_data = list_r.json()
+
+        if list_data.get("error", {}).get("code") == "ok":
+            videos = list_data.get("data", {}).get("videos", [])
+            if videos:
+                video_ids = [v["id"] for v in videos[:20]]
+
+                # Stats für Videos abrufen
+                stats_r = requests.post(
+                    "https://open.tiktokapis.com/v2/video/query/",
+                    headers={
+                        "Authorization": f"Bearer {TT_TOKEN}",
+                        "Content-Type": "application/json; charset=UTF-8"
+                    },
+                    json={
+                        "filters": {"video_ids": video_ids},
+                        "fields": ["id", "title", "view_count", "like_count",
+                                   "share_count", "comment_count", "create_time"]
+                    },
+                    timeout=15
+                )
+                stats_r.raise_for_status()
+                stats_data = stats_r.json()
+                video_stats = stats_data.get("data", {}).get("videos", [])
+
+                total_views = sum(v.get("view_count", 0) for v in video_stats)
+                total_likes = sum(v.get("like_count", 0) for v in video_stats)
+                total_shares = sum(v.get("share_count", 0) for v in video_stats)
+
+                best = max(video_stats, key=lambda v: v.get("view_count", 0), default=None)
+
+                data["clips"]["tiktok"] = {
+                    "total_clips_posted": len(video_stats),
+                    "last_30d_views": total_views,
+                    "last_30d_likes": total_likes,
+                    "last_30d_shares": total_shares,
+                    "last_clip": {
+                        "video_id": best["id"],
+                        "title": best.get("title", "")[:80],
+                        "views": best.get("view_count", 0),
+                        "likes": best.get("like_count", 0),
+                        "shares": best.get("share_count", 0)
+                    } if best else None,
+                    "available": True,
+                    "error": None
+                }
+        else:
+            data["clips"]["tiktok"]["error"] = list_data.get("error", {}).get("message", "API-Fehler")
+    except Exception as e:
+        data["clips"]["tiktok"]["error"] = str(e)
+        print(f"TikTok Clip-Analytics Fehler: {e}")
+else:
+    data["clips"]["tiktok"]["error"] = "TIKTOK_ACCESS_TOKEN nicht konfiguriert"
+
+# ── YOUTUBE CLIP ANALYTICS ───────────────────────────────────────────────────
+YT_TOKEN_B64 = os.environ.get("YOUTUBE_TOKEN_JSON", "")
+
+if YT_TOKEN_B64:
+    try:
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+        from googleapiclient.discovery import build
+
+        token_json = json.loads(base64.b64decode(YT_TOKEN_B64).decode())
+        creds = Credentials.from_authorized_user_info(token_json)
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+
+        youtube = build("youtube", "v3", credentials=creds)
+
+        # Kanal-Stats
+        ch_r = youtube.channels().list(part="statistics", mine=True).execute()
+        ch_stats = ch_r.get("items", [{}])[0].get("statistics", {})
+        subscribers = int(ch_stats.get("subscriberCount", 0))
+
+        # Letzte 10 Videos
+        search_r = youtube.search().list(
+            part="snippet", forMine=True, type="video",
+            order="date", maxResults=10
+        ).execute()
+        video_items = search_r.get("items", [])
+
+        if video_items:
+            video_ids_yt = [item["id"]["videoId"] for item in video_items]
+            stats_r = youtube.videos().list(
+                part="statistics,snippet", id=",".join(video_ids_yt)
+            ).execute()
+            yt_videos = stats_r.get("items", [])
+
+            total_views_yt = sum(
+                int(v.get("statistics", {}).get("viewCount", 0)) for v in yt_videos
+            )
+            best_yt = max(
+                yt_videos,
+                key=lambda v: int(v.get("statistics", {}).get("viewCount", 0)),
+                default=None
+            )
+
+            data["clips"]["youtube"] = {
+                "total_clips_posted": len(yt_videos),
+                "shorts_views_30d": total_views_yt,
+                "channel_subscribers": subscribers,
+                "last_clip": {
+                    "video_id": best_yt["id"],
+                    "title": best_yt.get("snippet", {}).get("title", "")[:80],
+                    "views": int(best_yt.get("statistics", {}).get("viewCount", 0)),
+                    "likes": int(best_yt.get("statistics", {}).get("likeCount", 0))
+                } if best_yt else None,
+                "available": True,
+                "error": None
+            }
+    except ImportError:
+        data["clips"]["youtube"]["error"] = "google-api-python-client nicht installiert"
+    except Exception as e:
+        data["clips"]["youtube"]["error"] = str(e)
+        print(f"YouTube Clip-Analytics Fehler: {e}")
+else:
+    data["clips"]["youtube"]["error"] = "YOUTUBE_TOKEN_JSON nicht konfiguriert"
+
 # ── WRITE OUTPUT ─────────────────────────────────────────────────────────────
 os.makedirs("api", exist_ok=True)
 with open("api/data.json", "w", encoding="utf-8") as f:
@@ -190,3 +346,10 @@ for k, v in data.items():
         status = "✓" if v["available"] else "✗"
         err    = f" ({v.get('error', '')})" if not v["available"] else ""
         print(f"  {status} {k}{err}")
+    elif isinstance(v, dict):
+        # Nested (clips)
+        for sub_k, sub_v in v.items():
+            if isinstance(sub_v, dict) and "available" in sub_v:
+                status = "✓" if sub_v["available"] else "✗"
+                err    = f" ({sub_v.get('error', '')})" if not sub_v["available"] else ""
+                print(f"  {status} {k}.{sub_k}{err}")
