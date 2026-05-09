@@ -84,8 +84,8 @@ def add_captions_ffmpeg(
     input_path: str,
     output_path: str,
     srt_content: str,
-    handle: str = "@fsfinance",
-    cta_text: str = "Folge mir für mehr Trading-Tipps! 📈",
+    handle: str = "@mtb_lucaz",
+    cta_text: str = "Folge mir für mehr Clips! 🎮",
     add_progress_bar: bool = False
 ) -> bool:
     """

@@ -31,8 +31,8 @@ TIKTOK_API_BASE = "https://open.tiktokapis.com/v2"
 CHUNK_SIZE = 10 * 1024 * 1024  # 10 MB pro Chunk
 
 DEFAULT_HASHTAGS = [
-    "#trading", "#daytrading", "#proptrading", "#fsfinance",
-    "#finance", "#trader", "#forex", "#aktien", "#geldverdienen"
+    "#cod", "#callofduty", "#warzone", "#gaming", "#gamer",
+    "#fps", "#shooter", "#clutch", "#highlight", "#mtblucaz"
 ]
 
 

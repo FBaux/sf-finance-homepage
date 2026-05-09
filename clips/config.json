@@ -1,0 +1,54 @@
+{
+  "_comment": "Haupt-Konfiguration für die Clip-Pipeline. Alle Werte hier anpassen.",
+
+  "creator": {
+    "handle": "@mtb_lucaz",
+    "niche": "gaming",
+    "language": "de"
+  },
+
+  "content": {
+    "type": "gaming",
+    "games": ["Call of Duty", "Warzone", "Black Ops 6"],
+    "cta_text": "Folge mir für mehr Clips! 🎮",
+    "watermark": true
+  },
+
+  "tiktok": {
+    "hashtags": [
+      "#cod", "#callofduty", "#warzone", "#gaming", "#gamer",
+      "#fps", "#shooter", "#clutch", "#highlight", "#mtblucaz",
+      "#blackops6", "#bo6", "#codclips"
+    ],
+    "privacy": "PUBLIC_TO_EVERYONE",
+    "max_clips_per_day": 3
+  },
+
+  "youtube": {
+    "hashtags": [
+      "#cod", "#callofduty", "#warzone", "#gaming", "#clutch",
+      "#highlight", "#fps", "#shooter", "#mtblucaz", "#Shorts"
+    ],
+    "category_id": "20",
+    "privacy": "public",
+    "description_footer": "📲 TikTok: @mtb_lucaz\n🔔 Abonnieren nicht vergessen!"
+  },
+
+  "clip_detection": {
+    "min_duration_s": 10,
+    "max_duration_s": 60,
+    "max_clips_per_video": 5,
+    "viral_keywords": [
+      "clutch", "insane", "no way", "nuke", "ace", "headshot",
+      "wallbang", "quickscope", "1v5", "1v4", "godlike",
+      "krass", "unfassbar", "schaut euch das an", "beste runde"
+    ]
+  },
+
+  "posting_schedule": {
+    "tiktok_windows_cet": ["12:00", "16:00", "19:00", "21:30"],
+    "youtube_windows_cet": ["15:00", "20:00"],
+    "min_gap_tiktok_hours": 6,
+    "min_gap_youtube_hours": 24
+  }
+}

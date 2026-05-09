@@ -22,11 +22,12 @@ from datetime import datetime, timezone
 
 
 DEFAULT_TAGS = [
-    "trading", "daytrading", "proptrading", "fsfinance",
-    "finance", "geldverdienen", "aktien", "forex",
-    "tradingdeutsch", "trading lernen"
+    "cod", "call of duty", "warzone", "gaming", "gamer",
+    "fps", "shooter", "clutch", "highlight", "gameplay",
+    "mtblucaz", "cod deutsch", "warzone deutsch"
 ]
 
+YOUTUBE_CATEGORY_GAMING = "20"
 YOUTUBE_CATEGORY_EDUCATION = "27"
 YOUTUBE_CATEGORY_PEOPLE = "22"
 
@@ -95,7 +96,7 @@ def upload_video(
             "title": title[:100],
             "description": description[:5000],
             "tags": tags[:500],
-            "categoryId": YOUTUBE_CATEGORY_EDUCATION,
+            "categoryId": YOUTUBE_CATEGORY_GAMING,
             "defaultLanguage": "de",
             "defaultAudioLanguage": "de",
         },
@@ -136,24 +137,26 @@ def upload_video(
     return video_id
 
 
-def build_description(clip: dict, channel_url: str = "https://fsfinance.de") -> str:
-    """Erstellt eine optimierte YouTube-Beschreibung."""
+def build_description(clip: dict, channel_url: str = "") -> str:
+    """Erstellt eine optimierte YouTube-Beschreibung für Gaming-Clips."""
     hook = clip.get("hook", "")
-    why_viral = clip.get("why_viral", "")
 
     desc_parts = [
         hook,
         "",
-        "🎯 Mehr Trading-Wissen auf fsfinance.de",
+        "🎮 Mehr Clips & Highlights auf meinem Kanal!",
+        "🔔 Abonnieren nicht vergessen!",
         "",
-        "📈 Folge mir für tägliche Trading-Updates:",
-        f"🌐 Website: {channel_url}",
+        "📲 TikTok: @mtb_lucaz",
+    ]
+
+    if channel_url:
+        desc_parts.append(f"🌐 {channel_url}")
+
+    desc_parts += [
         "",
-        "⚠️ Risikohinweis: Trading birgt erhebliche Risiken.",
-        "Dies ist keine Finanzberatung.",
-        "",
-        "#trading #daytrading #proptrading #fsfinance #finance",
-        "#aktien #forex #tradingdeutsch"
+        "#cod #callofduty #warzone #gaming #clutch #highlight #fps #shooter",
+        "#mtblucaz #Shorts"
     ]
 
     return "\n".join(desc_parts)

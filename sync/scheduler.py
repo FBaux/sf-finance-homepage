@@ -22,20 +22,20 @@ from datetime import datetime, timedelta, timezone
 
 
 # Posting-Fenster in UTC (CET = UTC+1 Winter, CEST = UTC+2 Sommer)
-# -1h bzw. -2h für UTC konvertiert
+# Gaming-Zielgruppe: aktiv nachmittags, abends & nachts — Wochenende besonders stark
 POSTING_WINDOWS = {
     "tiktok": [
-        {"hour": 6, "minute": 15},   # 07:15 CET
-        {"hour": 11, "minute": 30},  # 12:30 CET
-        {"hour": 17, "minute": 0},   # 18:00 CET
-        {"hour": 20, "minute": 0},   # 21:00 CET
+        {"hour": 11, "minute": 0},   # 12:00 CET — Mittag
+        {"hour": 15, "minute": 0},   # 16:00 CET — Nach Schule/Arbeit
+        {"hour": 18, "minute": 0},   # 19:00 CET — Prime-Time Gaming
+        {"hour": 20, "minute": 30},  # 21:30 CET — Late-Night Session
     ],
     "youtube_shorts": [
-        {"hour": 7, "minute": 0},    # 08:00 CET
-        {"hour": 16, "minute": 30},  # 17:30 CET
+        {"hour": 14, "minute": 0},   # 15:00 CET — Nachmittag
+        {"hour": 19, "minute": 0},   # 20:00 CET — Abend
     ],
     "youtube_long": [
-        {"hour": 13, "minute": 30},  # 14:30 CET — Di-Do bevorzugt
+        {"hour": 15, "minute": 0},   # 16:00 CET — Wochenende bevorzugt
     ],
 }
 
@@ -68,9 +68,12 @@ def get_next_posting_slot(
     for days_ahead in range(8):
         candidate_date = (min_time + timedelta(days=days_ahead)).date()
 
-        # YouTube Long: Werktage bevorzugen (Mo=0, Fr=4)
-        if platform == "youtube_long" and candidate_date.weekday() > 4:
-            continue
+        # YouTube Long: Wochenende bevorzugen für Gaming (Sa=5, So=6)
+        if platform == "youtube_long" and candidate_date.weekday() < 5 and days_ahead < 3:
+            # Werktage überspringen wenn Wochenende in den nächsten 3 Tagen
+            next_weekend_in = 5 - candidate_date.weekday()
+            if next_weekend_in <= 3:
+                continue
 
         for window in sorted(windows, key=lambda w: (w["hour"], w["minute"])):
             candidate = datetime(

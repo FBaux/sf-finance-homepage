@@ -47,14 +47,16 @@ def score_segment(segment_text: str, start: float, duration: float) -> float:
     """
     text_lower = segment_text.lower()
 
-    # High-value Finance & Trading Keywords (Deutsch)
+    # High-value Gaming & Shooter Keywords (Deutsch + Englisch)
     hook_keywords = [
-        "krass", "unglaublich", "fehler", "verlust", "gewinn", "pump",
-        "breakout", "ich zeige", "schaut mal", "das ist der trick",
-        "niemand redet darüber", "so verdiene ich", "warum ich",
-        "100%", "200%", "+", "k€", "€ in", "geheimnis",
-        "prop trading", "funded", "challenge", "drawdown",
-        "das wäre mein schlimmster", "diese eine sache",
+        "krass", "unglaublich", "no way", "clip", "clutch", "insane",
+        "nuke", "ace", "wallbang", "headshot", "highlight", "montage",
+        "kill", "kills", "killstreak", "sniper", "quickscope",
+        "warzone", "cod", "call of duty", "ranked", "pro",
+        "hack", "glitch", "trick", "easter egg", "secret",
+        "1v5", "1v4", "1v3", "godlike", "unstoppable",
+        "wie ich", "schaut euch das an", "das war knapp",
+        "beste runde", "neuer rekord", "nein nein nein",
     ]
 
     keyword_score = sum(2.0 if kw in text_lower else 0 for kw in hook_keywords)
@@ -99,19 +101,19 @@ def analyze_with_claude(segments: list[dict], video_path: str) -> list[dict]:
             for s in segments
         ])
 
-        prompt = f"""Du bist ein Social-Media-Experte für deutschsprachige Finance/Trading-Inhalte.
+        prompt = f"""Du bist ein Social-Media-Experte für Gaming-Content (Call of Duty, Shooter, etc.).
 
 Analysiere dieses Video-Transkript und identifiziere die 3–5 besten Segmente für virale TikTok/YouTube-Shorts-Clips.
 
 TRANSKRIPT:
 {transcript_text}
 
-Kriterien für virale Clips:
-1. Starker Hook in den ersten 3 Sekunden ("Das ist mein größter Fehler...", Zahlen, Provokationen)
-2. Einzigartiger Mehrwert oder Geheimtipp
-3. Emotionale Sprache (Überraschung, Motivation, Warnung)
-4. Klarer Anfang und Ende (kein mitten im Satz)
-5. Ideal 30–90 Sekunden lang
+Kriterien für virale Gaming-Clips:
+1. Starker Hook in den ersten 3 Sekunden (epischer Moment, Reaktion, "No way...", Killcount)
+2. Clutch-Momente, Multikills, Comebacks, unerwartete Kills
+3. Emotionale Reaktionen (Schreien, Lachen, Schock)
+4. Klarer Anfang und Ende (vollständige Action, nicht mittendrin abgeschnitten)
+5. Ideal 15–60 Sekunden lang (kurzer Clip = mehr Replays)
 
 Antworte NUR mit diesem JSON (kein anderer Text):
 {{
