@@ -385,9 +385,12 @@ body {
   animation: heroFadeUp .8s cubic-bezier(.22,1,.36,1) .2s forwards;
 }
 @keyframes heroFadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
-.hero-logo img {
-  height: 48px; width: auto; margin: 0 auto;
-  filter: drop-shadow(0 0 16px rgba(201,168,76,.3));
+.hero-logo img,
+.hero-lion {
+  width: clamp(200px, 28vw, 320px);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 32px rgba(201,168,76,.45));
   animation: logoPulse 5s ease-in-out 1.5s infinite;
 }
 @keyframes logoPulse {
