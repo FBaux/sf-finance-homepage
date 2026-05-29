@@ -49,6 +49,7 @@
   ══════════════════════════════════════════ -->
   <section class="hero s-dark" id="home" aria-label="Hero">
     <div class="hero-mesh" aria-hidden="true"></div>
+    <div class="hero-img-bg" aria-hidden="true"></div>
 
     <!-- est. label bottom-left -->
     <div class="hero-est" aria-hidden="true">
@@ -136,8 +137,8 @@
 
         <!-- ── 01 Prop Trading ── -->
         <div class="pillar-tile fi d1">
-          <div class="pillar-visual" aria-hidden="true">
-            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="pillar-visual pillar-visual--img" style="background-image:url('assets/img/pillar-trading.jpg')" aria-hidden="true">
+            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
               <!-- Grid lines -->
               <line x1="0" y1="150" x2="320" y2="150" stroke="rgba(201,168,76,.06)" stroke-width="1"/>
               <line x1="0" y1="110" x2="320" y2="110" stroke="rgba(201,168,76,.06)" stroke-width="1"/>
@@ -197,8 +198,8 @@
 
         <!-- ── 02 Affiliate Marketing ── -->
         <div class="pillar-tile fi d2">
-          <div class="pillar-visual" aria-hidden="true">
-            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="pillar-visual pillar-visual--img" style="background-image:url('assets/img/pillar-affiliate.jpg')" aria-hidden="true">
+            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
               <!-- Network connections -->
               <line x1="160" y1="90" x2="60" y2="40" stroke="url(#affLine)" stroke-width="1.5" opacity=".4"/>
               <line x1="160" y1="90" x2="260" y2="40" stroke="url(#affLine)" stroke-width="1.5" opacity=".4"/>
@@ -248,8 +249,8 @@
 
         <!-- ── 03 Education ── -->
         <div class="pillar-tile fi d3">
-          <div class="pillar-visual" aria-hidden="true">
-            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="pillar-visual pillar-visual--img" style="background-image:url('assets/img/pillar-education.jpg')" aria-hidden="true">
+            <svg width="100%" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
               <!-- Stacked book / tier motif -->
               <!-- Tier 3 (bottom, wide) -->
               <rect x="40"  y="130" width="240" height="22" rx="4" fill="rgba(201,168,76,.07)" stroke="rgba(201,168,76,.2)" stroke-width="1"/>
@@ -326,6 +327,9 @@
 
         <!-- Left: editorial text -->
         <div class="about-left">
+          <div class="fi" style="border-radius:var(--r-lg);overflow:hidden;height:220px;margin-bottom:2rem;">
+            <img src="assets/img/about-dus.jpg" alt="Finanzstadt" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+          </div>
           <div class="s-label fi">Über uns</div>
           <h2 class="s-h light fi d1">SF Finance —<br><em>mehr als ein Unternehmen.</em></h2>
           <div class="about-text fi d2">
