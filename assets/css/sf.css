@@ -234,7 +234,7 @@ body {
   display: flex; align-items: center; gap: .7rem;
   text-decoration: none;
 }
-.nav-logo img { height: 36px; width: auto; border-radius: 0; }
+.nav-logo img { height: 40px; width: auto; border-radius: 0; }
 .nav-logo-text {
   font-family: var(--f-serif); font-size: 1.2rem; font-weight: 400;
   letter-spacing: .01em; color: var(--navy);
