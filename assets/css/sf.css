@@ -234,7 +234,7 @@ body {
   display: flex; align-items: center; gap: .7rem;
   text-decoration: none;
 }
-.nav-logo img { height: 38px; width: auto; border-radius: 50%; }
+.nav-logo img { height: 36px; width: auto; border-radius: 0; }
 .nav-logo-text {
   font-family: var(--f-serif); font-size: 1.2rem; font-weight: 400;
   letter-spacing: .01em; color: var(--navy);
@@ -781,7 +781,7 @@ footer.sf-footer::before {
   display: flex; align-items: center; gap: .7rem;
   text-decoration: none;
 }
-.footer-logo img { height: 48px; width: auto; border-radius: 50%; }
+.footer-logo img { height: 44px; width: auto; border-radius: 0; }
 .footer-logo .nav-logo-text { color: var(--d-text); }
 .footer-logo .nav-logo-text em { color: var(--gold-mid); }
 .footer-socials { display: flex; gap: .6rem; }
