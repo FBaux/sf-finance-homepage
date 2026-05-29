@@ -1,27 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 72" width="400" height="72" role="img" aria-label="SF Finance Wordmark">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64" role="img" aria-label="SF Finance Wordmark">
   <defs>
     <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#c9a84c"/>
       <stop offset="50%" stop-color="#f0c040"/>
       <stop offset="100%" stop-color="#e8b84b"/>
     </linearGradient>
-    <linearGradient id="text_g" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#e8edf5"/>
-      <stop offset="100%" stop-color="#c0cfe0"/>
-    </linearGradient>
     <filter id="gold_glow">
       <feGaussianBlur stdDeviation="2" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;800&amp;display=swap');
-      .sf  { font-family: 'Syne', 'Arial Black', sans-serif; font-weight: 800; font-size: 50px; letter-spacing: 10px; }
-      .fin { font-family: 'Syne', 'Arial', sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 7px; fill: url(#text_g); }
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,300&amp;display=swap');
     </style>
   </defs>
 
-  <text x="0" y="55" class="sf" fill="url(#gold)">SF</text>
-  <rect x="84" y="6" width="1.5" height="58" rx="0.75" fill="url(#gold)" opacity="0.25"/>
-  <circle cx="80" cy="12" r="3" fill="url(#gold)" opacity="0.9" filter="url(#gold_glow)"/>
-  <text x="98" y="43" class="fin">FINANCE</text>
+  <!-- SF -->
+  <text x="2" y="50"
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-weight="700" font-size="52" letter-spacing="5"
+    fill="url(#gold)">SF</text>
+
+  <!-- Thin vertical divider -->
+  <rect x="90" y="8" width="1" height="46" rx="0.5" fill="#c9a84c" opacity="0.35"/>
+  <circle cx="90" cy="12" r="2.5" fill="#f0c040" opacity="0.85" filter="url(#gold_glow)"/>
+
+  <!-- Finance — italic light -->
+  <text x="104" y="38"
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-weight="300" font-style="italic" font-size="22" letter-spacing="4"
+    fill="#e8edf5">Finance</text>
 </svg>

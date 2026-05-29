@@ -22,10 +22,10 @@
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;800&amp;display=swap');
-      .sf  { font-family: 'Syne', 'Arial Black', sans-serif; font-weight: 800; font-size: 50px; letter-spacing: 10px; }
-      .fin { font-family: 'Syne', 'Arial', sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 7px; fill: url(#text_grad); }
-      .tag { font-family: 'Syne', 'Arial', sans-serif; font-weight: 400; font-size: 7.5px; letter-spacing: 3px; fill: #4a5f7a; }
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,300&amp;family=Space+Mono&amp;display=swap');
+      .sf  { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 54px; letter-spacing: 6px; }
+      .fin { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-style: italic; font-size: 19px; letter-spacing: 5px; fill: url(#text_grad); }
+      .tag { font-family: 'Space Mono', 'Courier New', monospace; font-weight: 400; font-size: 7px; letter-spacing: 3px; fill: #4a5f7a; }
     </style>
   </defs>
 
@@ -64,14 +64,14 @@
   <rect x="116" y="14" width="1" height="92" rx="0.5" fill="#1a3056"/>
 
   <!-- SF -->
-  <text x="140" y="76" class="sf" fill="url(#gold)">SF</text>
+  <text x="138" y="78" class="sf" fill="url(#gold)">SF</text>
 
   <!-- Vertical separator between SF and FINANCE -->
-  <rect x="228" y="20" width="1.5" height="72" rx="0.75" fill="url(#gold)" opacity="0.2"/>
+  <rect x="232" y="20" width="1" height="76" rx="0.5" fill="url(#gold)" opacity="0.2"/>
 
-  <!-- FINANCE + tagline -->
-  <text x="242" y="61" class="fin">FINANCE</text>
-  <text x="243" y="77" class="tag">PROP · AFFILIATE · EDUCATION</text>
+  <!-- Finance (italic) + tagline -->
+  <text x="246" y="62" class="fin">Finance</text>
+  <text x="247" y="78" class="tag">PROP · AFFILIATE · EDUCATION</text>
 
   <!-- Gold accent dot -->
   <circle cx="224" cy="28" r="3" fill="url(#gold)" opacity="0.9" filter="url(#gold_glow)"/>
