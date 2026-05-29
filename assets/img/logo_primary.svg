@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 120" width="580" height="120" role="img" aria-label="SF Finance Primary Logo">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0d1f3c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a84c"/>
+      <stop offset="50%" stop-color="#f0c040"/>
+      <stop offset="100%" stop-color="#e8b84b"/>
+    </linearGradient>
+    <linearGradient id="gold_dim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f0c040" stop-opacity="0.35"/>
+    </linearGradient>
+    <linearGradient id="text_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8edf5"/>
+      <stop offset="100%" stop-color="#c0cfe0"/>
+    </linearGradient>
+    <filter id="gold_glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;800&amp;display=swap');
+      .sf  { font-family: 'Syne', 'Arial Black', sans-serif; font-weight: 800; font-size: 50px; letter-spacing: 10px; }
+      .fin { font-family: 'Syne', 'Arial', sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 7px; fill: url(#text_grad); }
+      .tag { font-family: 'Syne', 'Arial', sans-serif; font-weight: 400; font-size: 7.5px; letter-spacing: 3px; fill: #4a5f7a; }
+    </style>
+  </defs>
+
+  <!-- Card -->
+  <rect width="580" height="120" rx="16" fill="url(#bg)"/>
+  <rect x="1" y="1" width="578" height="118" rx="15" fill="none"
+        stroke="url(#gold)" stroke-width="1" stroke-opacity="0.3"/>
+  <rect x="6" y="6" width="568" height="108" rx="12" fill="none"
+        stroke="url(#gold)" stroke-width="0.5" stroke-opacity="0.08"/>
+
+  <!-- Corner accents -->
+  <circle cx="20" cy="20" r="2.5" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="560" cy="20" r="2.5" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="20" cy="100" r="1.5" fill="url(#gold)" opacity="0.2"/>
+  <circle cx="560" cy="100" r="1.5" fill="url(#gold)" opacity="0.2"/>
+
+  <!-- ICON (scaled to 120x120 box) -->
+  <ellipse cx="60" cy="66" rx="28" ry="24" fill="#c9a84c" opacity="0.04"/>
+
+  <polygon points="60,88 45,74 60,69 75,74"
+           fill="url(#gold_dim)" filter="url(#gold_glow)"/>
+  <polygon points="60,71 43,55 60,49 77,55"
+           fill="url(#gold)" opacity="0.55" filter="url(#gold_glow)"/>
+  <polygon points="60,52 42,35 60,29 78,35"
+           fill="url(#gold)" filter="url(#gold_glow)"/>
+
+  <line x1="42" y1="35" x2="43" y2="55" stroke="url(#gold)" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="78" y1="35" x2="77" y2="55" stroke="url(#gold)" stroke-width="1" stroke-opacity="0.4"/>
+
+  <polygon points="60,20 65,29 60,29 55,29" fill="url(#gold)" filter="url(#gold_glow)"/>
+  <ellipse cx="60" cy="25" rx="8" ry="4" fill="#f0c040" opacity="0.3" filter="url(#gold_glow)"/>
+
+  <line x1="36" y1="88" x2="84" y2="88" stroke="url(#gold)" stroke-width="0.75" stroke-opacity="0.25"/>
+
+  <!-- Divider -->
+  <rect x="116" y="14" width="1" height="92" rx="0.5" fill="#1a3056"/>
+
+  <!-- SF -->
+  <text x="140" y="76" class="sf" fill="url(#gold)">SF</text>
+
+  <!-- Vertical separator between SF and FINANCE -->
+  <rect x="228" y="20" width="1.5" height="72" rx="0.75" fill="url(#gold)" opacity="0.2"/>
+
+  <!-- FINANCE + tagline -->
+  <text x="242" y="61" class="fin">FINANCE</text>
+  <text x="243" y="77" class="tag">PROP · AFFILIATE · EDUCATION</text>
+
+  <!-- Gold accent dot -->
+  <circle cx="224" cy="28" r="3" fill="url(#gold)" opacity="0.9" filter="url(#gold_glow)"/>
+</svg>
