@@ -1,0 +1,17 @@
+# ── Secrets / local env — NEVER commit ──
+.env
+.env.*
+**/.env
+**/.env.*
+
+# ── OS / editor cruft ──
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# ── Build / temp ──
+node_modules/
+*.log
+.playwright-mcp/

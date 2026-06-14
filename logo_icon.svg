@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="SF Finance Icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0d1f3c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a84c"/>
+      <stop offset="50%" stop-color="#f0c040"/>
+      <stop offset="100%" stop-color="#e8b84b"/>
+    </linearGradient>
+    <linearGradient id="gold_dim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#f0c040" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="navy_light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a3056"/>
+      <stop offset="100%" stop-color="#1e3a6e"/>
+    </linearGradient>
+    <filter id="gold_glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft_glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="1 0.8 0 0 0  0.8 0.7 0 0 0  0 0 0 0 0  0 0 0 0.25 0" result="colored"/>
+      <feMerge><feMergeNode in="colored"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" rx="40" ry="40" fill="url(#bg)"/>
+
+  <!-- Border -->
+  <rect x="1.5" y="1.5" width="197" height="197" rx="39" ry="39" fill="none"
+        stroke="url(#gold)" stroke-width="1.5" stroke-opacity="0.35"/>
+  <rect x="8" y="8" width="184" height="184" rx="33" ry="33" fill="none"
+        stroke="url(#gold)" stroke-width="0.5" stroke-opacity="0.1"/>
+
+  <!-- Ambient background glow -->
+  <ellipse cx="100" cy="95" rx="60" ry="55" fill="#c9a84c" opacity="0.04"/>
+
+  <!-- Diamond segments — stacked, bottom to top -->
+  <!-- Bottom ghost -->
+  <polygon points="100,148 75,123 100,115 125,123"
+           fill="url(#gold_dim)" filter="url(#soft_glow)"/>
+
+  <!-- Middle -->
+  <polygon points="100,118 72,91 100,83 128,91"
+           fill="url(#gold)" opacity="0.55" filter="url(#gold_glow)"/>
+
+  <!-- Top — full brightness -->
+  <polygon points="100,88 70,59 100,50 130,59"
+           fill="url(#gold)" filter="url(#gold_glow)"/>
+
+  <!-- Edge structure lines -->
+  <line x1="70" y1="59" x2="72" y2="91"
+        stroke="url(#gold)" stroke-width="1.5" stroke-opacity="0.4"/>
+  <line x1="130" y1="59" x2="128" y2="91"
+        stroke="url(#gold)" stroke-width="1.5" stroke-opacity="0.4"/>
+  <line x1="72" y1="91" x2="75" y2="123"
+        stroke="url(#gold)" stroke-width="1" stroke-opacity="0.2"/>
+  <line x1="128" y1="91" x2="125" y2="123"
+        stroke="url(#gold)" stroke-width="1" stroke-opacity="0.2"/>
+
+  <!-- Apex crown — bright peak -->
+  <polygon points="100,38 107,50 100,50 93,50"
+           fill="url(#gold)" filter="url(#gold_glow)"/>
+  <ellipse cx="100" cy="44" rx="12" ry="6" fill="#f0c040" opacity="0.35" filter="url(#gold_glow)"/>
+
+  <!-- Base line -->
+  <line x1="58" y1="148" x2="142" y2="148"
+        stroke="url(#gold)" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- Corner dots -->
+  <circle cx="38" cy="38" r="2.5" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="162" cy="38" r="2.5" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="38" cy="162" r="1.5" fill="url(#gold)" opacity="0.2"/>
+  <circle cx="162" cy="162" r="1.5" fill="url(#gold)" opacity="0.2"/>
+</svg>
