@@ -73,7 +73,7 @@ a { text-decoration: none; }
 }
 
 /* ── BASE ── */
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 
 body {
   font-family: var(--f-body);
@@ -453,12 +453,21 @@ body {
 }
 .hero-est-line { width: 32px; height: 1px; background: var(--d-text3); }
 
-/* Hero photo background layer */
+/* Hero photo background layer — AI cinematic visual (Higgsfield) */
 .hero-img-bg {
   position: absolute; inset: 0; pointer-events: none;
-  background: url('../img/hero-bg.jpg') center/cover no-repeat;
-  opacity: .18;
+  background: url('../img/hero-ai.jpg') center/cover no-repeat;
+  opacity: .72;
   z-index: 0;
+  will-change: transform;
+}
+/* Vignette so hero text keeps contrast over the brighter visual */
+.hero-img-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 38%, transparent 0%, rgba(6,12,26,.55) 100%),
+    linear-gradient(180deg, rgba(6,12,26,.35) 0%, transparent 30%, rgba(6,12,26,.55) 100%);
 }
 
 /* Scroll hint */
@@ -1061,3 +1070,143 @@ td:first-child { padding-left: 1.5rem; }
   .imp-row          { grid-template-columns: 1fr; gap: .2rem; }
   .imp-key          { font-size: .72rem; color: var(--gold-mid); }
 }
+
+/* ════════════════════════════════════════════════
+   v3.0 — PREMIUM-PLAYFUL MOTION LAYER
+   GSAP hooks · magnetic · tilt · reduced-motion
+   ════════════════════════════════════════════════ */
+
+/* When GSAP drives reveals, kill the CSS transition so
+   the JS timeline owns opacity/transform (no double-anim). */
+html.sf-gsap .fi { transition: none; }
+
+@keyframes sfFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Interactive transforms — snappy return, GPU-hinted.
+   Overrides the slower transform transition on cards while
+   keeping their box-shadow / border-color easing intact. */
+[data-tilt] {
+  will-change: transform;
+  transform-style: preserve-3d;
+  transition: transform .22s cubic-bezier(.22,1,.36,1),
+              box-shadow .35s, border-color .3s;
+}
+[data-magnetic] {
+  will-change: transform;
+  transition: transform .25s cubic-bezier(.22,1,.36,1),
+              background .2s, box-shadow .2s;
+}
+
+/* ── ACCESSIBILITY: honor reduced-motion globally ──
+   Pauses ticker, mesh-pulse, shimmer, logo-pulse, blink,
+   scroll-hint — and neutralizes any JS transforms. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fi { opacity: 1 !important; transform: none !important; }
+}
+
+/* ════════════════════════════════════════════════
+   v3.0 — PREMIUM POLISH
+   Glow · gold shine · gradient borders · depth
+   ════════════════════════════════════════════════ */
+
+/* Refined text selection */
+::selection { background: rgba(240,192,64,.28); color: var(--white); }
+
+/* ── Hero CTA — resting gold glow + shine sweep on hover ── */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 26px rgba(240,192,64,.20);
+}
+.btn-gold::after {
+  content: '';
+  position: absolute; top: 0; left: -130%;
+  width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: skewX(-18deg);
+  transition: left .6s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+}
+.btn-gold:hover::after { left: 150%; }
+.btn-gold:hover { box-shadow: 0 10px 38px var(--gold-glow); }
+
+/* ── Pillar tile — gradient glow ring on hover (masked border) ── */
+.pillar-tile { position: relative; }
+.pillar-tile::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--r-lg);
+  padding: 1.5px;
+  background: linear-gradient(140deg,
+    rgba(240,192,64,.65) 0%, rgba(240,192,64,0) 38%,
+    rgba(59,130,246,0) 62%, rgba(59,130,246,.45) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+  z-index: 3;
+}
+.pillar-tile:hover::after { opacity: 1; }
+.pillar-tile:hover {
+  box-shadow: 0 30px 80px rgba(13,31,60,.18),
+              0 0 0 1px rgba(240,192,64,.06),
+              0 8px 28px rgba(240,192,64,.07);
+}
+
+/* ── Stat tiles — gold lift on hover ── */
+.stat-tile { transition: background .35s ease, box-shadow .35s ease; }
+.stat-tile:hover {
+  background: linear-gradient(180deg, #14264a 0%, var(--navy) 100%);
+  box-shadow: inset 0 0 0 1px rgba(240,192,64,.16),
+              inset 0 24px 60px rgba(240,192,64,.05);
+}
+.stat-tile:hover .stat-n {
+  text-shadow: 0 0 28px rgba(240,192,64,.45);
+}
+
+/* ── Founder cards — deeper float ── */
+.founder-card:hover {
+  box-shadow: 0 28px 70px rgba(0,0,0,.46),
+              0 0 0 1px rgba(240,192,64,.08);
+}
+
+/* ── About contrast card — inner gold aura ── */
+.about-card::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 80% at 100% 0%, rgba(240,192,64,.10) 0%, transparent 55%);
+}
+
+/* ── Founder monograms — gold aura ring + sheen sweep ──
+   Upgrades the initials portraits (authentic, no AI faces). */
+.founder-portrait {
+  position: relative;
+  border-color: rgba(240,192,64,.34);
+  box-shadow: 0 0 0 1px rgba(240,192,64,.07), 0 6px 20px rgba(0,0,0,.35);
+  transition: box-shadow .45s ease, border-color .45s ease;
+}
+.founder-card:hover .founder-portrait {
+  border-color: rgba(240,192,64,.7);
+  box-shadow: 0 0 0 1px rgba(240,192,64,.22),
+              0 0 30px rgba(240,192,64,.24),
+              0 10px 30px rgba(0,0,0,.42);
+}
+.founder-portrait::after {
+  content: '';
+  position: absolute; top: 0; left: -130%;
+  width: 55%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(240,192,64,.38), transparent);
+  transform: skewX(-18deg);
+  transition: left .7s cubic-bezier(.22,1,.36,1);
+  pointer-events: none; z-index: 2;
+}
+.founder-card:hover .founder-portrait::after { left: 150%; }
