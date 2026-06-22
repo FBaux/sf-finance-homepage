@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayDom Performance Group — Kontenliste &amp; Split-Rechner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0d1f3c; --navy-soft:#13294f; --gold:#f0c040; --gold-deep:#c9a84c;
+    --bg:#eef4fc; --card:#ffffff; --line:#dbe4f3; --text:#0d1f3c; --muted:#5b6b86;
+    --eigen:#2f7d62; --firma:#3a5ea8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:24px}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:2.1rem;letter-spacing:.3px}
+  h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.5rem;margin-bottom:4px}
+  .sub{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+  header{background:var(--navy);color:#f0f4ff;border-radius:14px;padding:22px 26px;margin-bottom:22px;border:1px solid var(--navy-soft)}
+  header h1{color:#fff}
+  header .sub{color:#aebbd6;margin:4px 0 0}
+  .badge{display:inline-block;background:var(--gold);color:var(--navy);font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.5px;margin-top:10px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 1px 3px rgba(13,31,60,.05)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  label{display:block;font-size:.78rem;font-weight:500;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.95rem;background:#fbfdff;color:var(--text)}
+  input:focus,select:focus{outline:none;border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(240,192,64,.18)}
+  .row-2{display:grid;grid-template-columns:1fr auto;gap:8px}
+  button{cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;border-radius:9px;transition:.15s}
+  .btn-primary{background:var(--gold);color:var(--navy);font-weight:700;padding:11px 22px;font-size:.95rem;margin-top:6px}
+  .btn-primary:hover{background:var(--gold-deep)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line);padding:7px 14px;font-size:.85rem}
+  .btn-ghost:hover{border-color:var(--gold-deep);color:var(--text)}
+  .preview{margin-top:16px;padding:14px 16px;background:var(--bg);border:1px dashed var(--line);border-radius:10px}
+  .preview .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{font-family:'Space Mono',monospace;font-size:.8rem;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  .chip b{color:var(--gold-deep)}
+  .pill{display:inline-block;font-size:.7rem;font-weight:700;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:20px;color:#fff;letter-spacing:.3px}
+  .pill.eigen{background:var(--eigen)} .pill.firma{background:var(--firma)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
+  td.num,th.num{font-family:'Space Mono',monospace;text-align:right}
+  tbody tr:hover{background:#fafcff}
+  .del{background:transparent;color:#b0392f;font-size:1.1rem;padding:2px 8px;line-height:1}
+  .toolbar{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+  .empty{color:var(--muted);text-align:center;padding:28px;font-style:italic}
+  .legend{font-size:.82rem;color:var(--muted)}
+  .legend b{color:var(--text)}
+  .legend table{margin-top:8px}
+  .legend td{padding:6px 8px;font-size:.82rem}
+  footer{color:var(--muted);font-size:.78rem;text-align:center;padding:8px 0 24px}
+  .calc-out{font-family:'Space Mono',monospace;font-size:1rem;margin-top:14px}
+  .calc-out .line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .calc-out .line b{color:var(--gold-deep)}
+  @media print{.no-print{display:none}body{background:#fff;padding:0}.card{box-shadow:none;break-inside:avoid}}
+
+  /* === PIN-GATE (identisch zum Dashboard, geteilte Session) === */
+  #lock-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #060c1a;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #lock-screen::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(240,192,64,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,192,64,.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .lock-box {
+    position: relative;
+    background: #0f1d33;
+    border: 1px solid #1e2e4a;
+    border-radius: 16px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  .lock-logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin-bottom: 6px;
+    color: #e8edf5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lock-sub {
+    font-size: .72rem;
+    color: #3d4050;
+    font-family: monospace;
+    letter-spacing: .08em;
+    margin-bottom: 28px;
+  }
+  .lock-label {
+    font-size: .7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: #3d4050;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  .lock-input {
+    width: 100%;
+    background: #0a1628;
+    border: 1px solid #1e2e4a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    letter-spacing: .3em;
+    color: #e8edf5;
+    text-align: center;
+    outline: none;
+    transition: border-color .2s;
+    margin-bottom: 14px;
+  }
+  .lock-input:focus { border-color: rgba(240,192,64,.4); }
+  .lock-btn {
+    width: 100%;
+    background: #f0c040;
+    color: #060c1a;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .18s;
+  }
+  .lock-btn:hover { background: #ffe070; }
+  .lock-err {
+    font-size: .75rem;
+    color: #f05252;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN-GATE -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-logo">
+      <svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="DayDom Performance Group">
+        <defs>
+          <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0c040"/>
+            <stop offset="100%" stop-color="#c9a84c"/>
+          </linearGradient>
+        </defs>
+        <polygon points="100,10 190,100 100,190 10,100" fill="none" stroke="url(#lg1)" stroke-width="6" opacity="0.3"/>
+        <polygon points="100,30 170,100 100,170 30,100" fill="url(#lg1)" opacity="0.15"/>
+        <polygon points="100,50 150,100 100,150 50,100" fill="url(#lg1)" opacity="0.6"/>
+        <line x1="60" y1="100" x2="140" y2="100" stroke="url(#lg1)" stroke-width="3" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="lock-sub">DAYDOM PERFORMANCE GROUP</div>
+    <div class="lock-label">PIN eingeben</div>
+    <input id="pin-input" class="lock-input" type="password" inputmode="numeric" maxlength="10" placeholder="&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter') checkPin()">
+    <button class="lock-btn" onclick="checkPin()">Entsperren</button>
+    <div class="lock-err" id="pin-err"></div>
+  </div>
+</div>
+
+<div class="wrap" id="main-content" style="display:none">
+  <header>
+    <h1>DayDom Performance Group</h1>
+    <p class="sub">Kontenliste &amp; Trading-Split-Rechner &middot; Anlage zu § 11 Abs. 1 i.V.m. § 10 Abs. 1a Gesellschaftsvertrag</p>
+    <span class="badge">DIEFKE · SIVASUNTHARARAJAN · PETERSEN · BENOUAHI GbR</span>
+  </header>
+
+  <!-- KONTO HINZUFÜGEN -->
+  <div class="card no-print">
+    <h2>Konto hinzufügen</h2>
+    <p class="sub">Die Auswahl <b>Eigen / Firma</b> legt den Verteilungsschlüssel automatisch fest.</p>
+    <div class="grid">
+      <div>
+        <label for="inhaber">Name des Kontoinhabers</label>
+        <select id="inhaber"></select>
+      </div>
+      <div>
+        <label for="typ">Eigen oder Firma</label>
+        <select id="typ">
+          <option value="eigen">Eigen — 55 % Inhaber / je 15 %</option>
+          <option value="firma">Firma — alle je 25 %</option>
+        </select>
+      </div>
+      <div>
+        <label for="groesse">Kontogröße</label>
+        <div class="row-2">
+          <input id="groesse" type="number" min="0" step="1000" placeholder="z. B. 100000">
+          <select id="waehrung" style="width:70px"><option>$</option><option>€</option></select>
+        </div>
+      </div>
+      <div>
+        <label for="propfirma">Propfirma / Anbieter</label>
+        <input id="propfirma" type="text" placeholder="z. B. Lucid, IQ Capital, VT Markets">
+      </div>
+    </div>
+    <div class="preview">
+      <span id="pv-pill" class="pill eigen">EIGEN</span>
+      <span class="legend" id="pv-text"></span>
+      <div class="chips" id="pv-chips"></div>
+    </div>
+    <button class="btn-primary" onclick="addKonto()">+ Konto eintragen</button>
+  </div>
+
+  <!-- KONTENTABELLE -->
+  <div class="card">
+    <h2>Konten</h2>
+    <p class="sub">Maßgebliche Liste für die Payout-Verteilung. Jedes Konto sollte per Beschluss bestätigt sein.</p>
+    <div style="overflow-x:auto">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>Inhaber</th><th>Typ</th><th class="num">Größe</th><th>Propfirma</th>
+            <th class="num">Fabian</th><th class="num">Shintu</th><th class="num">Michael</th><th class="num">Abdel</th>
+            <th class="no-print"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="toolbar no-print">
+      <button class="btn-ghost" onclick="exportCSV()">⤓ CSV exportieren</button>
+      <button class="btn-ghost" onclick="window.print()">🖶 Drucken / PDF</button>
+      <button class="btn-ghost" onclick="clearAll()">Alle löschen</button>
+    </div>
+  </div>
+
+  <!-- PAYOUT-RECHNER -->
+  <div class="card no-print">
+    <h2>Payout-Split-Rechner</h2>
+    <p class="sub">Konkreten Auszahlungsbetrag auf die vier Gesellschafter aufteilen.</p>
+    <div class="grid">
+      <div>
+        <label for="calc-typ">Kontoart</label>
+        <select id="calc-typ" onchange="calc()">
+          <option value="eigen">Eigen — 55 / je 15</option>
+          <option value="firma">Firma — je 25</option>
+        </select>
+      </div>
+      <div>
+        <label for="calc-inhaber">Aktiver Trader (bei Eigen)</label>
+        <select id="calc-inhaber" onchange="calc()"></select>
+      </div>
+      <div>
+        <label for="calc-payout">Netto-Payout</label>
+        <div class="row-2">
+          <input id="calc-payout" type="number" min="0" step="100" placeholder="z. B. 4000" oninput="calc()">
+          <select id="calc-waehrung" style="width:70px" onchange="calc()"><option>€</option><option>$</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="calc-out" id="calc-out"></div>
+  </div>
+
+  <!-- LEGENDE -->
+  <div class="card legend">
+    <b>Verteilungsschlüssel (§ 10 Abs. 1a)</b>
+    <table>
+      <tr><td><span class="pill eigen">EIGEN</span></td><td>Privates / eigenes Konto, in der Firma getradet</td><td><b>55 %</b> aktiver Trader · <b>je 15 %</b> an die übrigen drei (§ 10 Abs. 1a bb, § 11 Abs. 5)</td></tr>
+      <tr><td><span class="pill firma">FIRMA</span></td><td>Firmen-Propfirm-Konto (für Rechnung der GbR)</td><td><b>je 25 %</b> auf alle vier (§ 10 Abs. 1a aa)</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    Lokales Tool — Daten werden nur im Browser dieses Geräts gespeichert (localStorage). Keine anwaltliche/steuerliche Beratung.
+  </footer>
+</div>
+
+<script>
+// === PIN AUTH (geteilte Session mit /dashboard/ — gleiche Keys & Default-PIN 2605) ===
+async function hashPin(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function initAuth() {
+  const defaultPin = '2605';
+  const stored = localStorage.getItem('ds_pin_hash');
+  if (!stored) {
+    const h = await hashPin(defaultPin);
+    localStorage.setItem('ds_pin_hash', h);
+  }
+  if (sessionStorage.getItem('ds_auth') === 'ok') {
+    unlock();
+  }
+}
+
+async function checkPin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!pin) return;
+  const h = await hashPin(pin);
+  const stored = localStorage.getItem('ds_pin_hash');
+  if (h === stored) {
+    sessionStorage.setItem('ds_auth', 'ok');
+    unlock();
+  } else {
+    document.getElementById('pin-err').textContent = 'Falscher PIN. Bitte erneut versuchen.';
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
+  }
+}
+
+function unlock() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
+  render();
+}
+
+// PIN aendern (aufrufbar aus Konsole: changePin('neuerPin'))
+async function changePin(newPin) {
+  const h = await hashPin(newPin);
+  localStorage.setItem('ds_pin_hash', h);
+  console.log('PIN geaendert.');
+}
+
+// === KONTENLISTE & SPLIT-RECHNER ===
+const FOUNDERS = [
+  {id:'fd', name:'Fabian Diefke',            short:'Fabian'},
+  {id:'ss', name:'Shintu Sivasunthararajan', short:'Shintu'},
+  {id:'mp', name:'Michael Petersen',         short:'Michael'},
+  {id:'ab', name:'Abdelillah Benouahi',      short:'Abdel'},
+];
+const KEY = 'daydom_konten';
+let konten = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+// Verteilung: gibt {founderId: prozent} zurück
+function splitFor(typ, ownerId){
+  const s = {};
+  FOUNDERS.forEach(f => s[f.id] = (typ === 'firma') ? 25 : (f.id === ownerId ? 55 : 15));
+  return s;
+}
+
+// Dropdowns füllen
+function fillFounderSelect(el){
+  el.innerHTML = FOUNDERS.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+}
+['inhaber','calc-inhaber'].forEach(id => fillFounderSelect(document.getElementById(id)));
+
+// Live-Vorschau im Formular
+function updatePreview(){
+  const typ = document.getElementById('typ').value;
+  const owner = document.getElementById('inhaber').value;
+  const s = splitFor(typ, owner);
+  const pill = document.getElementById('pv-pill');
+  pill.className = 'pill ' + typ;
+  pill.textContent = typ.toUpperCase();
+  document.getElementById('pv-text').textContent = typ === 'firma'
+    ? 'Firmen-Propfirm-Konto → alle je 25 %'
+    : 'Eigenes Konto → 55 % Inhaber, je 15 % an die anderen drei';
+  document.getElementById('pv-chips').innerHTML = FOUNDERS.map(f =>
+    `<span class="chip">${f.short} <b>${s[f.id]} %</b></span>`).join('');
+}
+['typ','inhaber'].forEach(id => document.getElementById(id).addEventListener('change', updatePreview));
+
+function fmtSize(k){ return k.groesse ? (Number(k.groesse).toLocaleString('de-DE') + ' ' + k.waehrung) : '—'; }
+
+function render(){
+  const tb = document.getElementById('tbody');
+  if(!konten.length){
+    tb.innerHTML = `<tr><td colspan="9" class="empty">Noch keine Konten eingetragen.</td></tr>`;
+    save(); return;
+  }
+  tb.innerHTML = konten.map((k,i) => {
+    const s = splitFor(k.typ, k.inhaber);
+    const ownerName = FOUNDERS.find(f=>f.id===k.inhaber)?.name || '—';
+    return `<tr>
+      <td>${ownerName}</td>
+      <td><span class="pill ${k.typ}">${k.typ.toUpperCase()}</span></td>
+      <td class="num">${fmtSize(k)}</td>
+      <td>${k.propfirma || '—'}</td>
+      ${FOUNDERS.map(f=>`<td class="num">${s[f.id]} %</td>`).join('')}
+      <td class="no-print"><button class="del" title="löschen" onclick="del(${i})">×</button></td>
+    </tr>`;
+  }).join('');
+  save();
+}
+
+function addKonto(){
+  const k = {
+    inhaber:   document.getElementById('inhaber').value,
+    typ:       document.getElementById('typ').value,
+    groesse:   document.getElementById('groesse').value,
+    waehrung:  document.getElementById('waehrung').value,
+    propfirma: document.getElementById('propfirma').value.trim(),
+  };
+  konten.push(k);
+  render();
+  document.getElementById('groesse').value = '';
+  document.getElementById('propfirma').value = '';
+}
+function del(i){ konten.splice(i,1); render(); }
+function clearAll(){ if(confirm('Alle Konten löschen?')){ konten = []; render(); } }
+function save(){ localStorage.setItem(KEY, JSON.stringify(konten)); }
+
+function exportCSV(){
+  const head = ['Inhaber','Typ','Groesse','Waehrung','Propfirma',...FOUNDERS.map(f=>f.short+' %')];
+  const rows = konten.map(k=>{
+    const s = splitFor(k.typ,k.inhaber);
+    const owner = FOUNDERS.find(f=>f.id===k.inhaber)?.name || '';
+    return [owner,k.typ,k.groesse,k.waehrung,k.propfirma,...FOUNDERS.map(f=>s[f.id])];
+  });
+  const csv = [head,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'daydom_kontenliste.csv'; a.click();
+}
+
+// Payout-Rechner
+function calc(){
+  const typ = document.getElementById('calc-typ').value;
+  const owner = document.getElementById('calc-inhaber').value;
+  const cur = document.getElementById('calc-waehrung').value;
+  const payout = Number(document.getElementById('calc-payout').value) || 0;
+  document.getElementById('calc-inhaber').parentElement.style.opacity = (typ==='firma') ? .4 : 1;
+  const s = splitFor(typ, owner);
+  document.getElementById('calc-out').innerHTML = FOUNDERS.map(f=>{
+    const amt = (payout * s[f.id] / 100);
+    return `<div class="line"><span>${f.name} <small>(${s[f.id]} %)</small></span><b>${amt.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})} ${cur}</b></div>`;
+  }).join('') + `<div class="line" style="border:none"><span><b>Summe</b></span><b>${payout.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})} ${cur}</b></div>`;
+}
+
+// Init (läuft auf verstecktem DOM; unlock() rendert die Tabelle erneut)
+updatePreview(); render(); calc();
+
+// Auth ZULETZT starten — erst jetzt sind alle Variablen/Funktionen initialisiert
+// (verhindert TDZ-Fehler, falls eine geteilte Session sofort unlock() auslöst)
+initAuth();
+</script>
+</body>
+</html>
