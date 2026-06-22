@@ -219,7 +219,7 @@ body {
 /* ── NAV ── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0;
-  z-index: 200; height: 80px;
+  z-index: 200; height: 88px;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 var(--pad);
   background: rgba(255,255,255,.92);
@@ -234,7 +234,7 @@ body {
   display: flex; align-items: center; gap: .7rem;
   text-decoration: none;
 }
-.nav-logo img { height: 56px; width: auto; border-radius: 0; }
+.nav-logo img { height: 68px; width: auto; border-radius: 0; }
 .nav-logo-text {
   font-family: var(--f-serif); font-size: 1.2rem; font-weight: 400;
   letter-spacing: .01em; color: var(--navy);
