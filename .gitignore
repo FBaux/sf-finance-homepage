@@ -3,6 +3,8 @@
 .env.*
 **/.env
 **/.env.*
+# Template with placeholder values is safe to commit
+!.env.example
 
 # ── OS / editor cruft ──
 .DS_Store

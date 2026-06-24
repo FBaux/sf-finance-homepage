@@ -1,0 +1,20 @@
+{
+  "name": "sf-finance-homepage",
+  "version": "1.0.0",
+  "description": "DayDom Performance Group — GBR Portal & Homepage",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"No tests configured yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FBaux/sf-finance-homepage"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/server": "^1.1.0"
+  },
+  "devDependencies": {
+    "supabase": "^2.107.0"
+  }
+}

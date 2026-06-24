@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GBR Portal — DayDom Performance Group</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── DESIGN TOKENS (matching main site) ── */
+    :root {
+      --navy:        #0d1f3c;
+      --navy-deep:   #060c1a;
+      --navy-mid:    #1a3a6e;
+      --navy-light:  #2a5298;
+      --navy-card:   #0f1d33;
+      --navy-border: #1e2e4a;
+      --d-card:      #132240;
+      --d-border:    #1e3a6a;
+      --d-text:      #f0f4ff;
+      --d-text2:     #94a9c8;
+      --d-text3:     #4a6080;
+      --gold:        #f0c040;
+      --gold-mid:    #c9a84c;
+      --gold-dim:    rgba(240,192,64,.10);
+      --gold-border: rgba(201,168,76,.25);
+      --green:       #22c55e;
+      --red:         #ef4444;
+      --f-serif:     'Cormorant Garamond', Georgia, serif;
+      --f-body:      'DM Sans', system-ui, sans-serif;
+      --f-mono:      'Space Mono', monospace;
+      --r:           12px;
+      --r-lg:        20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; }
+
+    body {
+      font-family: var(--f-body);
+      background: var(--navy-deep);
+      color: var(--d-text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════
+       LOGIN VIEW
+    ══════════════════════════════════ */
+    #loginView {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #loginView::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(42,82,152,.35) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 100%, rgba(240,192,64,.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-lg);
+      padding: 2.75rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo img {
+      height: 44px;
+      margin: 0 auto .75rem;
+    }
+
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-family: var(--f-mono);
+      font-size: .62rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      padding: .3rem .75rem;
+      border: 1px solid var(--gold-border);
+      border-radius: 100px;
+    }
+
+    .login-badge::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold-mid);
+    }
+
+    .login-title {
+      font-family: var(--f-serif);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--d-text);
+      text-align: center;
+      margin: 1.25rem 0 .35rem;
+      letter-spacing: -.02em;
+    }
+
+    .login-sub {
+      font-size: .78rem;
+      color: var(--d-text3);
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .form-group { margin-bottom: 1.1rem; }
+
+    .form-label {
+      display: block;
+      font-size: .68rem;
+      font-family: var(--f-mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--d-text2);
+      margin-bottom: .45rem;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(6,12,26,.6);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r);
+      padding: .85rem 1rem;
+      color: var(--d-text);
+      font-family: var(--f-body);
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .form-input::placeholder { color: var(--d-text3); }
+    .form-input:focus { border-color: var(--gold-mid); }
+
+    .btn-login {
+      width: 100%;
+      background: var(--gold);
+      color: var(--navy-deep);
+      border: none;
+      border-radius: var(--r);
+      padding: .9rem;
+      font-family: var(--f-body);
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: .5rem;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(240,192,64,.2);
+    }
+
+    .btn-login:hover  { background: #e8b930; box-shadow: 0 6px 24px rgba(240,192,64,.35); }
+    .btn-login:active { transform: scale(.98); }
+    .btn-login:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+
+    .login-error {
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.25);
+      color: #fca5a5;
+      border-radius: var(--r);
+      padding: .7rem 1rem;
+      font-size: .83rem;
+      margin-top: .9rem;
+      display: none;
+    }
+
+    /* ══════════════════════════════════
+       PORTAL VIEW
+    ══════════════════════════════════ */
+    #portalView {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .p-header {
+      background: var(--d-card);
+      border-bottom: 1px solid var(--d-border);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      backdrop-filter: blur(8px);
+    }
+
+    .p-header-logo {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+    }
+
+    .p-header-logo img { height: 34px; }
+
+    .p-header-divider {
+      width: 1px;
+      height: 26px;
+      background: var(--d-border);
+    }
+
+    .p-header-label {
+      font-family: var(--f-mono);
+      font-size: .62rem;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      line-height: 1.2;
+    }
+
+    .p-header-label span {
+      display: block;
+      color: var(--d-text3);
+      font-size: .58rem;
+      letter-spacing: .08em;
+      margin-top: .15rem;
+    }
+
+    .p-header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .p-user-chip {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--d-border);
+      border-radius: 100px;
+      padding: .35rem .75rem .35rem .45rem;
+    }
+
+    .p-user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy-mid), var(--gold-mid));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--d-text);
+      flex-shrink: 0;
+    }
+
+    .p-user-email {
+      font-size: .75rem;
+      color: var(--d-text2);
+      font-family: var(--f-mono);
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--d-border);
+      color: var(--d-text3);
+      border-radius: var(--r);
+      padding: .42rem .85rem;
+      font-size: .78rem;
+      cursor: pointer;
+      font-family: var(--f-body);
+      transition: all .2s;
+    }
+
+    .btn-logout:hover { border-color: rgba(239,68,68,.5); color: #fca5a5; }
+
+    /* ── Tabs ── */
+    .p-tabs {
+      background: var(--navy-card);
+      border-bottom: 1px solid var(--d-border);
+      padding: 0 1.5rem;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .p-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--d-text3);
+      font-family: var(--f-body);
+      font-size: .85rem;
+      padding: .95rem 1.3rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tab-btn .t-icon { font-size: 1rem; }
+    .tab-btn:hover   { color: var(--d-text2); }
+
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── Main content ── */
+    .p-content {
+      flex: 1;
+      padding: 1.5rem;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── Toolbar ── */
+    .file-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .bc-item {
+      font-size: .82rem;
+      color: var(--d-text3);
+      cursor: pointer;
+      padding: .2rem .35rem;
+      border-radius: 5px;
+      transition: all .15s;
+    }
+
+    .bc-item:hover { color: var(--gold); background: var(--gold-dim); }
+    .bc-item.active { color: var(--d-text); cursor: default; }
+    .bc-item.active:hover { background: transparent; }
+    .bc-sep { color: var(--d-border); font-size: .9rem; }
+
+    .toolbar-actions {
+      display: flex;
+      gap: .65rem;
+      flex-shrink: 0;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      color: var(--d-text2);
+      border-radius: var(--r);
+      padding: .52rem .95rem;
+      font-size: .81rem;
+      cursor: pointer;
+      font-family: var(--f-body);
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .btn-action:hover { border-color: var(--gold-border); color: var(--gold); }
+
+    .btn-action.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--navy-deep);
+      font-weight: 600;
+    }
+
+    .btn-action.primary:hover { background: #e8b930; border-color: #e8b930; color: var(--navy-deep); }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--d-border);
+      border-radius: var(--r-lg);
+      padding: 2rem;
+      text-align: center;
+      color: var(--d-text3);
+      margin-bottom: 1.25rem;
+      transition: all .2s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--gold-mid);
+      background: var(--gold-dim);
+      color: var(--gold-mid);
+    }
+
+    .drop-icon { font-size: 1.75rem; margin-bottom: .4rem; }
+    .drop-text { font-size: .82rem; }
+    .drop-sub  { font-size: .74rem; margin-top: .2rem; color: var(--d-text3); }
+
+    /* ── Upload progress ── */
+    .upload-wrap {
+      display: none;
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r);
+      padding: .85rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .upload-label {
+      font-size: .78rem;
+      color: var(--d-text2);
+      margin-bottom: .5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-track {
+      background: var(--navy-deep);
+      border-radius: 100px;
+      height: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-mid), var(--gold));
+      width: 0%;
+      transition: width .3s ease;
+      border-radius: 100px;
+    }
+
+    /* ── File grid ── */
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: .9rem;
+    }
+
+    .f-item {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r);
+      padding: 1.1rem .9rem .9rem;
+      cursor: pointer;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: .55rem;
+      position: relative;
+      min-height: 120px;
+      justify-content: center;
+    }
+
+    .f-item:hover {
+      border-color: var(--gold-border);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,.35);
+    }
+
+    .f-icon { font-size: 2.4rem; line-height: 1; }
+
+    .f-name {
+      font-size: .76rem;
+      color: var(--d-text);
+      word-break: break-all;
+      line-height: 1.35;
+      max-width: 100%;
+    }
+
+    .f-meta {
+      font-size: .67rem;
+      color: var(--d-text3);
+      font-family: var(--f-mono);
+    }
+
+    .f-del {
+      position: absolute;
+      top: .45rem;
+      right: .45rem;
+      background: transparent;
+      border: none;
+      color: var(--d-text3);
+      cursor: pointer;
+      padding: .2rem .3rem;
+      border-radius: 5px;
+      font-size: .85rem;
+      opacity: 0;
+      transition: all .15s;
+      line-height: 1;
+    }
+
+    .f-item:hover .f-del { opacity: 1; }
+    .f-del:hover { color: var(--red); background: rgba(239,68,68,.1); }
+
+    /* ── Empty + Loading ── */
+    .state-empty, .state-loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--d-text3);
+      display: none;
+    }
+
+    .state-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .state-empty h3   { font-size: .95rem; color: var(--d-text2); margin-bottom: .4rem; }
+    .state-empty p    { font-size: .82rem; }
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 2px solid var(--d-border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══════════════════════════════════
+       MODALS
+    ══════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    }
+
+    .modal-x {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      color: var(--d-text3);
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: .3rem;
+      transition: color .2s;
+    }
+
+    .modal-x:hover { color: var(--d-text); }
+
+    .modal-title {
+      font-family: var(--f-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      letter-spacing: -.01em;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: .65rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    /* ── Preview modal ── */
+    .preview-modal {
+      max-width: 860px;
+      width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 65vh;
+      object-fit: contain;
+      border-radius: var(--r);
+      margin: 0 auto;
+      display: block;
+    }
+
+    .preview-pdf {
+      width: 100%;
+      height: 65vh;
+      border: none;
+      border-radius: var(--r);
+      background: #fff;
+    }
+
+    .preview-text {
+      background: var(--navy-deep);
+      border-radius: var(--r);
+      padding: 1rem;
+      font-family: var(--f-mono);
+      font-size: .75rem;
+      color: var(--d-text2);
+      max-height: 60vh;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .preview-unsupported {
+      text-align: center;
+      padding: 3rem;
+      color: var(--d-text3);
+    }
+
+    .preview-unsupported .big-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .preview-unsupported p { font-size: .85rem; margin-top: .5rem; }
+
+    /* ── Delete confirm modal ── */
+    .confirm-modal { max-width: 380px; }
+    .confirm-msg { font-size: .88rem; color: var(--d-text2); line-height: 1.6; }
+
+    .btn-danger {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(239,68,68,.35);
+      color: #fca5a5;
+      border-radius: var(--r);
+      padding: .52rem .95rem;
+      font-size: .81rem;
+      cursor: pointer;
+      font-family: var(--f-body);
+      font-weight: 500;
+      transition: all .2s;
+    }
+
+    .btn-danger:hover { background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.5); }
+
+    /* ══════════════════════════════════
+       TOAST
+    ══════════════════════════════════ */
+    .toast-wrap {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r);
+      padding: .7rem 1rem;
+      font-size: .83rem;
+      color: var(--d-text);
+      box-shadow: 0 8px 28px rgba(0,0,0,.45);
+      animation: toastIn .3s cubic-bezier(.22,1,.36,1);
+      max-width: 300px;
+      pointer-events: auto;
+    }
+
+    .toast.ok  { border-left: 3px solid var(--green); }
+    .toast.err { border-left: 3px solid var(--red); }
+    .toast.inf { border-left: 3px solid var(--gold-mid); }
+
+    @keyframes toastIn {
+      from { transform: translateX(120%); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    /* ══════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════ */
+    @media (max-width: 640px) {
+      .p-user-email { display: none; }
+      .file-grid    { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      .p-content    { padding: 1rem; }
+      .login-card   { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN VIEW
+══════════════════════════════════════════ -->
+<div id="loginView">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="assets/img/daydom_logo_full_dark_bg.png" alt="DayDom Performance Group" />
+      <span class="login-badge">Interner Zugang</span>
+    </div>
+
+    <h1 class="login-title">GBR Portal</h1>
+    <p class="login-sub">Nur für autorisierte Mitglieder</p>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="fEmail">E-Mail-Adresse</label>
+        <input type="email" id="fEmail" class="form-input"
+               placeholder="name@daydom.de" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="fPass">Passwort</label>
+        <input type="password" id="fPass" class="form-input"
+               placeholder="••••••••" autocomplete="current-password" required />
+      </div>
+      <button type="submit" id="loginBtn" class="btn-login">Einloggen</button>
+      <div class="login-error" id="loginErr"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PORTAL VIEW
+══════════════════════════════════════════ -->
+<div id="portalView" style="display:none; flex-direction:column; min-height:100vh;">
+
+  <!-- Header -->
+  <header class="p-header">
+    <div class="p-header-logo">
+      <img src="assets/img/daydom_logo_full_dark_bg.png" alt="DayDom" />
+      <div class="p-header-divider"></div>
+      <div class="p-header-label">
+        GBR Portal
+        <span>Dokumenten-Verwaltung</span>
+      </div>
+    </div>
+    <div class="p-header-right">
+      <div class="p-user-chip">
+        <div class="p-user-avatar" id="userAvatar">–</div>
+        <span class="p-user-email" id="userEmail"></span>
+      </div>
+      <button class="btn-logout" id="logoutBtn">Abmelden</button>
+    </div>
+  </header>
+
+  <!-- Tab navigation -->
+  <nav class="p-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="vertrage" role="tab">
+      <span class="t-icon">📄</span> Verträge
+    </button>
+    <button class="tab-btn" data-tab="belege" role="tab">
+      <span class="t-icon">🧾</span> Belege
+    </button>
+    <button class="tab-btn" data-tab="social-media" role="tab">
+      <span class="t-icon">📱</span> Social Media
+    </button>
+    <button class="tab-btn" data-tab="trading" role="tab">
+      <span class="t-icon">📈</span> Trading
+    </button>
+  </nav>
+
+  <!-- Content area -->
+  <main class="p-content">
+
+    <!-- Toolbar: breadcrumb + actions -->
+    <div class="file-toolbar">
+      <div class="breadcrumb" id="breadcrumb" aria-label="Pfad"></div>
+      <div class="toolbar-actions">
+        <button class="btn-action" id="newFolderBtn">📁 Neuer Ordner</button>
+        <label class="btn-action primary" style="cursor:pointer;" title="Dateien hochladen">
+          ⬆ Hochladen
+          <input type="file" id="fileInput" multiple style="display:none" aria-label="Dateien auswählen" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Dateien hochladen">
+      <div class="drop-icon">☁️</div>
+      <div class="drop-text">Dateien per Drag &amp; Drop hierher ziehen</div>
+      <div class="drop-sub">oder oben auf „Hochladen" klicken · PDF, JPG, PNG, XLSX, TXT und mehr</div>
+    </div>
+
+    <!-- Upload progress -->
+    <div class="upload-wrap" id="uploadWrap">
+      <div class="upload-label">
+        <span id="uploadLabel">Lade hoch…</span>
+        <span id="uploadPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- File grid -->
+    <div class="file-grid" id="fileGrid"></div>
+
+    <!-- Empty state -->
+    <div class="state-empty" id="stateEmpty">
+      <div class="state-empty-icon">🗂️</div>
+      <h3>Noch keine Dateien</h3>
+      <p>Lade Dateien hoch oder erstelle einen neuen Ordner.</p>
+    </div>
+
+    <!-- Loading state -->
+    <div class="state-loading" id="stateLoading">
+      <div class="spinner"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL: NEUER ORDNER
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="folderModal" role="dialog" aria-modal="true" aria-label="Neuer Ordner">
+  <div class="modal">
+    <button class="modal-x" id="closeFolderModal" aria-label="Schließen">✕</button>
+    <h2 class="modal-title">Neuer Ordner</h2>
+    <div class="form-group">
+      <label class="form-label" for="folderNameInput">Ordnername</label>
+      <input type="text" id="folderNameInput" class="form-input"
+             placeholder="z. B. Quartal 1 · GBR-Verträge · 2026" maxlength="80" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-action" id="cancelFolder">Abbrechen</button>
+      <button class="btn-action primary" id="confirmFolder">Erstellen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL: DATEI-VORSCHAU
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="previewModal" role="dialog" aria-modal="true">
+  <div class="modal preview-modal">
+    <button class="modal-x" id="closePreviewModal" aria-label="Schließen">✕</button>
+    <h2 class="modal-title" id="previewTitle" style="margin-bottom:1rem; padding-right:2rem;"></h2>
+    <div id="previewContent"></div>
+    <div class="modal-footer" style="margin-top:1rem;">
+      <button class="btn-action" id="downloadBtn">⬇ Herunterladen</button>
+      <button class="btn-danger" id="deleteFileBtn">🗑 Löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL: LÖSCHEN BESTÄTIGEN
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal confirm-modal">
+    <button class="modal-x" id="closeConfirmModal" aria-label="Schließen">✕</button>
+    <h2 class="modal-title" id="confirmTitle">Löschen bestätigen</h2>
+    <p class="confirm-msg" id="confirmMsg"></p>
+    <div class="modal-footer">
+      <button class="btn-action" id="cancelConfirm">Abbrechen</button>
+      <button class="btn-danger" id="doConfirm">Ja, löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- ══════════════════════════════════════════
+     APP SCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ════════════════════════════════════════════════
+   KONFIGURATION — nach Supabase-Setup ausfüllen
+   (Anleitung: siehe SETUP.md im Repo-Root)
+════════════════════════════════════════════════ */
+const SUPABASE_URL      = 'https://gymhfbnljbosqxqqzdik.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_XCtT7o-kMVYfvoehu26P2Q_esQAvVIY';
+const BUCKET            = 'portal-files';
+
+/* ── Supabase client ── */
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ── App state ── */
+let currentUser = null;
+let currentTab  = 'vertrage';
+let currentPath = '';        // relative sub-path within current tab
+let previewPath = null;      // full storage path of open preview
+let confirmCb   = null;      // pending confirm callback
+
+const TAB_LABEL = {
+  'vertrage':     'Verträge',
+  'belege':       'Belege',
+  'social-media': 'Social Media',
+  'trading':      'Trading',
+};
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) { currentUser = session.user; showPortal(); }
+
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      currentUser = session.user;
+      showPortal();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      showLogin();
+    }
+  });
+}
+
+/* ════════════════════════════════════════════════
+   AUTH
+════════════════════════════════════════════════ */
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn   = $('loginBtn');
+  const err   = $('loginErr');
+  const email = $('fEmail').value.trim();
+  const pass  = $('fPass').value;
+
+  btn.disabled    = true;
+  btn.textContent = 'Anmelden…';
+  err.style.display = 'none';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+  if (error) {
+    err.textContent   = 'Falsche E-Mail-Adresse oder falsches Passwort.';
+    err.style.display = 'block';
+    btn.disabled      = false;
+    btn.textContent   = 'Einloggen';
+  }
+});
+
+$('logoutBtn').addEventListener('click', () => sb.auth.signOut());
+
+/* ════════════════════════════════════════════════
+   VIEWS
+════════════════════════════════════════════════ */
+function showPortal() {
+  $('loginView').style.display  = 'none';
+  const pv = $('portalView');
+  pv.style.display = 'flex';
+
+  const email  = currentUser?.email || '';
+  const letter = email.charAt(0).toUpperCase() || '?';
+  $('userAvatar').textContent = letter;
+  $('userEmail').textContent  = email;
+
+  loadFiles();
+}
+
+function showLogin() {
+  $('portalView').style.display = 'none';
+  $('loginView').style.display  = 'flex';
+}
+
+/* ════════════════════════════════════════════════
+   TABS
+════════════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab  = btn.dataset.tab;
+    currentPath = '';
+    loadFiles();
+  });
+});
+
+/* ════════════════════════════════════════════════
+   FILE LOADING
+════════════════════════════════════════════════ */
+function storagePath(name) {
+  const parts = [currentTab, currentPath, name].filter(Boolean);
+  return parts.join('/');
+}
+
+async function loadFiles() {
+  setLoading(true);
+  renderBreadcrumb();
+
+  const listPath = storagePath('');
+  const { data, error } = await sb.storage
+    .from(BUCKET)
+    .list(listPath, { sortBy: { column: 'name', order: 'asc' } });
+
+  setLoading(false);
+
+  if (error) {
+    toast('Fehler beim Laden: ' + error.message, 'err');
+    return;
+  }
+
+  const items = (data || []).filter(i => i.name !== '.keep');
+  renderItems(items);
+}
+
+function renderItems(items) {
+  const grid = $('fileGrid');
+  grid.innerHTML = '';
+
+  const folders = items.filter(i => !i.id);
+  const files   = items.filter(i =>  i.id);
+
+  if (!items.length) {
+    $('stateEmpty').style.display = 'block';
+    grid.style.display = 'none';
+    return;
+  }
+
+  $('stateEmpty').style.display = 'none';
+  grid.style.display = 'grid';
+
+  folders.forEach(f => grid.appendChild(makeFolderEl(f)));
+  files.forEach(f   => grid.appendChild(makeFileEl(f)));
+}
+
+function fileIcon(name) {
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  return { pdf:'📑', png:'🖼️', jpg:'🖼️', jpeg:'🖼️', gif:'🖼️', webp:'🖼️', svg:'🖼️',
+           bmp:'🖼️', tiff:'🖼️', heic:'🖼️',
+           txt:'📝', md:'📝', rtf:'📝',
+           csv:'📊', xlsx:'📊', xls:'📊', ods:'📊',
+           doc:'📃', docx:'📃', ppt:'📊', pptx:'📊',
+           mp4:'🎬', mov:'🎬', avi:'🎬', mkv:'🎬',
+           mp3:'🎵', wav:'🎵', aac:'🎵', m4a:'🎵',
+           zip:'🗜️', rar:'🗜️', '7z':'🗜️',
+           js:'💻', ts:'💻', html:'💻', css:'💻', json:'💻',
+         }[ext] || '📄';
+}
+
+function fmtSize(b) {
+  if (!b) return '';
+  if (b < 1024)           return b + ' B';
+  if (b < 1024*1024)      return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(1) + ' MB';
+}
+
+function makeFolderEl(folder) {
+  const el = document.createElement('div');
+  el.className = 'f-item';
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', 'Ordner: ' + folder.name);
+  el.innerHTML = `
+    <div class="f-icon">📁</div>
+    <div class="f-name">${esc(folder.name)}</div>
+    <button class="f-del" title="Ordner löschen" aria-label="Ordner ${esc(folder.name)} löschen">✕</button>
+  `;
+  el.addEventListener('click', (e) => {
+    if (e.target.closest('.f-del')) return;
+    currentPath = currentPath ? currentPath + '/' + folder.name : folder.name;
+    loadFiles();
+  });
+  el.addEventListener('keydown', (e) => { if (e.key==='Enter') el.click(); });
+  el.querySelector('.f-del').addEventListener('click', (e) => {
+    e.stopPropagation();
+    confirmDelete(
+      `Ordner „${folder.name}" löschen?`,
+      `Der Ordner und alle enthaltenen Dateien werden unwiderruflich gelöscht.`,
+      () => deleteFolderItems(folder.name)
+    );
+  });
+  return el;
+}
+
+function makeFileEl(file) {
+  const el = document.createElement('div');
+  el.className = 'f-item';
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', 'Datei: ' + file.name);
+  el.innerHTML = `
+    <div class="f-icon">${fileIcon(file.name)}</div>
+    <div class="f-name">${esc(file.name)}</div>
+    <div class="f-meta">${fmtSize(file.metadata?.size)}</div>
+    <button class="f-del" title="Datei löschen" aria-label="Datei ${esc(file.name)} löschen">✕</button>
+  `;
+  el.addEventListener('click', (e) => {
+    if (e.target.closest('.f-del')) return;
+    openPreview(file);
+  });
+  el.addEventListener('keydown', (e) => { if (e.key==='Enter') el.click(); });
+  el.querySelector('.f-del').addEventListener('click', (e) => {
+    e.stopPropagation();
+    confirmDelete(
+      `Datei „${file.name}" löschen?`,
+      `Diese Datei wird unwiderruflich gelöscht.`,
+      () => deleteFile(storagePath(file.name))
+    );
+  });
+  return el;
+}
+
+/* ════════════════════════════════════════════════
+   BREADCRUMB
+════════════════════════════════════════════════ */
+function renderBreadcrumb() {
+  const bc    = $('breadcrumb');
+  const parts = currentPath ? currentPath.split('/') : [];
+  let html = `<span class="bc-item" data-path="" tabindex="0" role="button">${TAB_LABEL[currentTab]}</span>`;
+  let built = '';
+  parts.forEach((p, i) => {
+    built = built ? built + '/' + p : p;
+    const path = built;
+    const last = i === parts.length - 1;
+    html += `<span class="bc-sep" aria-hidden="true">›</span>
+      <span class="bc-item${last ? ' active' : ''}" data-path="${path}" tabindex="${last?-1:0}" role="${last?'':'button'}">${esc(p)}</span>`;
+  });
+  bc.innerHTML = html;
+  bc.querySelectorAll('.bc-item:not(.active)').forEach(el => {
+    el.addEventListener('click',  () => { currentPath = el.dataset.path; loadFiles(); });
+    el.addEventListener('keydown', e => { if (e.key==='Enter') el.click(); });
+  });
+}
+
+/* ════════════════════════════════════════════════
+   UPLOAD
+════════════════════════════════════════════════ */
+$('fileInput').addEventListener('change', e => {
+  if (e.target.files.length) uploadFiles([...e.target.files]);
+  e.target.value = '';
+});
+
+const dropZone = $('dropZone');
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const files = [...e.dataTransfer.files];
+  if (files.length) uploadFiles(files);
+});
+dropZone.addEventListener('click',   () => $('fileInput').click());
+dropZone.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') $('fileInput').click(); });
+
+async function uploadFiles(files) {
+  const wrap = $('uploadWrap');
+  const bar  = $('progressBar');
+  const lbl  = $('uploadLabel');
+  const pct  = $('uploadPct');
+
+  wrap.style.display = 'block';
+  let ok = 0, fail = 0;
+
+  for (let i = 0; i < files.length; i++) {
+    const f    = files[i];
+    const prog = Math.round((i / files.length) * 100);
+    lbl.textContent = `Hochladen (${i+1}/${files.length}): ${f.name}`;
+    pct.textContent = prog + '%';
+    bar.style.width = prog + '%';
+
+    const path = storagePath(f.name);
+    const { error } = await sb.storage.from(BUCKET).upload(path, f, { upsert: true });
+    error ? fail++ : ok++;
+  }
+
+  bar.style.width = '100%';
+  pct.textContent = '100%';
+  setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 900);
+
+  if (ok)   toast(`${ok} Datei${ok>1?'en':''} hochgeladen.`, 'ok');
+  if (fail) toast(`${fail} Fehler beim Hochladen.`, 'err');
+  loadFiles();
+}
+
+/* ════════════════════════════════════════════════
+   FOLDER CREATION
+════════════════════════════════════════════════ */
+$('newFolderBtn').addEventListener('click', () => {
+  $('folderNameInput').value = '';
+  openModal('folderModal');
+  setTimeout(() => $('folderNameInput').focus(), 80);
+});
+$('closeFolderModal').addEventListener('click', () => closeModal('folderModal'));
+$('cancelFolder').addEventListener('click',     () => closeModal('folderModal'));
+$('confirmFolder').addEventListener('click',    createFolder);
+$('folderNameInput').addEventListener('keydown', e => { if (e.key==='Enter') createFolder(); });
+
+async function createFolder() {
+  const raw  = $('folderNameInput').value.trim();
+  if (!raw)  return;
+  const name = raw.replace(/[\/\\?%*:|"<>]/g, '-');
+  const path = storagePath(name + '/.keep');
+
+  const { error } = await sb.storage.from(BUCKET)
+    .upload(path, new Blob(['']), { contentType:'text/plain', upsert:true });
+
+  closeModal('folderModal');
+  if (error) toast('Ordner konnte nicht erstellt werden.', 'err');
+  else { toast(`Ordner „${name}" erstellt.`, 'ok'); loadFiles(); }
+}
+
+/* ════════════════════════════════════════════════
+   DELETE
+════════════════════════════════════════════════ */
+async function deleteFile(path) {
+  const { error } = await sb.storage.from(BUCKET).remove([path]);
+  if (error) toast('Fehler beim Löschen.', 'err');
+  else {
+    toast('Datei gelöscht.', 'ok');
+    closeModal('previewModal');
+    previewPath = null;
+    loadFiles();
+  }
+}
+
+async function deleteFolderItems(name) {
+  const folderPath = storagePath(name);
+  const { data } = await sb.storage.from(BUCKET).list(folderPath);
+  const paths = (data || []).map(f => folderPath + '/' + f.name);
+  if (paths.length) await sb.storage.from(BUCKET).remove(paths);
+  toast(`Ordner „${name}" gelöscht.`, 'ok');
+  loadFiles();
+}
+
+/* ════════════════════════════════════════════════
+   CONFIRM DIALOG
+════════════════════════════════════════════════ */
+function confirmDelete(title, msg, cb) {
+  $('confirmTitle').textContent = title;
+  $('confirmMsg').textContent   = msg;
+  confirmCb = cb;
+  openModal('confirmModal');
+}
+
+$('doConfirm').addEventListener('click', () => {
+  closeModal('confirmModal');
+  if (confirmCb) { confirmCb(); confirmCb = null; }
+});
+$('cancelConfirm').addEventListener('click',   () => closeModal('confirmModal'));
+$('closeConfirmModal').addEventListener('click',() => closeModal('confirmModal'));
+
+/* ════════════════════════════════════════════════
+   PREVIEW
+════════════════════════════════════════════════ */
+async function openPreview(file) {
+  previewPath = storagePath(file.name);
+  $('previewTitle').textContent = file.name;
+  $('previewContent').innerHTML = '<div class="state-loading" style="display:block;"><div class="spinner"></div></div>';
+  openModal('previewModal');
+
+  const { data, error } = await sb.storage
+    .from(BUCKET).createSignedUrl(previewPath, 3600);
+
+  if (error) {
+    $('previewContent').innerHTML = '<p style="color:var(--d-text3);padding:1rem;">Vorschau nicht verfügbar.</p>';
+    return;
+  }
+
+  const url = data.signedUrl;
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  const con = $('previewContent');
+
+  if (['png','jpg','jpeg','gif','webp','svg','bmp','tiff','heic'].includes(ext)) {
+    con.innerHTML = `<img class="preview-img" src="${url}" alt="${esc(file.name)}" loading="lazy" />`;
+  } else if (ext === 'pdf') {
+    con.innerHTML = `<iframe class="preview-pdf" src="${url}" title="${esc(file.name)}"></iframe>`;
+  } else if (['txt','md','csv','rtf','json','js','ts','html','css'].includes(ext)) {
+    try {
+      const res  = await fetch(url);
+      const text = await res.text();
+      con.innerHTML = `<div class="preview-text">${esc(text)}</div>`;
+    } catch {
+      con.innerHTML = '<p style="color:var(--d-text3);padding:1rem;">Textvorschau nicht verfügbar.</p>';
+    }
+  } else {
+    con.innerHTML = `
+      <div class="preview-unsupported">
+        <div class="big-icon">${fileIcon(file.name)}</div>
+        <p>Keine Vorschau für diesen Dateityp verfügbar.</p>
+        <p>Bitte lade die Datei herunter, um sie zu öffnen.</p>
+      </div>`;
+  }
+}
+
+$('closePreviewModal').addEventListener('click', () => {
+  closeModal('previewModal');
+  previewPath = null;
+});
+
+$('downloadBtn').addEventListener('click', async () => {
+  if (!previewPath) return;
+  const { data } = await sb.storage.from(BUCKET).createSignedUrl(previewPath, 60);
+  if (data?.signedUrl) {
+    const a = document.createElement('a');
+    a.href     = data.signedUrl;
+    a.download = previewPath.split('/').pop();
+    a.click();
+  }
+});
+
+$('deleteFileBtn').addEventListener('click', () => {
+  if (!previewPath) return;
+  const name = previewPath.split('/').pop();
+  confirmDelete(
+    `Datei „${name}" löschen?`,
+    'Diese Datei wird unwiderruflich gelöscht.',
+    () => deleteFile(previewPath)
+  );
+});
+
+/* ════════════════════════════════════════════════
+   MODAL HELPERS
+════════════════════════════════════════════════ */
+function openModal(id)  { $(id).classList.add('open');    document.body.style.overflow='hidden'; }
+function closeModal(id) { $(id).classList.remove('open'); document.body.style.overflow=''; }
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) { o.classList.remove('open'); document.body.style.overflow=''; }});
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+});
+
+/* ════════════════════════════════════════════════
+   LOADING STATE
+════════════════════════════════════════════════ */
+function setLoading(on) {
+  $('stateLoading').style.display = on ? 'block' : 'none';
+  $('fileGrid').style.display     = on ? 'none'  : 'grid';
+  if (on) $('stateEmpty').style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════ */
+function toast(msg, type='ok') {
+  const el = document.createElement('div');
+  el.className   = `toast ${type}`;
+  el.textContent = msg;
+  $('toastWrap').appendChild(el);
+  setTimeout(() => el.remove(), 4200);
+}
+
+/* ════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════ */
+function $(id) { return document.getElementById(id); }
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ════════════════════════════════════════════════
+   START
+════════════════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>
