@@ -178,7 +178,7 @@
   <header>
     <h1>DayDom Performance Group</h1>
     <p class="sub">Kontenliste &amp; Trading-Split-Rechner &middot; Anlage zu § 11 Abs. 1 i.V.m. § 10 Abs. 1a Gesellschaftsvertrag</p>
-    <span class="badge">DIEFKE · SIVASUNTHARARAJAN · PETERSEN · BENOUAHI GbR</span>
+    <span class="badge">DIEFKE · SIVASUNTHARARAJAN · BENOUAHI GbR</span>
   </header>
 
   <!-- KONTO HINZUFÜGEN -->
@@ -193,8 +193,8 @@
       <div>
         <label for="typ">Eigen oder Firma</label>
         <select id="typ">
-          <option value="eigen">Eigen — 55 % Inhaber / je 15 %</option>
-          <option value="firma">Firma — alle je 25 %</option>
+          <option value="eigen">Eigen — 55 % Inhaber / je 22,5 %</option>
+          <option value="firma">Firma — alle je 33,3 %</option>
         </select>
       </div>
       <div>
@@ -226,7 +226,7 @@
         <thead>
           <tr>
             <th>Inhaber</th><th>Typ</th><th class="num">Größe</th><th>Propfirma</th>
-            <th class="num">Fabian</th><th class="num">Shintu</th><th class="num">Michael</th><th class="num">Abdel</th>
+            <th class="num">Fabian</th><th class="num">Shintu</th><th class="num">Abdel</th>
             <th class="no-print"></th>
           </tr>
         </thead>
@@ -243,13 +243,13 @@
   <!-- PAYOUT-RECHNER -->
   <div class="card no-print">
     <h2>Payout-Split-Rechner</h2>
-    <p class="sub">Konkreten Auszahlungsbetrag auf die vier Gesellschafter aufteilen.</p>
+    <p class="sub">Konkreten Auszahlungsbetrag auf die drei Gesellschafter aufteilen.</p>
     <div class="grid">
       <div>
         <label for="calc-typ">Kontoart</label>
         <select id="calc-typ" onchange="calc()">
-          <option value="eigen">Eigen — 55 / je 15</option>
-          <option value="firma">Firma — je 25</option>
+          <option value="eigen">Eigen — 55 / je 22,5</option>
+          <option value="firma">Firma — je 33,3</option>
         </select>
       </div>
       <div>
@@ -271,8 +271,8 @@
   <div class="card legend">
     <b>Verteilungsschlüssel (§ 10 Abs. 1a)</b>
     <table>
-      <tr><td><span class="pill eigen">EIGEN</span></td><td>Privates / eigenes Konto, in der Firma getradet</td><td><b>55 %</b> aktiver Trader · <b>je 15 %</b> an die übrigen drei (§ 10 Abs. 1a bb, § 11 Abs. 5)</td></tr>
-      <tr><td><span class="pill firma">FIRMA</span></td><td>Firmen-Propfirm-Konto (für Rechnung der GbR)</td><td><b>je 25 %</b> auf alle vier (§ 10 Abs. 1a aa)</td></tr>
+      <tr><td><span class="pill eigen">EIGEN</span></td><td>Privates / eigenes Konto, in der Firma getradet</td><td><b>55 %</b> aktiver Trader · <b>je 22,5 %</b> an die übrigen zwei (§ 10 Abs. 1a bb, § 11 Abs. 5)</td></tr>
+      <tr><td><span class="pill firma">FIRMA</span></td><td>Firmen-Propfirm-Konto (für Rechnung der GbR)</td><td><b>je 33,3 %</b> auf alle drei (§ 10 Abs. 1a aa)</td></tr>
     </table>
   </div>
 
@@ -332,18 +332,24 @@ async function changePin(newPin) {
 const FOUNDERS = [
   {id:'fd', name:'Fabian Diefke',            short:'Fabian'},
   {id:'ss', name:'Shintu Sivasunthararajan', short:'Shintu'},
-  {id:'mp', name:'Michael Petersen',         short:'Michael'},
   {id:'ab', name:'Abdelillah Benouahi',      short:'Abdel'},
 ];
 const KEY = 'daydom_konten';
 let konten = JSON.parse(localStorage.getItem(KEY) || '[]');
 
-// Verteilung: gibt {founderId: prozent} zurück
+// Verteilung: gibt {founderId: prozent} zurück (exakte Brüche, nicht gerundet)
+// FIRMA: zu gleichen Teilen (je 1/n). EIGEN: 55 % aktiver Trader, Rest gleich auf die übrigen.
 function splitFor(typ, ownerId){
   const s = {};
-  FOUNDERS.forEach(f => s[f.id] = (typ === 'firma') ? 25 : (f.id === ownerId ? 55 : 15));
+  const n = FOUNDERS.length;
+  FOUNDERS.forEach(f => s[f.id] = (typ === 'firma')
+    ? 100 / n
+    : (f.id === ownerId ? 55 : 45 / (n - 1)));
   return s;
 }
+
+// Prozent-Anzeige: max. 1 Nachkommastelle, deutsche Notation (z. B. 33,3 / 22,5 / 55)
+function fmtPct(x){ return (Math.round(x * 10) / 10).toLocaleString('de-DE'); }
 
 // Dropdowns füllen
 function fillFounderSelect(el){
@@ -360,10 +366,10 @@ function updatePreview(){
   pill.className = 'pill ' + typ;
   pill.textContent = typ.toUpperCase();
   document.getElementById('pv-text').textContent = typ === 'firma'
-    ? 'Firmen-Propfirm-Konto → alle je 25 %'
-    : 'Eigenes Konto → 55 % Inhaber, je 15 % an die anderen drei';
+    ? 'Firmen-Propfirm-Konto → alle je 33,3 %'
+    : 'Eigenes Konto → 55 % Inhaber, je 22,5 % an die anderen zwei';
   document.getElementById('pv-chips').innerHTML = FOUNDERS.map(f =>
-    `<span class="chip">${f.short} <b>${s[f.id]} %</b></span>`).join('');
+    `<span class="chip">${f.short} <b>${fmtPct(s[f.id])} %</b></span>`).join('');
 }
 ['typ','inhaber'].forEach(id => document.getElementById(id).addEventListener('change', updatePreview));
 
@@ -372,7 +378,7 @@ function fmtSize(k){ return k.groesse ? (Number(k.groesse).toLocaleString('de-DE
 function render(){
   const tb = document.getElementById('tbody');
   if(!konten.length){
-    tb.innerHTML = `<tr><td colspan="9" class="empty">Noch keine Konten eingetragen.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8" class="empty">Noch keine Konten eingetragen.</td></tr>`;
     save(); return;
   }
   tb.innerHTML = konten.map((k,i) => {
@@ -383,7 +389,7 @@ function render(){
       <td><span class="pill ${k.typ}">${k.typ.toUpperCase()}</span></td>
       <td class="num">${fmtSize(k)}</td>
       <td>${k.propfirma || '—'}</td>
-      ${FOUNDERS.map(f=>`<td class="num">${s[f.id]} %</td>`).join('')}
+      ${FOUNDERS.map(f=>`<td class="num">${fmtPct(s[f.id])} %</td>`).join('')}
       <td class="no-print"><button class="del" title="löschen" onclick="del(${i})">×</button></td>
     </tr>`;
   }).join('');
@@ -412,7 +418,7 @@ function exportCSV(){
   const rows = konten.map(k=>{
     const s = splitFor(k.typ,k.inhaber);
     const owner = FOUNDERS.find(f=>f.id===k.inhaber)?.name || '';
-    return [owner,k.typ,k.groesse,k.waehrung,k.propfirma,...FOUNDERS.map(f=>s[f.id])];
+    return [owner,k.typ,k.groesse,k.waehrung,k.propfirma,...FOUNDERS.map(f=>fmtPct(s[f.id]))];
   });
   const csv = [head,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
   const a = document.createElement('a');
@@ -430,7 +436,7 @@ function calc(){
   const s = splitFor(typ, owner);
   document.getElementById('calc-out').innerHTML = FOUNDERS.map(f=>{
     const amt = (payout * s[f.id] / 100);
-    return `<div class="line"><span>${f.name} <small>(${s[f.id]} %)</small></span><b>${amt.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})} ${cur}</b></div>`;
+    return `<div class="line"><span>${f.name} <small>(${fmtPct(s[f.id])} %)</small></span><b>${amt.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})} ${cur}</b></div>`;
   }).join('') + `<div class="line" style="border:none"><span><b>Summe</b></span><b>${payout.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})} ${cur}</b></div>`;
 }
 

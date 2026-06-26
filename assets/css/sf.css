@@ -662,12 +662,12 @@ body {
 .about-val { font-family: var(--f-mono); font-size: .7rem; color: var(--d-text2); text-align: right; }
 
 /* ── TEAM — DARK ── */
-.team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 
 .founder-card {
   background: var(--navy-card); border: 1px solid var(--navy-mid);
   border-radius: var(--r); padding: 2.5rem;
-  display: flex; gap: 2rem; align-items: flex-start;
+  display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start;
   position: relative; overflow: hidden;
   transition: border-color .3s, transform .3s, box-shadow .3s;
 }
