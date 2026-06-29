@@ -3,8 +3,8 @@
 //  Konfiguration: SUPABASE_URL und SUPABASE_ANON_KEY unten anpassen
 // ═══════════════════════════════════════════════════════════
 
-const SUPABASE_URL  = 'https://DEIN-PROJEKT.supabase.co';
-const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
+const SUPABASE_URL  = 'https://gymhfbnljbosqxqqzdik.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_XCtT7o-kMVYfvoehu26P2Q_esQAvVIY';
 
 let _supabase = null;
 
