@@ -52,6 +52,18 @@ async function requireAuth() {
   return session;
 }
 
+async function requireAdmin() {
+  const session = await requireAuth();
+  if (!session) return null;
+  const user = session.user;
+  const role = (user.app_metadata && user.app_metadata.role) || '';
+  if (role !== 'admin') {
+    window.location.href = '/mitglieder/';
+    return null;
+  }
+  return session;
+}
+
 async function redirectIfLoggedIn() {
   const session = await getSession();
   if (session) {
