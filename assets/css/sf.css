@@ -888,10 +888,11 @@ footer.sf-footer::before {
 }
 .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1.25rem; }
 .stat-item2 { display: flex; flex-direction: column; gap: .2rem; }
-.stat-label2 { font-family: var(--f-mono); font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; color: var(--d-text3); }
-.stat-value2 { font-family: var(--f-mono); font-size: .8rem; color: var(--d-text); }
-.featured .stat-value2 { color: var(--d-text); }
-.card-divider { width: 100%; height: 1px; background: linear-gradient(90deg, var(--d-border), transparent); margin: 1rem 0; }
+.stat-label2 { font-family: var(--f-mono); font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; color: var(--l-text3); }
+.stat-value2 { font-family: var(--f-mono); font-size: .8rem; color: var(--navy); font-weight: 600; }
+.featured .stat-label2 { color: var(--d-text3); }
+.featured .stat-value2 { color: var(--d-text); font-weight: 600; }
+.card-divider { width: 100%; height: 1px; background: linear-gradient(90deg, var(--blue-300), transparent); margin: 1rem 0; }
 .featured .card-divider { background: linear-gradient(90deg, rgba(201,168,76,.2), transparent); }
 .card-note { font-size: .8rem; color: var(--l-text2); line-height: 1.65; font-weight: 300; flex: 1; margin-bottom: 1.5rem; }
 .featured .card-note { color: rgba(240,244,255,.8); }
@@ -900,11 +901,11 @@ footer.sf-footer::before {
 .card-payout {
   display: inline-flex; align-items: center; gap: .4rem;
   font-family: var(--f-mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--d-text2); background: rgba(30,46,74,.6);
-  border: 1px solid var(--d-border); border-radius: 4px;
+  color: var(--l-text2); background: rgba(13,31,60,.06);
+  border: 1px solid var(--blue-300); border-radius: 4px;
   padding: .25rem .6rem; margin-bottom: 1.25rem; align-self: flex-start;
 }
-.card-payout::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--d-text3); }
+.card-payout::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--l-text3); }
 .featured .card-payout { background: rgba(201,168,76,.07); border-color: rgba(201,168,76,.2); color: var(--gold-mid); }
 .featured .card-payout::before { background: var(--gold-mid); }
 
