@@ -213,13 +213,6 @@
     .lesson-item.active .lesson-icon.play { color: var(--accent); }
     .lesson-icon.check { color: var(--accent); }
 
-    .lesson-duration {
-      margin-left: auto;
-      font-family: var(--f-mono);
-      font-size: .58rem;
-      color: var(--text3);
-    }
-
     /* Content area */
     .content {
       padding: 2.5rem clamp(1.5rem, 3vw, 3rem);
@@ -249,47 +242,7 @@
       display: flex; align-items: center; gap: 1rem;
     }
 
-    /* Video player placeholder */
-    .video-container {
-      aspect-ratio: 16/9;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 2rem;
-    }
-    .video-container::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(240,192,64,.06) 0%, transparent 60%);
-    }
-    .video-placeholder {
-      text-align: center;
-      position: relative; z-index: 1;
-    }
-    .video-placeholder-icon {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: rgba(240,192,64,.1);
-      border: 1px solid rgba(240,192,64,.3);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-    }
-    .video-placeholder-icon svg { width: 24px; height: 24px; color: var(--accent); margin-left: 4px; }
-    .video-placeholder-text {
-      font-size: .85rem;
-      color: var(--text2);
-    }
-    .video-placeholder-hint {
-      font-size: .72rem;
-      color: var(--text3);
-      margin-top: .35rem;
-    }
-
-    /* Lesson description */
+    /* Lesson content */
     .lesson-content {
       background: var(--card);
       border: 1px solid var(--border);
@@ -430,20 +383,9 @@
       <div class="content-meta" id="current-lesson-meta"></div>
     </div>
 
-    <div class="video-container" id="video-container">
-      <div class="video-placeholder">
-        <div class="video-placeholder-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="video-placeholder-text">Kursinhalt wird geladen</div>
-        <div class="video-placeholder-hint">Wähle eine Lektion aus dem Menü links</div>
-      </div>
-    </div>
-
     <div class="lesson-content" id="lesson-description">
       <h3>Willkommen zum DayDom Trading Kurs</h3>
-      <p>Wähle links ein Modul und eine Lektion aus, um zu starten. Der Kurs ist in aufeinander aufbauende Module gegliedert — beginne am besten mit Modul 01.</p>
-      <p>Die Kurs-Inhalte werden in Kürze hier hinterlegt. Du wirst benachrichtigt, sobald neue Lektionen verfügbar sind.</p>
+      <p>Wähle links ein Modul und eine Lektion aus, um zu starten. Der Kurs ist in 5 aufeinander aufbauende Module gegliedert — beginne am besten mit Modul 01.</p>
     </div>
 
     <div class="lesson-nav" id="lesson-nav" style="display:none">
@@ -468,56 +410,402 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/assets/js/supabase-auth.js"></script>
 <script>
-  // Course structure — placeholder modules
   const COURSE = [
     {
       id: 'm1',
       title: 'Grundlagen',
       lessons: [
-        { id: 'l1-1', title: 'Was ist Trading?', duration: '12:00', description: 'Eine Einführung in die Welt des Tradings — was es ist, wie es funktioniert und warum es eine Fähigkeit ist, die jeder lernen kann.' },
-        { id: 'l1-2', title: 'Märkte verstehen', duration: '15:00', description: 'Die wichtigsten Märkte im Überblick: Forex, Indizes, Krypto und Rohstoffe. Wo und wann du traden kannst.' },
-        { id: 'l1-3', title: 'Broker & Plattformen', duration: '10:00', description: 'Welchen Broker du brauchst, welche Plattform für den Start am besten ist und worauf du achten musst.' },
-        { id: 'l1-4', title: 'Dein erstes Setup', duration: '08:00', description: 'Chart öffnen, Zeitrahmen einstellen, erste Indikatoren — dein Trading-Arbeitsplatz einrichten.' },
+        {
+          id: 'l1-1', title: 'Was ist Trading?', duration: '12:00',
+          videoUrl: '',
+          content: '<h3>Was ist Trading?</h3>' +
+            '<p>Trading bedeutet, Finanzinstrumente wie Währungspaare, Aktienindizes oder Rohstoffe über einen begrenzten Zeitraum zu kaufen und zu verkaufen — mit dem Ziel, von Preisbewegungen zu profitieren. Im Gegensatz zum klassischen Investieren, bei dem du Vermögenswerte über Jahre hältst, geht es beim Trading um kürzere Zeiträume: von wenigen Minuten (Scalping) über Stunden (Daytrading) bis hin zu mehreren Tagen (Swingtrading).</p>' +
+            '<h3>Wie funktioniert ein Trade?</h3>' +
+            '<p>Ein Trade besteht immer aus zwei Aktionen: dem <strong>Einstieg</strong> (Entry) und dem <strong>Ausstieg</strong> (Exit). Dein Gewinn oder Verlust ergibt sich aus der Differenz zwischen diesen beiden Preisen, multipliziert mit deiner Positionsgröße.</p>' +
+            '<p><strong>Long-Trade (Kaufen):</strong> Du kaufst ein Asset, weil du erwartest, dass der Preis steigt. Du verkaufst es später zu einem höheren Preis.</p>' +
+            '<p><strong>Short-Trade (Verkaufen):</strong> Du verkaufst ein Asset, das du nicht besitzt (Leerverkauf), weil du erwartest, dass der Preis fällt. Du kaufst es später günstiger zurück.</p>' +
+            '<h3>Warum Trading?</h3>' +
+            '<p>Trading bietet einige einzigartige Vorteile: Du kannst von steigenden <em>und</em> fallenden Märkten profitieren. Du brauchst kein großes Startkapital (besonders mit Prop Firms). Du bist ortsunabhängig. Und du bist dein eigener Chef. Aber — und das ist entscheidend — Trading ist kein Weg zum schnellen Reichtum. Es ist ein Handwerk, das systematisches Lernen, Disziplin und Geduld erfordert.</p>' +
+            '<h3>Die Realität des Tradings</h3>' +
+            '<p>Statistisch verlieren über 80% der Retail-Trader Geld. Warum? Weil sie ohne Plan, ohne Risikomanagement und ohne echte Ausbildung starten. Genau deshalb gibt es diesen Kurs: Damit du zu den 20% gehörst, die es richtig machen.</p>'
+        },
+        {
+          id: 'l1-2', title: 'Märkte verstehen', duration: '15:00',
+          videoUrl: '',
+          content: '<h3>Die wichtigsten Märkte</h3>' +
+            '<p>Als Trader hast du Zugang zu verschiedenen Märkten. Jeder Markt hat eigene Eigenschaften, Handelszeiten und Volatilitäten. Hier die wichtigsten:</p>' +
+            '<h3>Forex (Devisenmarkt)</h3>' +
+            '<p>Der größte Finanzmarkt der Welt mit einem täglichen Volumen von über 6 Billionen Dollar. Du tradest Währungspaare wie EUR/USD, GBP/JPY oder USD/CHF. Der Forex-Markt ist 24 Stunden am Tag geöffnet (Mo-Fr) und bietet hohe Liquidität und niedrige Spreads.</p>' +
+            '<p><strong>Hauptpaare (Majors):</strong> EUR/USD, GBP/USD, USD/JPY, USD/CHF — die liquidesten Paare mit den niedrigsten Kosten.</p>' +
+            '<p><strong>Nebenpaare (Minors):</strong> EUR/GBP, AUD/NZD, GBP/JPY — weniger Volumen, aber oft gute Setups.</p>' +
+            '<p><strong>Exotische Paare:</strong> USD/TRY, EUR/ZAR — hohe Volatilität, hohe Spreads, nur für Erfahrene.</p>' +
+            '<h3>Indizes</h3>' +
+            '<p>Ein Index bildet die Performance eines Aktienmarktes ab. Die beliebtesten zum Traden sind der <strong>US30</strong> (Dow Jones), <strong>NAS100</strong> (Nasdaq), <strong>SPX500</strong> (S&P 500) und der <strong>GER40</strong> (DAX). Indizes bewegen sich oft in klaren Trends und eignen sich gut für technische Analyse.</p>' +
+            '<h3>Rohstoffe</h3>' +
+            '<p><strong>Gold (XAU/USD)</strong> ist einer der meistgetradeten Rohstoffe — ein sicherer Hafen in unsicheren Zeiten. <strong>Öl (WTI/Brent)</strong> reagiert stark auf geopolitische Ereignisse. Beide bieten große Moves und damit Chancen für Trader.</p>' +
+            '<h3>Handelszeiten (Sessions)</h3>' +
+            '<p><strong>Sydney-Session:</strong> 22:00 – 07:00 MEZ — geringe Volatilität.</p>' +
+            '<p><strong>Tokyo-Session:</strong> 00:00 – 09:00 MEZ — JPY-Paare werden aktiver.</p>' +
+            '<p><strong>London-Session:</strong> 08:00 – 17:00 MEZ — die aktivste Session, besonders für Forex.</p>' +
+            '<p><strong>New-York-Session:</strong> 13:00 – 22:00 MEZ — hohe Volatilität, vor allem in der Überlappung mit London (13:00-17:00).</p>' +
+            '<p>Die <strong>London-New-York Überlappung</strong> (13:00–17:00 MEZ) ist die beste Zeit zum Traden — hier passieren die größten Moves.</p>'
+        },
+        {
+          id: 'l1-3', title: 'Broker & Plattformen', duration: '10:00',
+          videoUrl: '',
+          content: '<h3>Den richtigen Broker wählen</h3>' +
+            '<p>Dein Broker ist dein Zugang zu den Märkten. Er führt deine Orders aus und stellt dir die Handelsplattform zur Verfügung. Die Wahl des richtigen Brokers ist wichtig — aber kein Grund, sich wochenlang den Kopf zu zerbrechen.</p>' +
+            '<h3>Worauf du achten musst</h3>' +
+            '<p><strong>Regulierung:</strong> Der Broker sollte von einer seriösen Behörde reguliert sein (FCA, CySEC, BaFin, ASIC). Das schützt dein Kapital.</p>' +
+            '<p><strong>Spreads & Kommissionen:</strong> Je niedriger, desto besser. Achte auf die Gesamtkosten pro Trade, nicht nur den Spread.</p>' +
+            '<p><strong>Ausführungsgeschwindigkeit:</strong> Deine Orders sollten in Millisekunden ausgeführt werden — Slippage kann Geld kosten.</p>' +
+            '<p><strong>Hebel (Leverage):</strong> In der EU für Retail-Kunden auf 1:30 begrenzt. Bei Prop Firms gelten andere Regeln.</p>' +
+            '<p><strong>Plattform:</strong> Unterstützt der Broker die Plattform, die du nutzen willst?</p>' +
+            '<h3>Handelsplattformen</h3>' +
+            '<p><strong>MetaTrader 4 (MT4):</strong> Der Klassiker. Stabil, bewährt, riesige Community. Perfekt für Forex-Trading. Etwas veraltet im Design, aber funktional top.</p>' +
+            '<p><strong>MetaTrader 5 (MT5):</strong> Die modernere Version mit mehr Timeframes, mehr Ordertypen und einem besseren Backtesting-Tool.</p>' +
+            '<p><strong>TradingView:</strong> Die beste Plattform für Chartanalyse. Kostenlos nutzbar, webbasiert, Social-Features. Viele Broker bieten mittlerweile TradingView-Integration an.</p>' +
+            '<p><strong>cTrader:</strong> Modern, schnell, transparente Ausführung. Besonders beliebt bei Prop Firms.</p>' +
+            '<p>Für den Start empfehlen wir <strong>TradingView für die Analyse</strong> und <strong>MT4/MT5 oder cTrader für die Ausführung</strong>.</p>'
+        },
+        {
+          id: 'l1-4', title: 'Dein erstes Setup', duration: '08:00',
+          videoUrl: '',
+          content: '<h3>Deinen Arbeitsplatz einrichten</h3>' +
+            '<p>Bevor du den ersten Trade setzt, brauchst du ein sauberes Chart-Setup. Weniger ist mehr — zu viele Indikatoren und Zeichnungen machen den Chart unlesbar.</p>' +
+            '<h3>Chart konfigurieren</h3>' +
+            '<p><strong>Charttyp:</strong> Verwende <strong>Candlestick-Charts</strong>. Sie zeigen dir auf einen Blick den Eröffnungs-, Schluss-, Höchst- und Tiefstkurs jeder Periode.</p>' +
+            '<p><strong>Farbschema:</strong> Grüne/weiße Kerzen für steigende Preise, rote/schwarze für fallende. Wähle einen dunklen Hintergrund — schont die Augen bei langen Sessions.</p>' +
+            '<p><strong>Zeitrahmen (Timeframes):</strong> Starte mit dem <strong>H4</strong> (4-Stunden) und dem <strong>H1</strong> (1-Stunde) Chart. Der H4 gibt dir den Überblick, der H1 zeigt dir die Details für den Entry.</p>' +
+            '<h3>Basis-Indikatoren</h3>' +
+            '<p>Für den Anfang brauchst du maximal 2-3 Indikatoren:</p>' +
+            '<p><strong>EMA 20 und EMA 50:</strong> Zwei gleitende Durchschnitte, die dir den aktuellen Trend anzeigen. Preis über beiden EMAs = Aufwärtstrend. Preis unter beiden = Abwärtstrend.</p>' +
+            '<p><strong>Volumen (optional):</strong> Zeigt dir, ob eine Preisbewegung von echtem Interesse getragen wird oder ob sie auf dünnem Eis steht.</p>' +
+            '<h3>Dein Trading-Routine</h3>' +
+            '<p>Setze dir feste Zeiten: Zum Beispiel morgens eine 15-minütige Marktanalyse (Top-Down: Daily → H4 → H1), dann Alerts setzen und den Markt beobachten. Trading soll nicht dein ganzes Leben einnehmen — sondern ein kontrollierter, professioneller Prozess sein.</p>'
+        },
       ]
     },
     {
       id: 'm2',
       title: 'Chartanalyse',
       lessons: [
-        { id: 'l2-1', title: 'Candlesticks lesen', duration: '14:00', description: 'Die Sprache der Kerzen verstehen — Doji, Engulfing, Hammer und Co. Was dir jede einzelne Kerze sagt.' },
-        { id: 'l2-2', title: 'Support & Resistance', duration: '18:00', description: 'Unterstützungs- und Widerstandszonen erkennen und richtig einzeichnen — das Fundament jeder Analyse.' },
-        { id: 'l2-3', title: 'Trendlinien & Struktur', duration: '16:00', description: 'Trends erkennen, Marktstruktur verstehen und den Kontext für deine Trades setzen.' },
-        { id: 'l2-4', title: 'Indikatoren sinnvoll nutzen', duration: '13:00', description: 'EMA, RSI, MACD — welche Indikatoren wirklich helfen und wie du sie richtig einsetzt (ohne Overload).' },
+        {
+          id: 'l2-1', title: 'Candlesticks lesen', duration: '14:00',
+          videoUrl: '',
+          content: '<h3>Die Sprache der Kerzen</h3>' +
+            '<p>Jede Candlestick erzählt dir eine Geschichte über den Kampf zwischen Käufern und Verkäufern in einem bestimmten Zeitraum. Lerne diese Sprache, und du kannst den Markt lesen wie ein Buch.</p>' +
+            '<h3>Aufbau einer Candlestick</h3>' +
+            '<p>Jede Kerze hat vier Datenpunkte: <strong>Open</strong> (Eröffnung), <strong>Close</strong> (Schluss), <strong>High</strong> (Hoch) und <strong>Low</strong> (Tief). Der Bereich zwischen Open und Close bildet den <strong>Body</strong> (Körper). Die Linien über und unter dem Body heißen <strong>Wicks/Shadows</strong> (Dochte).</p>' +
+            '<p>Eine <strong>grüne/bullische Kerze</strong> schließt höher als sie eröffnet hat — Käufer waren stärker. Eine <strong>rote/bärische Kerze</strong> schließt tiefer als sie eröffnet hat — Verkäufer haben dominiert.</p>' +
+            '<h3>Wichtige Kerzenmuster</h3>' +
+            '<p><strong>Doji:</strong> Sehr kleiner Body, fast gleicher Open und Close. Zeigt Unentschlossenheit im Markt. An einem Support/Resistance-Level kann ein Doji eine Umkehr signalisieren.</p>' +
+            '<p><strong>Hammer / Shooting Star:</strong> Kerzen mit langem unterem Docht (Hammer) oder langem oberem Docht (Shooting Star). Der Hammer am Support signalisiert eine mögliche Umkehr nach oben. Der Shooting Star am Widerstand signalisiert eine mögliche Umkehr nach unten.</p>' +
+            '<p><strong>Engulfing Pattern:</strong> Eine große Kerze, die die vorherige Kerze komplett „verschluckt". Bullish Engulfing = starkes Kaufsignal am Support. Bearish Engulfing = starkes Verkaufssignal am Widerstand.</p>' +
+            '<p><strong>Pin Bar:</strong> Kerze mit sehr langem Docht in eine Richtung und kleinem Body. Zeigt eine starke Ablehnung eines Preisniveaus. Einer der zuverlässigsten Signale in der Price Action.</p>' +
+            '<h3>Kontext ist alles</h3>' +
+            '<p>Ein Kerzenmuster allein ist KEIN Einstiegssignal. Es wird erst relevant, wenn es an einem wichtigen Level auftritt (Support, Resistance, Supply/Demand Zone). Ein Hammer mitten in einer Range hat keine Aussagekraft. Ein Hammer an einem getesteten Support-Level kann ein exzellenter Entry sein.</p>'
+        },
+        {
+          id: 'l2-2', title: 'Support & Resistance', duration: '18:00',
+          videoUrl: '',
+          content: '<h3>Das Fundament der Chartanalyse</h3>' +
+            '<p>Support- und Resistance-Levels (Unterstützung und Widerstand) sind die wichtigsten Konzepte in der technischen Analyse. Wenn du nur ein Ding aus diesem Kurs mitnimmst, dann dieses.</p>' +
+            '<h3>Was ist Support?</h3>' +
+            '<p>Support ist ein Preisniveau, bei dem die Nachfrage (Kaufdruck) stark genug ist, um einen fallenden Preis aufzuhalten oder umzukehren. Man sagt: „Hier stehen die Käufer." Je öfter ein Level gehalten hat, desto stärker ist es.</p>' +
+            '<h3>Was ist Resistance?</h3>' +
+            '<p>Resistance ist das Gegenteil: ein Preisniveau, bei dem das Angebot (Verkaufsdruck) stark genug ist, um einen steigenden Preis aufzuhalten. „Hier stehen die Verkäufer."</p>' +
+            '<h3>Wie zeichnest du S/R-Levels ein?</h3>' +
+            '<p><strong>Schritt 1:</strong> Zoome auf den Daily- oder H4-Chart heraus, um die großen Strukturen zu sehen.</p>' +
+            '<p><strong>Schritt 2:</strong> Suche nach Preisniveaus, die der Markt mehrfach respektiert hat — sowohl als Support als auch als Resistance.</p>' +
+            '<p><strong>Schritt 3:</strong> Zeichne <strong>Zonen</strong>, keine exakten Linien. Der Markt respektiert Bereiche, keine Pixel-genauen Preise.</p>' +
+            '<p><strong>Schritt 4:</strong> Weniger ist mehr. 3-5 relevante Levels auf dem Chart reichen aus. Zu viele Linien = Analyse-Paralyse.</p>' +
+            '<h3>Flip-Zones</h3>' +
+            '<p>Wenn ein Support-Level durchbrochen wird, wird es oft zum neuen Resistance — und umgekehrt. Diese „Flip-Zones" sind besonders stark, weil hier gestrandete Trader ihre Positionen auflösen.</p>' +
+            '<h3>Praktische Tipps</h3>' +
+            '<p>Richte deine S/R-Levels an den <strong>Bodies</strong> der Kerzen aus, nicht an den Dochten. Der Body zeigt, wo der Markt tatsächlich geschlossen hat — das ist aussagekräftiger als der extreme Punkt eines Dochts.</p>'
+        },
+        {
+          id: 'l2-3', title: 'Trendlinien & Struktur', duration: '16:00',
+          videoUrl: '',
+          content: '<h3>Marktstruktur verstehen</h3>' +
+            '<p>Bevor du einen Trade eingehst, musst du eine fundamentale Frage beantworten: <strong>Was macht der Markt gerade?</strong> Es gibt nur drei Zustände: Aufwärtstrend, Abwärtstrend oder Range (Seitwärtsbewegung).</p>' +
+            '<h3>Aufwärtstrend (Bullish)</h3>' +
+            '<p>Der Markt bildet <strong>höhere Hochs (Higher Highs, HH)</strong> und <strong>höhere Tiefs (Higher Lows, HL)</strong>. Jeder Rücksetzer findet auf einem höheren Niveau Halt als der vorherige. Solange diese Struktur intakt ist, bleibt der Trend bullisch.</p>' +
+            '<h3>Abwärtstrend (Bearish)</h3>' +
+            '<p>Der Markt bildet <strong>tiefere Tiefs (Lower Lows, LL)</strong> und <strong>tiefere Hochs (Lower Highs, LH)</strong>. Jede Erholung wird auf einem niedrigeren Niveau abgelehnt.</p>' +
+            '<h3>Range / Konsolidierung</h3>' +
+            '<p>Der Markt bewegt sich seitwärts zwischen einem Support und einem Resistance. Kein klarer Trend erkennbar. In einer Range zu traden ist schwieriger — am besten wartest du auf den Ausbruch.</p>' +
+            '<h3>Trendlinien zeichnen</h3>' +
+            '<p>Verbinde mindestens <strong>zwei Swing-Lows</strong> (im Aufwärtstrend) oder <strong>zwei Swing-Highs</strong> (im Abwärtstrend) mit einer Linie. Der dritte Touch dieser Linie bietet oft einen guten Trade-Einstieg.</p>' +
+            '<p>Trendlinien sind subjektiv — verschiedene Trader zeichnen sie unterschiedlich. Das ist okay. Sie dienen als Orientierung, nicht als exakte Level.</p>' +
+            '<h3>Break of Structure (BOS)</h3>' +
+            '<p>Wenn der Markt ein vorheriges Swing-High (im Aufwärtstrend) durchbricht, bestätigt das die Trendfortsetzung. Wenn er ein vorheriges Swing-Low durchbricht, signalisiert das eine mögliche Trendumkehr. Das nennt man <strong>Break of Structure</strong> — ein Schlüsselkonzept im modernen Price Action Trading.</p>' +
+            '<h3>Multi-Timeframe-Analyse</h3>' +
+            '<p>Die goldene Regel: Bestimme den Trend auf dem <strong>höheren Timeframe</strong> (Daily/H4) und suche Entries auf dem <strong>niedrigeren Timeframe</strong> (H1/M15). Trade immer in Richtung des übergeordneten Trends — das erhöht deine Gewinnwahrscheinlichkeit erheblich.</p>'
+        },
+        {
+          id: 'l2-4', title: 'Indikatoren sinnvoll nutzen', duration: '13:00',
+          videoUrl: '',
+          content: '<h3>Indikatoren — Hilfe, kein Ersatz</h3>' +
+            '<p>Indikatoren sind mathematische Berechnungen basierend auf Preis und/oder Volumen. Sie können dir helfen, den Markt zu analysieren — aber sie sind <strong>nachlaufend</strong> (lagging). Sie zeigen dir, was passiert ist, nicht was passieren wird. Nutze sie als Bestätigung, nicht als alleinige Grundlage für Trades.</p>' +
+            '<h3>EMA (Exponential Moving Average)</h3>' +
+            '<p>Der EMA ist ein gleitender Durchschnitt, der neuere Preise stärker gewichtet. Die wichtigsten:</p>' +
+            '<p><strong>EMA 20:</strong> Kurzfristiger Trend. Preis über dem EMA 20 = kurzfristig bullisch.</p>' +
+            '<p><strong>EMA 50:</strong> Mittelfristiger Trend. Oft als dynamischer Support/Resistance genutzt.</p>' +
+            '<p><strong>EMA 200:</strong> Langfristiger Trend. Der wichtigste gleitende Durchschnitt — institutionelle Trader achten darauf.</p>' +
+            '<p><strong>EMA-Kreuzung:</strong> Wenn der EMA 20 den EMA 50 von unten nach oben kreuzt = bullisches Signal (Golden Cross). Von oben nach unten = bärisches Signal (Death Cross).</p>' +
+            '<h3>RSI (Relative Strength Index)</h3>' +
+            '<p>Der RSI misst die Stärke einer Preisbewegung auf einer Skala von 0-100. Über 70 = „überkauft" (mögliche Umkehr nach unten). Unter 30 = „überverkauft" (mögliche Umkehr nach oben). Aber Vorsicht: In starken Trends kann der RSI lange überkauft/überverkauft bleiben.</p>' +
+            '<p><strong>RSI-Divergenz:</strong> Wenn der Preis ein neues Hoch macht, aber der RSI nicht → bärische Divergenz (Schwäche). Wenn der Preis ein neues Tief macht, aber der RSI nicht → bullische Divergenz (Stärke). Divergenzen sind einer der stärksten Umkehrsignale.</p>' +
+            '<h3>Weniger ist mehr</h3>' +
+            '<p>Die häufigste Falle: zu viele Indikatoren gleichzeitig nutzen. 3-4 Indikatoren, die dasselbe sagen, geben dir keine bessere Analyse — sie geben dir nur eine Illusion von Sicherheit. Empfehlung: <strong>2 EMAs + Price Action</strong>. Das reicht für profitables Trading.</p>'
+        },
       ]
     },
     {
       id: 'm3',
       title: 'Risikomanagement',
       lessons: [
-        { id: 'l3-1', title: 'Position Sizing', duration: '11:00', description: 'Wie groß darf deine Position sein? Die Mathematik hinter dem Risikomanagement — einfach erklärt.' },
-        { id: 'l3-2', title: 'Stop-Loss Strategien', duration: '14:00', description: 'Wo du deinen Stop setzt, warum er nicht verhandelbar ist und wie du ihn an die Marktstruktur anpasst.' },
-        { id: 'l3-3', title: 'Risk-Reward Ratio', duration: '10:00', description: 'Warum du nicht 50% Winrate brauchst — und wie ein gutes CRV dein gesamtes Trading verändert.' },
-        { id: 'l3-4', title: 'Drawdown Management', duration: '09:00', description: 'Was tun bei Verlustserien? Wie du Drawdowns managst ohne emotional zu reagieren.' },
+        {
+          id: 'l3-1', title: 'Position Sizing', duration: '11:00',
+          videoUrl: '',
+          content: '<h3>Die wichtigste Fähigkeit im Trading</h3>' +
+            '<p>Du kannst die beste Strategie der Welt haben — wenn du dein Risiko pro Trade nicht kontrollierst, wirst du dein Konto verlieren. Position Sizing ist keine Nebensache. Es ist das Fundament.</p>' +
+            '<h3>Die 1%-Regel</h3>' +
+            '<p>Riskiere niemals mehr als <strong>1-2% deines Kontostands</strong> pro Trade. Bei einem 10.000€-Konto bedeutet das: maximal 100-200€ Risiko pro Trade. Das klingt wenig — aber es schützt dich davor, nach einer Verlustserie (die kommt, garantiert) nicht mehr handlungsfähig zu sein.</p>' +
+            '<h3>Position Size berechnen</h3>' +
+            '<p>Die Formel ist einfach:</p>' +
+            '<p><strong>Position Size = Risikobudget / (Entry - Stop-Loss)</strong></p>' +
+            '<p>Beispiel: Konto = 10.000€, Risiko = 1% (100€), EUR/USD Long bei 1.1000, Stop-Loss bei 1.0950 (50 Pips).</p>' +
+            '<p>Position Size = 100€ / 50 Pips = 2€ pro Pip = 0.2 Lot (bei Standard-Lot = 10€/Pip).</p>' +
+            '<h3>Warum das so wichtig ist</h3>' +
+            '<p>Mit 1% Risiko pro Trade kannst du <strong>20 Verlust-Trades in Folge</strong> überstehen und hast immer noch über 80% deines Kontos. Mit 5% Risiko bist du nach 20 Verlusten bei unter 36%. Mit 10% nach 10 Verlusten bei unter 35%.</p>' +
+            '<p>Verlustserien von 5-10 Trades sind auch bei guten Strategien normal. Dein Position Sizing entscheidet, ob du danach noch im Spiel bist.</p>' +
+            '<h3>Lotgrößen-Tabelle</h3>' +
+            '<p><strong>Nano-Lot (0.001):</strong> 0.01€ pro Pip — zum Üben.</p>' +
+            '<p><strong>Micro-Lot (0.01):</strong> 0.10€ pro Pip — kleine Konten.</p>' +
+            '<p><strong>Mini-Lot (0.1):</strong> 1.00€ pro Pip — mittlere Konten.</p>' +
+            '<p><strong>Standard-Lot (1.0):</strong> 10.00€ pro Pip — große Konten / Prop Accounts.</p>'
+        },
+        {
+          id: 'l3-2', title: 'Stop-Loss Strategien', duration: '14:00',
+          videoUrl: '',
+          content: '<h3>Der Stop-Loss — dein bester Freund</h3>' +
+            '<p>Ein Stop-Loss ist eine Order, die deine Position automatisch schließt, wenn der Preis ein bestimmtes Level erreicht. Er begrenzt deinen Verlust auf einen vorher definierten Betrag. <strong>Ohne Stop-Loss zu traden ist wie Autofahren ohne Gurt.</strong></p>' +
+            '<h3>Regel Nummer 1</h3>' +
+            '<p>Jeder Trade hat einen Stop-Loss. Keine Ausnahmen. Kein „ich beobachte das manuell". Kein „der Markt dreht sicher gleich". Der Stop wird gesetzt, bevor du den Trade eingehst, und danach nicht angefasst.</p>' +
+            '<h3>Wo setze ich den Stop-Loss?</h3>' +
+            '<p><strong>Strukturbasiert:</strong> Setze deinen Stop unter das letzte Swing-Low (bei Long) oder über das letzte Swing-High (bei Short). Der Markt hat dieses Level respektiert — wenn es durchbrochen wird, war deine These falsch.</p>' +
+            '<p><strong>ATR-basiert:</strong> Der Average True Range (ATR) misst die durchschnittliche Volatilität. Setze deinen Stop 1-1.5x ATR vom Entry entfernt. So berücksichtigst du die natürliche Marktbewegung.</p>' +
+            '<p><strong>Niemals:</strong> Setze deinen Stop nie willkürlich (z.B. „immer 20 Pips"). Der Stop muss sich aus der Chartstruktur ergeben.</p>' +
+            '<h3>Break-Even Stop</h3>' +
+            '<p>Wenn dein Trade in den Gewinn läuft (z.B. 1:1 Risk-Reward erreicht), kannst du deinen Stop auf den <strong>Entry-Preis</strong> nachziehen. So ist der Trade risikofrei — du kannst nur noch gewinnen oder breakeven gehen.</p>' +
+            '<h3>Trailing Stop</h3>' +
+            '<p>In starken Trends kannst du deinen Stop schrittweise nachziehen — unter jedes neue Higher Low (bei Long). So sicherst du laufende Gewinne, ohne den Trade zu früh zu schließen.</p>' +
+            '<h3>Stop-Loss verschieben: Wann?</h3>' +
+            '<p>Du darfst deinen Stop nur in Richtung Gewinn verschieben, <strong>niemals</strong> weiter weg vom Preis. Den Stop zu vergrößern, weil du „noch Hoffnung hast", ist der schnellste Weg, dein Konto zu zerstören.</p>'
+        },
+        {
+          id: 'l3-3', title: 'Risk-Reward Ratio', duration: '10:00',
+          videoUrl: '',
+          content: '<h3>Das Chance-Risiko-Verhältnis (CRV)</h3>' +
+            '<p>Das Risk-Reward Ratio (RRR) oder CRV beschreibt das Verhältnis zwischen dem, was du riskierst, und dem, was du gewinnen kannst. Es ist <strong>der</strong> Faktor, der entscheidet, ob du langfristig profitabel bist.</p>' +
+            '<h3>Wie berechne ich das CRV?</h3>' +
+            '<p><strong>CRV = potenzieller Gewinn / potenzielle Verlust</strong></p>' +
+            '<p>Beispiel: Du riskierst 50 Pips (Stop-Loss) und dein Ziel sind 150 Pips (Take-Profit). CRV = 150/50 = 3:1. Für jeden Euro Risiko kannst du 3 Euro gewinnen.</p>' +
+            '<h3>Warum CRV wichtiger ist als Win-Rate</h3>' +
+            '<p>Die meisten Anfänger fokussieren sich auf die Win-Rate: „Ich will 80% meiner Trades gewinnen." Aber schau dir diese Rechnung an:</p>' +
+            '<p><strong>Trader A:</strong> 70% Win-Rate, CRV 1:1 → 10 Trades: 7 Gewinne × 100€ = 700€, 3 Verluste × 100€ = 300€. <strong>Profit: 400€.</strong></p>' +
+            '<p><strong>Trader B:</strong> 40% Win-Rate, CRV 3:1 → 10 Trades: 4 Gewinne × 300€ = 1.200€, 6 Verluste × 100€ = 600€. <strong>Profit: 600€.</strong></p>' +
+            '<p>Trader B gewinnt weniger oft, verdient aber mehr. Das ist die Magie eines guten CRVs.</p>' +
+            '<h3>Minimum CRV</h3>' +
+            '<p>Nimm keinen Trade mit einem CRV unter <strong>1.5:1</strong>. Idealerweise tradest du nur Setups mit 2:1 oder besser. Bei einem CRV von 2:1 brauchst du nur 34% Win-Rate, um breakeven zu sein.</p>' +
+            '<h3>Take-Profit setzen</h3>' +
+            '<p>Dein Take-Profit sollte an einem logischen Level liegen — dem nächsten Widerstand (bei Long) oder der nächsten Unterstützung (bei Short). Setze den TP nie willkürlich, sondern immer an einem Level, das der Markt wahrscheinlich respektiert.</p>'
+        },
+        {
+          id: 'l3-4', title: 'Drawdown Management', duration: '09:00',
+          videoUrl: '',
+          content: '<h3>Verluste gehören dazu</h3>' +
+            '<p>Jeder Trader — egal wie erfahren — erlebt Drawdowns (Verlustphasen). Der Unterschied zwischen einem profitablen und einem unprofitablen Trader liegt nicht darin, ob sie Verluste haben, sondern <strong>wie sie damit umgehen</strong>.</p>' +
+            '<h3>Was ist ein Drawdown?</h3>' +
+            '<p>Ein Drawdown ist der Rückgang deines Kontostands vom höchsten Punkt bis zum tiefsten Punkt einer Verlustphase. Wenn dein Konto von 10.000€ auf 9.200€ fällt, hast du einen Drawdown von 8%.</p>' +
+            '<h3>Tägliches Verlustlimit</h3>' +
+            '<p>Setze dir ein <strong>tägliches Maximum</strong>: Wenn du 2-3% deines Kontos an einem Tag verlierst, hörst du auf zu traden. Kein „einen Trade noch, um es zurückzuholen". Schluss. Laptop zu. Morgen ist ein neuer Tag.</p>' +
+            '<h3>Wöchentliches Verlustlimit</h3>' +
+            '<p>Gleiches Prinzip auf Wochenbasis: Bei 5% Drawdown in einer Woche machst du Pause. Analysiere deine Trades, überprüfe dein Journal, und starte erst in der nächsten Woche wieder.</p>' +
+            '<h3>Revenge Trading — der Killer</h3>' +
+            '<p>Das gefährlichste Verhalten nach Verlusten: Du versuchst, das verlorene Geld sofort zurückzuholen. Du erhöhst die Position, du tradest ohne Setup, du ignorierst deinen Plan. <strong>Revenge Trading hat mehr Konten zerstört als jede schlechte Strategie.</strong></p>' +
+            '<p>Erkenne die Warnsignale: Wut, Frustration, der Drang „nur noch einen Trade" zu machen. Wenn du das spürst — aufhören. Sofort.</p>' +
+            '<h3>Die Erholung</h3>' +
+            '<p>Mathematischer Fakt: Ein 10% Drawdown erfordert 11% Gewinn zum Ausgleich. Ein 25% Drawdown erfordert 33%. Ein 50% Drawdown erfordert 100%. Je tiefer du fällst, desto schwerer wird es, zurückzukommen. Halte deine Drawdowns klein — unter 10% maximal.</p>'
+        },
       ]
     },
     {
       id: 'm4',
       title: 'Strategien',
       lessons: [
-        { id: 'l4-1', title: 'Breakout Trading', duration: '17:00', description: 'Ausbrüche aus Ranges und Konsolidierungen erkennen und profitabel handeln.' },
-        { id: 'l4-2', title: 'Pullback Trading', duration: '15:00', description: 'Im Trend einsteigen — Pullbacks identifizieren und mit der richtigen Bestätigung handeln.' },
-        { id: 'l4-3', title: 'Supply & Demand', duration: '20:00', description: 'Angebot- und Nachfragezonen erkennen und als Einstiegspunkte nutzen — institutionelles Trading.' },
-        { id: 'l4-4', title: 'Deine persönliche Strategie', duration: '12:00', description: 'Wie du aus den gelernten Konzepten DEINE eigene Strategie entwickelst — angepasst an deinen Stil.' },
+        {
+          id: 'l4-1', title: 'Breakout Trading', duration: '17:00',
+          videoUrl: '',
+          content: '<h3>Ausbrüche traden</h3>' +
+            '<p>Ein Breakout passiert, wenn der Preis ein definiertes Level (Support, Resistance, Trendlinie) durchbricht und sich in die neue Richtung bewegt. Breakouts können explosive Moves auslösen — besonders nach längeren Konsolidierungsphasen.</p>' +
+            '<h3>Arten von Breakouts</h3>' +
+            '<p><strong>Range-Breakout:</strong> Der Preis bewegt sich seit längerer Zeit seitwärts zwischen Support und Resistance. Wenn er ausbricht, folgt oft ein starker Move in Breakout-Richtung. Je länger die Range, desto stärker der potenzielle Breakout.</p>' +
+            '<p><strong>Trendlinien-Breakout:</strong> Eine aufsteigende oder absteigende Trendlinie wird durchbrochen. Das kann den Beginn einer Trendumkehr signalisieren.</p>' +
+            '<p><strong>Chart-Pattern-Breakout:</strong> Muster wie Dreiecke, Flaggen oder Wedges haben definierte Breakout-Punkte. Der Ausbruch bestätigt das Muster.</p>' +
+            '<h3>Falsche Breakouts (Fakeouts)</h3>' +
+            '<p>Nicht jeder Breakout ist echt. Oft durchbricht der Preis ein Level kurz, nur um sofort zurückzukommen — ein „Fakeout". Das passiert, weil große Player absichtlich Stop-Losses über/unter Levels auslösen, um Liquidität zu sammeln.</p>' +
+            '<p><strong>So vermeidest du Fakeouts:</strong></p>' +
+            '<p>1. Warte auf einen <strong>Candle Close</strong> jenseits des Levels — kein Entry auf dem Docht.</p>' +
+            '<p>2. Achte auf <strong>Volumen</strong> — ein echter Breakout wird von erhöhtem Volumen begleitet.</p>' +
+            '<p>3. Warte auf den <strong>Retest</strong> — oft kommt der Preis nach dem Breakout zurück zum Level und testet es von der anderen Seite. Das ist der sicherste Entry.</p>' +
+            '<h3>Breakout-Entry: Der Retest</h3>' +
+            '<p>Der Retest-Entry ist die konservativere, aber sicherere Methode: Warte, bis der Preis das Level durchbricht, dann zurückkommt und es als neuen Support/Resistance testet. Dein Entry ist am Retest-Level, dein Stop knapp auf der anderen Seite.</p>'
+        },
+        {
+          id: 'l4-2', title: 'Pullback Trading', duration: '15:00',
+          videoUrl: '',
+          content: '<h3>Mit dem Trend handeln</h3>' +
+            '<p>Pullback Trading ist eine der zuverlässigsten Strategien überhaupt. Die Idee: In einem etablierten Trend korrigiert der Preis kurzzeitig (Pullback), bevor er die Trendrichtung wieder aufnimmt. Du steigst während der Korrektur ein — zu einem günstigeren Preis.</p>' +
+            '<h3>Warum Pullbacks funktionieren</h3>' +
+            '<p>In einem Aufwärtstrend gibt es immer wieder Phasen, in denen Trader ihre Gewinne mitnehmen (Gewinnmitnahmen). Das drückt den Preis kurzzeitig nach unten. Aber der übergeordnete Trend ist intakt — neue Käufer nutzen den günstigeren Preis als Einstieg, und der Trend setzt sich fort.</p>' +
+            '<h3>Den richtigen Pullback identifizieren</h3>' +
+            '<p><strong>Schritt 1:</strong> Bestätige den Trend auf dem höheren Timeframe (H4/Daily). Higher Highs und Higher Lows = Aufwärtstrend.</p>' +
+            '<p><strong>Schritt 2:</strong> Warte auf einen Pullback zum <strong>EMA 20 oder EMA 50</strong>. Diese EMAs fungieren oft als dynamischer Support im Trend.</p>' +
+            '<p><strong>Schritt 3:</strong> Suche nach einem <strong>Umkehrsignal</strong> am Ende des Pullbacks — ein Bullish Engulfing, ein Hammer oder ein Pin Bar.</p>' +
+            '<p><strong>Schritt 4:</strong> Entry am Bestätigungssignal, Stop-Loss unter dem letzten Swing-Low, Take-Profit am nächsten Widerstand oder dem letzten Swing-High.</p>' +
+            '<h3>Fibonacci-Retracements</h3>' +
+            '<p>Viele Trader nutzen Fibonacci-Levels (38.2%, 50%, 61.8%), um potenzielle Pullback-Endpunkte zu identifizieren. Der 50%-61.8% Bereich (die „Golden Zone") ist besonders relevant — hier drehen viele Pullbacks.</p>' +
+            '<h3>Wichtige Regeln</h3>' +
+            '<p>Trade nur in Richtung des übergeordneten Trends. Ein Pullback im Aufwärtstrend = Long suchen. Ein Pullback im Abwärtstrend = Short suchen. Gegen den Trend zu traden ist für Anfänger das Gefährlichste, was du tun kannst.</p>'
+        },
+        {
+          id: 'l4-3', title: 'Supply & Demand', duration: '20:00',
+          videoUrl: '',
+          content: '<h3>Institutionelles Trading</h3>' +
+            '<p>Supply & Demand (Angebot und Nachfrage) ist ein Konzept aus dem institutionellen Trading. Im Gegensatz zu klassischen Support/Resistance-Levels fokussiert es sich auf <strong>Zonen</strong>, in denen große Marktteilnehmer (Banken, Hedgefonds) massive Orders platziert haben.</p>' +
+            '<h3>Demand Zone (Nachfragezone)</h3>' +
+            '<p>Eine Demand Zone ist ein Preisbereich, in dem starker Kaufdruck herrschte — erkennbar an einer <strong>starken, impulsiven Aufwärtsbewegung</strong>, die von diesem Level ausging. Die letzte Konsolidierung vor dem impulsiven Move bildet die Zone.</p>' +
+            '<p>Wenn der Preis zurück zu dieser Zone kommt, ist die Wahrscheinlichkeit hoch, dass dort wieder gekauft wird — weil die Orders der großen Player oft in mehreren Chargen platziert werden.</p>' +
+            '<h3>Supply Zone (Angebotszone)</h3>' +
+            '<p>Das Gegenteil: Ein Bereich, von dem aus eine starke Abwärtsbewegung startete. Wenn der Preis zurückkehrt, ist mit erneutem Verkaufsdruck zu rechnen.</p>' +
+            '<h3>Qualität einer Zone bewerten</h3>' +
+            '<p><strong>Stärke des Ausbruchs:</strong> Je stärker und schneller der Preis die Zone verlassen hat, desto stärker die Zone. Große Kerzen mit wenig Dochten = starker Ausbruch.</p>' +
+            '<p><strong>Frische:</strong> Wurde die Zone bereits einmal getestet? Eine „frische" (ungetestete) Zone ist stärker als eine, die schon mehrfach angelaufen wurde.</p>' +
+            '<p><strong>Timeframe:</strong> Zones auf höheren Timeframes (H4, Daily) sind stärker als auf niedrigen (M5, M15).</p>' +
+            '<h3>Trading-Setup</h3>' +
+            '<p>1. Identifiziere eine frische Supply/Demand Zone auf H4 oder Daily.</p>' +
+            '<p>2. Warte, bis der Preis zurück zur Zone kommt.</p>' +
+            '<p>3. Suche auf dem niedrigeren Timeframe (H1/M15) nach einem Bestätigungssignal.</p>' +
+            '<p>4. Entry mit engem Stop-Loss jenseits der Zone, Take-Profit am gegenüberliegenden Level.</p>'
+        },
+        {
+          id: 'l4-4', title: 'Deine persönliche Strategie', duration: '12:00',
+          videoUrl: '',
+          content: '<h3>Dein eigener Trading-Plan</h3>' +
+            '<p>Du hast jetzt die Werkzeuge. Breakouts, Pullbacks, Supply & Demand — alles solide Strategien. Aber die beste Strategie ist die, die zu <strong>dir</strong> passt. Nicht jeder kann den ganzen Tag vor dem Chart sitzen. Nicht jeder mag schnelle Scalps. Und das ist okay.</p>' +
+            '<h3>Finde deinen Stil</h3>' +
+            '<p><strong>Scalping (M1-M15):</strong> Viele kleine Trades am Tag, schnelle Entries und Exits. Braucht volle Konzentration und schnelle Reflexe. Nicht für Anfänger empfohlen.</p>' +
+            '<p><strong>Daytrading (M15-H1):</strong> 1-3 Trades am Tag, Positionen werden vor Marktschluss geschlossen. Gut für Trader, die ein paar Stunden täglich investieren können.</p>' +
+            '<p><strong>Swingtrading (H4-Daily):</strong> Trades werden über Tage gehalten. Weniger Bildschirmzeit, weniger Stress. Ideal für Berufstätige und Anfänger.</p>' +
+            '<h3>Dein Trading-Plan</h3>' +
+            '<p>Schreibe deinen Plan auf. Er sollte folgende Punkte beinhalten:</p>' +
+            '<p><strong>1. Marktauswahl:</strong> Welche Paare/Assets tradest du? (Max. 3-4 zum Start)</p>' +
+            '<p><strong>2. Timeframe:</strong> Auf welchem Zeitrahmen analysierst und tradest du?</p>' +
+            '<p><strong>3. Setup-Kriterien:</strong> Welche Bedingungen müssen erfüllt sein, bevor du einen Trade eingehst? (Trend, Level, Bestätigung)</p>' +
+            '<p><strong>4. Entry-Regeln:</strong> Wie und wann steigst du ein?</p>' +
+            '<p><strong>5. Stop-Loss:</strong> Wo und wie setzt du deinen Stop?</p>' +
+            '<p><strong>6. Take-Profit:</strong> Wo nimmst du Gewinne mit?</p>' +
+            '<p><strong>7. Risikomanagement:</strong> Wie viel riskierst du pro Trade? Tägliches/wöchentliches Maximum?</p>' +
+            '<p><strong>8. Trading-Zeiten:</strong> Wann tradest du? Wann nicht?</p>' +
+            '<h3>Backtesting</h3>' +
+            '<p>Bevor du mit echtem Geld tradest: Teste deine Strategie an historischen Daten. Gehe Chart für Chart durch und prüfe, wie dein Setup in der Vergangenheit performt hätte. Mindestens 100 Trades backtesten, bevor du live gehst.</p>'
+        },
       ]
     },
     {
       id: 'm5',
       title: 'Prop Trading',
       lessons: [
-        { id: 'l5-1', title: 'Was ist Prop Trading?', duration: '10:00', description: 'Prop Firms erklärt — wie du mit Fremdkapital tradest und was du dafür brauchst.' },
-        { id: 'l5-2', title: 'Challenge bestehen', duration: '16:00', description: 'Die Phase 1 und Phase 2 der Evaluation — Regeln, Strategien und typische Fehler.' },
-        { id: 'l5-3', title: 'Funded Account managen', duration: '13:00', description: 'Du hast den Funded Account — und jetzt? Regeln, Drawdown-Limits und Auszahlungen.' },
-        { id: 'l5-4', title: 'Scaling Plan', duration: '11:00', description: 'Von einem Account auf mehrere — wie du systematisch skalierst und dein Einkommen steigerst.' },
+        {
+          id: 'l5-1', title: 'Was ist Prop Trading?', duration: '10:00',
+          videoUrl: '',
+          content: '<h3>Mit Fremdkapital traden</h3>' +
+            '<p>Prop Trading (Proprietary Trading) bedeutet, dass du mit dem Kapital einer <strong>Prop Firm</strong> (Proprietary Trading Firm) tradest — nicht mit deinem eigenen. Du beweist in einer Evaluation (Challenge), dass du profitabel traden kannst, und erhältst dann einen „Funded Account" mit echtem Kapital.</p>' +
+            '<h3>Warum Prop Trading?</h3>' +
+            '<p><strong>Kein großes Eigenkapital nötig:</strong> Statt 50.000€ eigenes Kapital brauchst du nur 200-500€ für eine Challenge-Gebühr — und tradest dann mit 50.000€, 100.000€ oder sogar 200.000€.</p>' +
+            '<p><strong>Gewinnbeteiligung:</strong> Die meisten Prop Firms bieten 70-90% Profit Split. Du behältst den Großteil deiner Gewinne.</p>' +
+            '<p><strong>Kein persönliches Risiko:</strong> Dein maximales Risiko ist die Challenge-Gebühr. Das Kapital der Prop Firm ist nicht dein Geld — wenn du die Regeln brichst, verlierst du den Account, aber keine 50.000€.</p>' +
+            '<p><strong>Skalierbar:</strong> Du kannst mehrere Funded Accounts bei verschiedenen Firms gleichzeitig haben.</p>' +
+            '<h3>Wie funktioniert es?</h3>' +
+            '<p><strong>1. Challenge kaufen:</strong> Du wählst eine Kontogröße (z.B. 100.000€) und bezahlst die Gebühr (ca. 400-600€).</p>' +
+            '<p><strong>2. Evaluation bestehen:</strong> Du tradest auf einem Demo-Konto und musst ein Gewinnziel erreichen, ohne die Verlustgrenzen zu überschreiten.</p>' +
+            '<p><strong>3. Funded Account erhalten:</strong> Nach bestandener Evaluation tradest du auf einem echten Konto der Prop Firm.</p>' +
+            '<p><strong>4. Auszahlungen:</strong> Deine Gewinne werden regelmäßig ausgezahlt (meist monatlich oder bi-weekly).</p>' +
+            '<h3>Die bekanntesten Prop Firms</h3>' +
+            '<p>FTMO, The Funded Trader, MyForexFunds, True Forex Funds, und viele mehr. Vergleiche Regeln, Gebühren und Profit Split auf unserer <strong>Prop Firm Vergleichsseite</strong>.</p>'
+        },
+        {
+          id: 'l5-2', title: 'Challenge bestehen', duration: '16:00',
+          videoUrl: '',
+          content: '<h3>Die Evaluation meistern</h3>' +
+            '<p>Die meisten Prop Firms haben einen 2-Phasen-Evaluationsprozess. Jede Phase hat klare Regeln — brichst du eine davon, ist die Challenge verloren.</p>' +
+            '<h3>Phase 1 — typische Regeln</h3>' +
+            '<p><strong>Gewinnziel:</strong> 8-10% des Kontostands (bei 100.000€ = 8.000-10.000€)</p>' +
+            '<p><strong>Maximaler täglicher Verlust:</strong> 5% (5.000€ bei 100k)</p>' +
+            '<p><strong>Maximaler Gesamtverlust:</strong> 10% (10.000€ bei 100k)</p>' +
+            '<p><strong>Mindest-Trading-Tage:</strong> 4-5 Tage</p>' +
+            '<p><strong>Zeitlimit:</strong> 30 Tage (manche Firms haben kein Limit)</p>' +
+            '<h3>Phase 2 — typische Regeln</h3>' +
+            '<p><strong>Gewinnziel:</strong> 5% (niedriger als Phase 1)</p>' +
+            '<p>Alle anderen Regeln bleiben gleich.</p>' +
+            '<h3>Strategien für die Challenge</h3>' +
+            '<p><strong>1. Nicht hetzen.</strong> Du hast 30 Tage. Du brauchst nicht alles in der ersten Woche zu schaffen. 0.5-1% pro Woche reichen.</p>' +
+            '<p><strong>2. Risiko reduzieren.</strong> In der Challenge riskierst du max. 0.5-1% pro Trade. Ja, weniger als normal. Das Ziel ist das Bestehen, nicht das Maximieren.</p>' +
+            '<p><strong>3. Nur A+ Setups traden.</strong> Keine B- oder C-Setups. Nur die besten Setups, bei denen alles zusammenpasst: Trend, Level, Bestätigung, CRV.</p>' +
+            '<p><strong>4. Drawdown-Buffer aufbauen.</strong> Versuche in den ersten Tagen 2-3% Gewinn aufzubauen. Das gibt dir Puffer und reduziert den Druck.</p>' +
+            '<p><strong>5. Tägliches Verlustlimit respektieren.</strong> Die tägliche Verlustgrenze (5%) ist der häufigste Grund für das Scheitern. Setze dein eigenes Limit auf 2% pro Tag.</p>' +
+            '<h3>Häufigste Fehler</h3>' +
+            '<p>Overtrading (zu viele Trades), Revenge Trading nach Verlusten, zu großes Risiko pro Trade, Trading an Newstagen ohne Erfahrung, und den Plan verwerfen, wenn es nicht sofort läuft.</p>'
+        },
+        {
+          id: 'l5-3', title: 'Funded Account managen', duration: '13:00',
+          videoUrl: '',
+          content: '<h3>Du hast es geschafft — und jetzt?</h3>' +
+            '<p>Den Funded Account zu bekommen ist ein großer Meilenstein. Aber jetzt beginnt die eigentliche Arbeit: den Account langfristig profitabel zu halten und regelmäßig Auszahlungen zu generieren.</p>' +
+            '<h3>Die Regeln kennen</h3>' +
+            '<p>Im Funded Account gelten die gleichen Verlustgrenzen wie in der Challenge — oft sogar strengere. Kenne jede einzelne Regel auswendig:</p>' +
+            '<p><strong>Täglicher Drawdown:</strong> Meist 5%. An keinem einzelnen Tag darfst du mehr als diesen Betrag verlieren.</p>' +
+            '<p><strong>Gesamter Drawdown:</strong> Meist 10%. Dein Konto darf nie mehr als 10% unter den Startwert fallen.</p>' +
+            '<p><strong>Trailing Drawdown (bei manchen Firms):</strong> Der maximale Drawdown „zieht nach", wenn dein Konto steigt. Bei 100k Start und 5k Gewinn liegt der Trailing Drawdown bei 95k (statt 90k). Das ist deutlich strenger.</p>' +
+            '<h3>Konsistenz vor Performance</h3>' +
+            '<p>Manche Prop Firms haben eine <strong>Konsistenz-Regel</strong>: Kein einzelner Trading-Tag darf mehr als 30-40% deines Gesamtgewinns ausmachen. Das heißt: du kannst nicht einen Lucky Trade machen und dich auszahlen lassen. Du musst konstant performen.</p>' +
+            '<h3>Auszahlungen</h3>' +
+            '<p>Die meisten Firms zahlen alle 2-4 Wochen aus. Typischer Profit Split: 70-90% für dich. Bei einem 100k-Account mit 5% Gewinn (5.000€) und 80% Split sind das <strong>4.000€ Auszahlung</strong>.</p>' +
+            '<h3>Psychologie im Funded Account</h3>' +
+            '<p>Viele Trader bestehen die Challenge, verlieren dann aber den Funded Account. Warum? Weil plötzlich echtes Geld auf dem Spiel steht. Der Druck steigt, die Angst zu verlieren wird größer. Bleib bei deinem Plan. Der gleiche Plan, der die Challenge bestanden hat, wird auch im Funded Account funktionieren.</p>'
+        },
+        {
+          id: 'l5-4', title: 'Scaling Plan', duration: '11:00',
+          videoUrl: '',
+          content: '<h3>Systematisch skalieren</h3>' +
+            '<p>Sobald du deinen ersten Funded Account erfolgreich managst, ist es Zeit zu skalieren. Das Ziel: mehrere Accounts gleichzeitig traden, um dein Einkommen zu vervielfachen — bei gleichem Aufwand.</p>' +
+            '<h3>Wann skalieren?</h3>' +
+            '<p>Nicht sofort. Beweise dir selbst, dass du mindestens <strong>3 Monate konsistent profitabel</strong> bist mit einem Account, bevor du weitere hinzufügst. Skalieren mit einer instabilen Strategie multipliziert nur deine Verluste.</p>' +
+            '<h3>Wie skalieren?</h3>' +
+            '<p><strong>Option 1 — Gleiche Firm, größere Konten:</strong> Starte mit 50k, dann 100k, dann 200k. Mehr Kapital = mehr Gewinn pro Trade bei gleichem Risiko-Prozentsatz.</p>' +
+            '<p><strong>Option 2 — Mehrere Accounts:</strong> 2-3 Accounts bei verschiedenen Firms. Du setzt auf jedem Account die gleichen Trades. Ein Trade auf 3 × 100k Accounts mit 1% Risiko = wie ein Trade auf einem 300k Account.</p>' +
+            '<p><strong>Option 3 — Kombination:</strong> Ein großer Account (200k) + zwei kleinere (50k) als Absicherung. Wenn du einen Account verlierst, hast du noch die anderen.</p>' +
+            '<h3>Copy Trading / Trade Copier</h3>' +
+            '<p>Wenn du mehrere Accounts managst, nutze einen <strong>Trade Copier</strong>. Das ist eine Software, die deinen Trade automatisch auf alle verbundenen Accounts kopiert. Du setzt den Trade einmal — er wird auf allen Accounts ausgeführt. Das spart Zeit und reduziert Fehler.</p>' +
+            '<h3>Einkommensberechnung</h3>' +
+            '<p>Realistische Rechnung: 3 Funded Accounts × 100k × 3% monatlicher Gewinn × 80% Profit Split = <strong>7.200€ pro Monat</strong>. Das ist erreichbar mit Disziplin und einem guten System. Kein Traum — Mathematik.</p>' +
+            '<h3>Langfristiges Ziel</h3>' +
+            '<p>Prop Trading ist ein Geschäft. Behandle es so. Führe Buch über deine Accounts, Auszahlungen, Kosten (Challenge-Gebühren, Software, Daten). Nutze dein Trading Journal, um deine Performance zu tracken und zu verbessern. Der Weg zum profitablen Trader ist ein Marathon, kein Sprint.</p>'
+        },
       ]
     },
   ];
@@ -569,12 +857,11 @@
         const isCompleted = completedLessons.has(lesson.id);
         const iconSvg = isCompleted
           ? '<svg class="lesson-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
-          : '<svg class="lesson-icon play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+          : '<svg class="lesson-icon play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
         item.innerHTML = `
           ${iconSvg}
           <span>${lesson.title}</span>
-          <span class="lesson-duration">${lesson.duration}</span>
         `;
 
         lessons.appendChild(item);
@@ -605,22 +892,9 @@
     const mi = COURSE.indexOf(mod);
     document.getElementById('current-module-label').textContent = `Modul ${String(mi + 1).padStart(2, '0')} — ${mod.title}`;
     document.getElementById('current-lesson-title').textContent = lesson.title;
-    document.getElementById('current-lesson-meta').textContent = `Dauer: ${lesson.duration}`;
+    document.getElementById('current-lesson-meta').textContent = '';
 
-    document.getElementById('video-container').innerHTML = `
-      <div class="video-placeholder">
-        <div class="video-placeholder-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-        <div class="video-placeholder-text">Video wird in Kürze verfügbar sein</div>
-        <div class="video-placeholder-hint">Die Kurs-Inhalte werden aktuell vorbereitet</div>
-      </div>
-    `;
-
-    document.getElementById('lesson-description').innerHTML = `
-      <h3>${lesson.title}</h3>
-      <p>${lesson.description}</p>
-    `;
+    document.getElementById('lesson-description').innerHTML = lesson.content;
 
     document.getElementById('lesson-nav').style.display = '';
 
