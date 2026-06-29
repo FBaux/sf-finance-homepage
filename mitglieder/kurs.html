@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Kurs — DayDom Performance Group</title>
+  <meta name="description" content="DayDom Trading Kurs — Strukturierter Videokurs für Einsteiger und Fortgeschrittene.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; }
+
+    :root {
+      --bg:         #060c1a;
+      --card:       #0f1d33;
+      --card2:      #0a1628;
+      --border:     #1e2e4a;
+      --border2:    #162745;
+      --accent:     #f0c040;
+      --accent-dim: rgba(240,192,64,.08);
+      --accent-mid: rgba(240,192,64,.18);
+      --accent-border: rgba(201,168,76,.25);
+      --gold-mid:   #c9a84c;
+      --text:       #e8edf5;
+      --text2:      #94a9c8;
+      --text3:      #4a6080;
+      --f-serif:    'Cormorant Garamond', Georgia, serif;
+      --f-body:     'DM Sans', system-ui, sans-serif;
+      --f-mono:     'Space Mono', monospace;
+      --r:          12px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--f-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(240,192,64,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,192,64,.02) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+    }
+
+    /* Loading */
+    .loading-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .loading-spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Topbar */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,29,51,.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(1rem, 3vw, 2rem);
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .topbar-logo img { height: 40px; width: auto; }
+    .topbar-divider { width: 1px; height: 24px; background: var(--border); }
+    .topbar-label {
+      font-family: var(--f-mono); font-size: .62rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--gold-mid);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .topbar-btn {
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 6px; padding: .4rem .9rem;
+      font-family: var(--f-body); font-size: .75rem; font-weight: 500;
+      color: var(--text2); cursor: pointer; transition: all .2s;
+    }
+    .topbar-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+
+    /* Layout */
+    .layout {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      max-width: 1300px;
+      margin: 0 auto;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 0;
+      overflow-y: auto;
+      position: sticky; top: 64px;
+      height: calc(100vh - 64px);
+    }
+
+    .sidebar-header {
+      padding: 0 1.5rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .sidebar-title {
+      font-family: var(--f-serif);
+      font-weight: 300;
+      font-size: 1.35rem;
+      letter-spacing: -.01em;
+      margin-bottom: .25rem;
+    }
+    .sidebar-title em { font-style: italic; color: var(--accent); }
+    .sidebar-progress {
+      font-family: var(--f-mono);
+      font-size: .6rem;
+      letter-spacing: .08em;
+      color: var(--text3);
+    }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: .5rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width .5s ease;
+    }
+
+    /* Module */
+    .module {
+      margin-bottom: .5rem;
+    }
+    .module-header {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .65rem 1.5rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .module-header:hover { background: rgba(240,192,64,.04); }
+    .module-header.active { background: rgba(240,192,64,.06); }
+
+    .module-number {
+      font-family: var(--f-mono);
+      font-size: .55rem;
+      letter-spacing: .08em;
+      color: var(--text3);
+      min-width: 24px;
+    }
+    .module-name {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+    .module-chevron {
+      width: 12px; height: 12px;
+      color: var(--text3);
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+    .module.open .module-chevron { transform: rotate(90deg); }
+
+    .module-lessons {
+      display: none;
+      padding: .25rem 0;
+    }
+    .module.open .module-lessons { display: block; }
+
+    .lesson-item {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .5rem 1.5rem .5rem 3.5rem;
+      font-size: .78rem;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .lesson-item:hover { background: rgba(240,192,64,.04); color: var(--text); }
+    .lesson-item.active {
+      background: rgba(240,192,64,.08);
+      color: var(--accent);
+      border-right: 2px solid var(--accent);
+    }
+    .lesson-item.completed { color: var(--text3); }
+
+    .lesson-icon {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+    }
+    .lesson-icon.play { color: var(--text3); }
+    .lesson-item.active .lesson-icon.play { color: var(--accent); }
+    .lesson-icon.check { color: var(--accent); }
+
+    .lesson-duration {
+      margin-left: auto;
+      font-family: var(--f-mono);
+      font-size: .58rem;
+      color: var(--text3);
+    }
+
+    /* Content area */
+    .content {
+      padding: 2.5rem clamp(1.5rem, 3vw, 3rem);
+    }
+
+    .content-header {
+      margin-bottom: 2rem;
+    }
+    .content-module-label {
+      font-family: var(--f-mono);
+      font-size: .6rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      margin-bottom: .5rem;
+    }
+    .content-title {
+      font-family: var(--f-serif);
+      font-weight: 300;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: -.01em;
+      margin-bottom: .5rem;
+    }
+    .content-meta {
+      font-size: .78rem;
+      color: var(--text3);
+      display: flex; align-items: center; gap: 1rem;
+    }
+
+    /* Video player placeholder */
+    .video-container {
+      aspect-ratio: 16/9;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .video-container::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(240,192,64,.06) 0%, transparent 60%);
+    }
+    .video-placeholder {
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .video-placeholder-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(240,192,64,.1);
+      border: 1px solid rgba(240,192,64,.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .video-placeholder-icon svg { width: 24px; height: 24px; color: var(--accent); margin-left: 4px; }
+    .video-placeholder-text {
+      font-size: .85rem;
+      color: var(--text2);
+    }
+    .video-placeholder-hint {
+      font-size: .72rem;
+      color: var(--text3);
+      margin-top: .35rem;
+    }
+
+    /* Lesson description */
+    .lesson-content {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 2rem;
+    }
+    .lesson-content h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: .75rem;
+    }
+    .lesson-content p {
+      font-size: .88rem;
+      color: var(--text2);
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    .lesson-content p:last-child { margin-bottom: 0; }
+
+    /* Navigation buttons */
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--f-body);
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .nav-btn:hover {
+      border-color: var(--accent-border);
+      color: var(--text);
+    }
+    .nav-btn svg { width: 14px; height: 14px; }
+    .nav-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+      font-weight: 600;
+    }
+    .nav-btn.primary:hover {
+      background: #ffe070;
+      box-shadow: 0 4px 16px rgba(240,192,64,.25);
+    }
+
+    /* Mobile sidebar toggle */
+    .sidebar-toggle {
+      display: none;
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: var(--bg);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(240,192,64,.4);
+      align-items: center; justify-content: center;
+    }
+    .sidebar-toggle svg { width: 20px; height: 20px; }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed; top: 64px; left: 0; bottom: 0;
+        width: 300px; z-index: 150;
+        background: var(--bg);
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+        height: calc(100vh - 64px);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-toggle { display: flex; }
+      .sidebar-overlay {
+        display: none;
+        position: fixed; inset: 0; top: 64px;
+        background: rgba(0,0,0,.5);
+        z-index: 149;
+      }
+      .sidebar-overlay.open { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Topbar -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="/" class="topbar-logo">
+      <img src="/assets/img/daydom_logo_full_dark_bg.png" alt="DayDom Performance Group">
+    </a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-label">Trading Kurs</span>
+  </div>
+  <div class="topbar-right">
+    <a href="/mitglieder/" class="topbar-btn">Übersicht</a>
+    <button class="topbar-btn" onclick="handleSignOut()">Abmelden</button>
+  </div>
+</nav>
+
+<div class="layout" id="main-content" style="display:none">
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">Trading <em>Kurs</em></h2>
+      <div class="sidebar-progress" id="progress-text">0 / 0 Lektionen abgeschlossen</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div id="modules-list"></div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content" id="lesson-content">
+    <div class="content-header">
+      <div class="content-module-label" id="current-module-label">Modul 01</div>
+      <h1 class="content-title" id="current-lesson-title">Lektion auswählen</h1>
+      <div class="content-meta" id="current-lesson-meta"></div>
+    </div>
+
+    <div class="video-container" id="video-container">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="video-placeholder-text">Kursinhalt wird geladen</div>
+        <div class="video-placeholder-hint">Wähle eine Lektion aus dem Menü links</div>
+      </div>
+    </div>
+
+    <div class="lesson-content" id="lesson-description">
+      <h3>Willkommen zum DayDom Trading Kurs</h3>
+      <p>Wähle links ein Modul und eine Lektion aus, um zu starten. Der Kurs ist in aufeinander aufbauende Module gegliedert — beginne am besten mit Modul 01.</p>
+      <p>Die Kurs-Inhalte werden in Kürze hier hinterlegt. Du wirst benachrichtigt, sobald neue Lektionen verfügbar sind.</p>
+    </div>
+
+    <div class="lesson-nav" id="lesson-nav" style="display:none">
+      <button class="nav-btn" id="prev-btn" onclick="prevLesson()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Vorherige
+      </button>
+      <button class="nav-btn primary" id="next-btn" onclick="nextLesson()">
+        Nächste
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </main>
+
+</div>
+
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/supabase-auth.js"></script>
+<script>
+  // Course structure — placeholder modules
+  const COURSE = [
+    {
+      id: 'm1',
+      title: 'Grundlagen',
+      lessons: [
+        { id: 'l1-1', title: 'Was ist Trading?', duration: '12:00', description: 'Eine Einführung in die Welt des Tradings — was es ist, wie es funktioniert und warum es eine Fähigkeit ist, die jeder lernen kann.' },
+        { id: 'l1-2', title: 'Märkte verstehen', duration: '15:00', description: 'Die wichtigsten Märkte im Überblick: Forex, Indizes, Krypto und Rohstoffe. Wo und wann du traden kannst.' },
+        { id: 'l1-3', title: 'Broker & Plattformen', duration: '10:00', description: 'Welchen Broker du brauchst, welche Plattform für den Start am besten ist und worauf du achten musst.' },
+        { id: 'l1-4', title: 'Dein erstes Setup', duration: '08:00', description: 'Chart öffnen, Zeitrahmen einstellen, erste Indikatoren — dein Trading-Arbeitsplatz einrichten.' },
+      ]
+    },
+    {
+      id: 'm2',
+      title: 'Chartanalyse',
+      lessons: [
+        { id: 'l2-1', title: 'Candlesticks lesen', duration: '14:00', description: 'Die Sprache der Kerzen verstehen — Doji, Engulfing, Hammer und Co. Was dir jede einzelne Kerze sagt.' },
+        { id: 'l2-2', title: 'Support & Resistance', duration: '18:00', description: 'Unterstützungs- und Widerstandszonen erkennen und richtig einzeichnen — das Fundament jeder Analyse.' },
+        { id: 'l2-3', title: 'Trendlinien & Struktur', duration: '16:00', description: 'Trends erkennen, Marktstruktur verstehen und den Kontext für deine Trades setzen.' },
+        { id: 'l2-4', title: 'Indikatoren sinnvoll nutzen', duration: '13:00', description: 'EMA, RSI, MACD — welche Indikatoren wirklich helfen und wie du sie richtig einsetzt (ohne Overload).' },
+      ]
+    },
+    {
+      id: 'm3',
+      title: 'Risikomanagement',
+      lessons: [
+        { id: 'l3-1', title: 'Position Sizing', duration: '11:00', description: 'Wie groß darf deine Position sein? Die Mathematik hinter dem Risikomanagement — einfach erklärt.' },
+        { id: 'l3-2', title: 'Stop-Loss Strategien', duration: '14:00', description: 'Wo du deinen Stop setzt, warum er nicht verhandelbar ist und wie du ihn an die Marktstruktur anpasst.' },
+        { id: 'l3-3', title: 'Risk-Reward Ratio', duration: '10:00', description: 'Warum du nicht 50% Winrate brauchst — und wie ein gutes CRV dein gesamtes Trading verändert.' },
+        { id: 'l3-4', title: 'Drawdown Management', duration: '09:00', description: 'Was tun bei Verlustserien? Wie du Drawdowns managst ohne emotional zu reagieren.' },
+      ]
+    },
+    {
+      id: 'm4',
+      title: 'Strategien',
+      lessons: [
+        { id: 'l4-1', title: 'Breakout Trading', duration: '17:00', description: 'Ausbrüche aus Ranges und Konsolidierungen erkennen und profitabel handeln.' },
+        { id: 'l4-2', title: 'Pullback Trading', duration: '15:00', description: 'Im Trend einsteigen — Pullbacks identifizieren und mit der richtigen Bestätigung handeln.' },
+        { id: 'l4-3', title: 'Supply & Demand', duration: '20:00', description: 'Angebot- und Nachfragezonen erkennen und als Einstiegspunkte nutzen — institutionelles Trading.' },
+        { id: 'l4-4', title: 'Deine persönliche Strategie', duration: '12:00', description: 'Wie du aus den gelernten Konzepten DEINE eigene Strategie entwickelst — angepasst an deinen Stil.' },
+      ]
+    },
+    {
+      id: 'm5',
+      title: 'Prop Trading',
+      lessons: [
+        { id: 'l5-1', title: 'Was ist Prop Trading?', duration: '10:00', description: 'Prop Firms erklärt — wie du mit Fremdkapital tradest und was du dafür brauchst.' },
+        { id: 'l5-2', title: 'Challenge bestehen', duration: '16:00', description: 'Die Phase 1 und Phase 2 der Evaluation — Regeln, Strategien und typische Fehler.' },
+        { id: 'l5-3', title: 'Funded Account managen', duration: '13:00', description: 'Du hast den Funded Account — und jetzt? Regeln, Drawdown-Limits und Auszahlungen.' },
+        { id: 'l5-4', title: 'Scaling Plan', duration: '11:00', description: 'Von einem Account auf mehrere — wie du systematisch skalierst und dein Einkommen steigerst.' },
+      ]
+    },
+  ];
+
+  let currentLessonId = null;
+  let completedLessons = new Set();
+
+  function loadProgress() {
+    try {
+      const saved = localStorage.getItem('daydom_kurs_progress');
+      if (saved) completedLessons = new Set(JSON.parse(saved));
+    } catch (e) {}
+  }
+
+  function saveProgress() {
+    try {
+      localStorage.setItem('daydom_kurs_progress', JSON.stringify([...completedLessons]));
+    } catch (e) {}
+  }
+
+  function renderSidebar() {
+    const container = document.getElementById('modules-list');
+    container.innerHTML = '';
+
+    COURSE.forEach((mod, mi) => {
+      const moduleEl = document.createElement('div');
+      moduleEl.className = 'module' + (mi === 0 ? ' open' : '');
+      moduleEl.id = 'mod-' + mod.id;
+
+      const header = document.createElement('div');
+      header.className = 'module-header';
+      header.onclick = () => moduleEl.classList.toggle('open');
+
+      header.innerHTML = `
+        <span class="module-number">${String(mi + 1).padStart(2, '0')}</span>
+        <span class="module-name">${mod.title}</span>
+        <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      `;
+
+      const lessons = document.createElement('div');
+      lessons.className = 'module-lessons';
+
+      mod.lessons.forEach(lesson => {
+        const item = document.createElement('div');
+        item.className = 'lesson-item' + (completedLessons.has(lesson.id) ? ' completed' : '');
+        item.dataset.id = lesson.id;
+        item.onclick = () => selectLesson(mod, lesson);
+
+        const isCompleted = completedLessons.has(lesson.id);
+        const iconSvg = isCompleted
+          ? '<svg class="lesson-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg class="lesson-icon play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+
+        item.innerHTML = `
+          ${iconSvg}
+          <span>${lesson.title}</span>
+          <span class="lesson-duration">${lesson.duration}</span>
+        `;
+
+        lessons.appendChild(item);
+      });
+
+      moduleEl.appendChild(header);
+      moduleEl.appendChild(lessons);
+      container.appendChild(moduleEl);
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = COURSE.reduce((sum, m) => sum + m.lessons.length, 0);
+    const done = completedLessons.size;
+    document.getElementById('progress-text').textContent = `${done} / ${total} Lektionen abgeschlossen`;
+    document.getElementById('progress-fill').style.width = total > 0 ? (done / total * 100) + '%' : '0%';
+  }
+
+  function selectLesson(mod, lesson) {
+    currentLessonId = lesson.id;
+
+    document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
+    const item = document.querySelector(`.lesson-item[data-id="${lesson.id}"]`);
+    if (item) item.classList.add('active');
+
+    const mi = COURSE.indexOf(mod);
+    document.getElementById('current-module-label').textContent = `Modul ${String(mi + 1).padStart(2, '0')} — ${mod.title}`;
+    document.getElementById('current-lesson-title').textContent = lesson.title;
+    document.getElementById('current-lesson-meta').textContent = `Dauer: ${lesson.duration}`;
+
+    document.getElementById('video-container').innerHTML = `
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="video-placeholder-text">Video wird in Kürze verfügbar sein</div>
+        <div class="video-placeholder-hint">Die Kurs-Inhalte werden aktuell vorbereitet</div>
+      </div>
+    `;
+
+    document.getElementById('lesson-description').innerHTML = `
+      <h3>${lesson.title}</h3>
+      <p>${lesson.description}</p>
+    `;
+
+    document.getElementById('lesson-nav').style.display = '';
+
+    const modEl = document.getElementById('mod-' + mod.id);
+    if (modEl && !modEl.classList.contains('open')) {
+      modEl.classList.add('open');
+    }
+
+    if (window.innerWidth <= 768) {
+      toggleSidebar();
+    }
+  }
+
+  function getAllLessons() {
+    const all = [];
+    COURSE.forEach(mod => mod.lessons.forEach(l => all.push({ mod, lesson: l })));
+    return all;
+  }
+
+  function prevLesson() {
+    const all = getAllLessons();
+    const idx = all.findIndex(x => x.lesson.id === currentLessonId);
+    if (idx > 0) selectLesson(all[idx - 1].mod, all[idx - 1].lesson);
+  }
+
+  function nextLesson() {
+    const all = getAllLessons();
+    const idx = all.findIndex(x => x.lesson.id === currentLessonId);
+    if (idx >= 0 && idx < all.length - 1) {
+      completedLessons.add(currentLessonId);
+      saveProgress();
+      renderSidebar();
+      selectLesson(all[idx + 1].mod, all[idx + 1].lesson);
+    }
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  }
+
+  async function handleSignOut() {
+    await signOut();
+  }
+
+  async function init() {
+    const session = await requireAuth();
+    if (!session) return;
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('main-content').style.display = '';
+    document.getElementById('sidebarToggle').style.display = '';
+
+    loadProgress();
+    renderSidebar();
+  }
+
+  init();
+</script>
+</body>
+</html>
