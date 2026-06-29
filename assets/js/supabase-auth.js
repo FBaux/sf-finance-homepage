@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════
 
 const SUPABASE_URL  = 'https://gymhfbnljbosqxqqzdik.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_XCtT7o-kMVYfvoehu26P2Q_esQAvVIY';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bWhmYm5samJvc3F4cXF6ZGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzE3NDMsImV4cCI6MjA5NzcwNzc0M30.u2mvAnEe7QvOSgcv-U7X7qgrIQ7Mc9_EviXPctEAZoM';
 
 let _supabase = null;
 
