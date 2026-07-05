@@ -64,6 +64,14 @@ async function requireAdmin() {
   return session;
 }
 
+// Lädt geschützten HTML-Inhalt aus dem privaten Storage-Bucket "kurs".
+// Wirft bei Fehler (z. B. 401/403 wenn die Session serverseitig ungültig ist).
+async function fetchProtected(objectPath) {
+  const { data, error } = await getSupabase().storage.from('kurs').download(objectPath);
+  if (error) throw error;
+  return await data.text();
+}
+
 async function redirectIfLoggedIn() {
   const session = await getSession();
   if (session) {
