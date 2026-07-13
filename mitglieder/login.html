@@ -14,14 +14,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #060c1a;
-      --card:       #0f1d33;
-      --card2:      #0a1628;
+      --bg:         #0c1220;
+      --card:       #161f33;
+      --card2:      #0a0f1b;
       --border:     #1e2e4a;
       --border2:    #162745;
-      --accent:     #f0c040;
-      --accent-dim: rgba(240,192,64,.08);
-      --accent-mid: rgba(240,192,64,.18);
+      --accent:     #d4b96a;
+      --accent-dim: rgba(212,185,106,.08);
+      --accent-mid: rgba(212,185,106,.18);
       --accent-border: rgba(201,168,76,.25);
       --danger:     #f05252;
       --success:    #22c55e;
@@ -50,8 +50,8 @@
       content: '';
       position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(240,192,64,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(240,192,64,.025) 1px, transparent 1px);
+        linear-gradient(rgba(212,185,106,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,185,106,.025) 1px, transparent 1px);
       background-size: 44px 44px;
       pointer-events: none;
     }
@@ -146,8 +146,8 @@
       transition: border-color .2s, box-shadow .2s;
     }
     .form-input:focus {
-      border-color: rgba(240,192,64,.4);
-      box-shadow: 0 0 0 3px rgba(240,192,64,.08);
+      border-color: rgba(212,185,106,.4);
+      box-shadow: 0 0 0 3px rgba(212,185,106,.08);
     }
     .form-input::placeholder { color: var(--text3); }
 
@@ -169,7 +169,7 @@
     }
     .form-submit:hover {
       background: #ffe070;
-      box-shadow: 0 8px 28px rgba(240,192,64,.3);
+      box-shadow: 0 8px 28px rgba(212,185,106,.3);
       transform: translateY(-1px);
     }
     .form-submit:active { transform: translateY(0); }
@@ -245,6 +245,10 @@
     @media (max-width: 480px) {
       body { padding: 1rem; }
       .login-card { padding: 2rem 1.5rem; }
+    }
+    /* Logo — monochrome gold (source PNG is a green/red 3D render) */
+    img[src*="daydom_logo"] {
+      filter: grayscale(1) sepia(1) saturate(1.6) hue-rotate(-3deg) brightness(.95) contrast(1.05);
     }
   </style>
 </head>

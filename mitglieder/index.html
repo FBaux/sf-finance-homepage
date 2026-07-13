@@ -16,14 +16,14 @@
     a { text-decoration: none; }
 
     :root {
-      --bg:         #060c1a;
-      --card:       #0f1d33;
-      --card2:      #0a1628;
+      --bg:         #0c1220;
+      --card:       #161f33;
+      --card2:      #0a0f1b;
       --border:     #1e2e4a;
       --border2:    #162745;
-      --accent:     #f0c040;
-      --accent-dim: rgba(240,192,64,.08);
-      --accent-mid: rgba(240,192,64,.18);
+      --accent:     #d4b96a;
+      --accent-dim: rgba(212,185,106,.08);
+      --accent-mid: rgba(212,185,106,.18);
       --accent-border: rgba(201,168,76,.25);
       --gold-mid:   #c9a84c;
       --text:       #e8edf5;
@@ -49,8 +49,8 @@
       content: '';
       position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(240,192,64,.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(240,192,64,.02) 1px, transparent 1px);
+        linear-gradient(rgba(212,185,106,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,185,106,.02) 1px, transparent 1px);
       background-size: 44px 44px;
       pointer-events: none;
     }
@@ -219,8 +219,8 @@
       border-radius: 3px;
     }
     .card-badge.live {
-      background: rgba(240,192,64,.1);
-      border: 1px solid rgba(240,192,64,.25);
+      background: rgba(212,185,106,.1);
+      border: 1px solid rgba(212,185,106,.25);
       color: var(--accent);
     }
     .card-badge.soon {
@@ -304,6 +304,10 @@
       .cards-grid { grid-template-columns: 1fr; }
       .quick-grid { grid-template-columns: 1fr; }
       .topbar-user { display: none; }
+    }
+    /* Logo — monochrome gold (source PNG is a green/red 3D render) */
+    img[src*="daydom_logo"] {
+      filter: grayscale(1) sepia(1) saturate(1.6) hue-rotate(-3deg) brightness(.95) contrast(1.05);
     }
   </style>
 </head>
