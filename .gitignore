@@ -15,3 +15,7 @@ Thumbs.db
 node_modules/
 *.log
 .playwright-mcp/
+
+# ── Werkzeug-Zustand / erzeugte Datenbanken ──
+.claude-flow/
+*.db
