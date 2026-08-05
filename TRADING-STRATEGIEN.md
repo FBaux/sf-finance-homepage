@@ -42,6 +42,10 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+**Entry-Ausführung:** Market, direkt beim **Close der 15m-Bestätigungskerze**.
+Es wird nicht auf einen Retest in die IFVG oder den Engulfing-Körper gewartet —
+lieber ein schlechterer Kurs als ein verpasstes Setup.
+
 **Trade-Management:** keins. SL und TP stehen beim Entry und werden nicht mehr
 angefasst — keine Teilabnahme, kein Break-even-Stop, kein Nachziehen. Die
 Position läuft in den Stop oder ins Ziel. Bewusst so gewählt, damit die Setups
