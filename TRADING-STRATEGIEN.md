@@ -42,6 +42,11 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+**Trade-Management:** keins. SL und TP stehen beim Entry und werden nicht mehr
+angefasst — keine Teilabnahme, kein Break-even-Stop, kein Nachziehen. Die
+Position läuft in den Stop oder ins Ziel. Bewusst so gewählt, damit die Setups
+sauber messbar bleiben.
+
 Der Stop hängt damit immer an der **15m-Bestätigungs-Gap**, nie an der Zone, die
 den Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
 15m-IFVG — er liegt dann deutlich innerhalb der HTF-Zone. Das ist so gewollt:
@@ -119,5 +124,5 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
   Stop gilt dann — der engere oder der an der IFVG?
 - Was gilt als „relevantes Level" für die **Deckelung in Strategie 2** — nur
   Session-Level, oder auch HTF-Zonen und Volume-Profile-Level?
-- Werden **Teilgewinne** genommen (z. B. bei 1:1) oder der Stop auf Break-even
-  gezogen, oder läuft die Position unangetastet bis zum Ziel?
+- Gibt es ein **Maximum an Trades pro Tag**, und wird bei Hochtief-News
+  (CPI, FOMC, NFP) pausiert? Bei Gold relevant.
