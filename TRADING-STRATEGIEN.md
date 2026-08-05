@@ -46,6 +46,11 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+Der Stop hängt damit immer an der **15m-Bestätigung**, nie an der Zone, die den
+Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
+15m-IFVG — er liegt dann deutlich innerhalb der HTF-Zone. Das ist so gewollt:
+enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
+
 **Positionsgröße:** fest **0,03 Lot** auf Vantage, in allen drei Strategien und
 unabhängig vom Setup. Damit schwankt das Risiko in Euro mit dem Stop-Abstand —
 eine große 15m-IFVG kostet im Stop ein Vielfaches einer kleinen. Wer die Setups
@@ -71,11 +76,6 @@ angefasst — keine Teilabnahme, kein Break-even-Stop, kein Nachziehen. Die
 Position läuft in den Stop oder ins Ziel. Bewusst so gewählt, damit die Setups
 sauber messbar bleiben.
 
-Der Stop hängt damit immer an der **15m-Bestätigungs-Gap**, nie an der Zone, die
-den Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
-15m-IFVG — er liegt dann deutlich innerhalb der HTF-Zone. Das ist so gewollt:
-enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
-
 ---
 
 ## Strategie 1 — Volume Profile der Asia Session
@@ -100,8 +100,7 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
 6. **Entry** auf Bestätigung.
 7. **Ziel: 2:1 RR, ungedeckelt.** Anders als in Strategie 2 wird hier nicht
    vorzeitig geschlossen — POC und gegenüberliegendes Value-Area-Level sind
-   Durchgangsstationen, nicht Ziel. SL nach dem Bestätigungsmodell
-   oben (~25 % Puffer über der FVG).
+   Durchgangsstationen, nicht Ziel. SL nach dem Bestätigungsmodell oben.
 
 ---
 
