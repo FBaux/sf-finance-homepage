@@ -69,8 +69,12 @@ minRR      = input.float(0.0, "Mindest-RR (0 = aus)", minval = 0.0, step = 0.1, 
 gNews = "News-Filter"
 useNews  = input.bool(true, "News-Blackouts aktiv", group = gNews)
 newsPad  = input.int(15, "Blackout +/- Minuten", minval = 0, group = gNews)
-newsList = input.text_area("", "Termine, je Zeile: YYYY-MM-DD HH:MM (Berliner Zeit)", group = gNews,
-     tooltip = "Pine kennt keinen Wirtschaftskalender. CPI-, FOMC- und NFP-Termine muessen hier manuell gepflegt werden.")
+autoNfp  = input.bool(true, "NFP automatisch (erster Freitag im Monat)", group = gNews,
+     tooltip = "Der einzige der drei Termine mit fester Kalenderregel. CPI und FOMC wandern und muessen unten eingetragen werden.")
+nfpHour  = input.int(14, "NFP Stunde", minval = 0, maxval = 23, group = gNews, inline = "nfp")
+nfpMin   = input.int(30, "Minute",     minval = 0, maxval = 59, group = gNews, inline = "nfp")
+newsList = input.text_area("", "CPI- und FOMC-Termine, je Zeile: YYYY-MM-DD HH:MM (Berliner Zeit)", group = gNews,
+     tooltip = "Pine hat keinen Zugriff auf den TradingView-Wirtschaftskalender — der ist reine Chart-Oberflaeche und fuer Skripte nicht lesbar. Termine aus dem BLS- und dem Fed-Kalender uebernehmen, beide erscheinen ein Jahr im Voraus.")
 
 // --- Darstellung -------------------------------------------------------------
 gView = "Darstellung"
@@ -105,13 +109,25 @@ if barstate.isfirst and useNews and str.length(newsList) > 0
                 if not na(y) and not na(mo) and not na(dd) and not na(hh) and not na(mi)
                     array.push(blackouts, timestamp(TZ, int(y), int(mo), int(dd), int(hh), int(mi)))
 
+// NFP folgt als einziger der drei Termine einer Kalenderregel: erster Freitag
+// im Monat, 14:30 deutscher Zeit. Die Uhrzeit ist ganzjaehrig stabil, weil sich
+// US- und EU-Sommerzeit gegeneinander aufheben — ausser in den zwei bis drei
+// Wochen im Maerz und Ende Oktober, in denen die Umstellungen auseinanderlaufen.
+// Dann liegt der Termin eine Stunde frueher oder spaeter.
+isNfpDay = dayofweek(time, TZ) == dayofweek.friday and dayofmonth(time, TZ) <= 7
+
 inBlackout() =>
     bool hit = false
-    if useNews and array.size(blackouts) > 0
-        pad = newsPad * 60 * 1000
-        for i = 0 to array.size(blackouts) - 1
-            t = array.get(blackouts, i)
-            if time_close > t - pad and time < t + pad
+    pad = newsPad * 60 * 1000
+    if useNews
+        if array.size(blackouts) > 0
+            for i = 0 to array.size(blackouts) - 1
+                t = array.get(blackouts, i)
+                if time_close > t - pad and time < t + pad
+                    hit := true
+        if autoNfp and isNfpDay
+            nfpT = timestamp(TZ, year(time, TZ), month(time, TZ), dayofmonth(time, TZ), nfpHour, nfpMin)
+            if time_close > nfpT - pad and time < nfpT + pad
                 hit := true
     hit
 
@@ -380,4 +396,18 @@ plotshape(showSignals and armedLong,  "Bestaetigung Long",  shape.xcross, locati
 //    wird verworfen.
 // 6. Ein Session-Level ist nach Sweep oder Durchbruch verbraucht und wird
 //    nicht erneut gehandelt.
+// 7. NFP wird als erster Freitag im Monat um 14:30 angenommen. Das BLS weicht
+//    davon in seltenen Faellen ab, und in den Wochen mit versetzter
+//    Sommerzeitumstellung liegt der Termin eine Stunde daneben.
+//
+// WARUM DER NEWS-FILTER MANUELL IST
+// -----------------------------------------------------------------------------
+// Pine hat keinen Zugriff auf den TradingView-Wirtschaftskalender. Die
+// Termin-Fahnen unter dem Chart und das Kalender-Panel sind Oberflaeche, kein
+// Skript-API. request.economic() liefert volkswirtschaftliche Datenreihen
+// (CPI-Wert, Arbeitslosenquote), nicht die Veroeffentlichungszeitpunkte — und
+// stempelt sie nach Referenzperiode statt nach Release-Minute. Fuer ein
+// 15-Minuten-Fenster unbrauchbar. Im spaeteren Live-Betrieb gehoert der
+// News-Filter daher besser in die Webhook-Bridge, die einen Kalender-Feed
+// abfragen kann.
 // =============================================================================
