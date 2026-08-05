@@ -77,6 +77,9 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
 Der klassische Fall, gleiche Mechanik ohne Volume Profile.
 
 1. **Session High** oder **Session Low** wird gesweept — Liquidität wird rausgenommen.
+   In Frage kommen die Ranges von **Asia, London und NY**. Maßgeblich ist immer
+   die jeweils **abgeschlossene** Session, deren Hoch/Tief dann im folgenden
+   Fenster als Liquiditätsziel dient. Das Vortages-Hoch/-Tief zählt nicht dazu.
 2. Bestätigung abwarten: IFVG oder Engulfing — im 15m-Chart.
 3. **Entry** auf Bestätigung.
 4. SL nach dem Bestätigungsmodell.
