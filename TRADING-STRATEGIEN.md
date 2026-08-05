@@ -53,7 +53,9 @@ Risiko auf derselben Idee.
 
 **Anzahl und News:** kein Tageslimit — jedes gültige Setup wird genommen. Rund um
 die großen Termine (**CPI, FOMC, NFP**) wird dagegen nicht gehandelt; bei Gold
-sind die Ausschläge dort zu groß für die engen Stops.
+sind die Ausschläge dort zu groß für die engen Stops. Das Fenster ist eng
+gefasst: **15 Minuten vor bis 15 Minuten nach** der Veröffentlichung. Davor und
+danach läuft der normale Betrieb weiter.
 
 **Entry-Ausführung:** Market, direkt beim **Close der 15m-Bestätigungskerze**.
 Es wird nicht auf einen Retest in die IFVG oder den Engulfing-Körper gewartet —
@@ -153,8 +155,6 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
 - Wenn **beide** Bestätigungen auftreten (Engulfing erzeugt eine IFVG): welcher
   Stop gilt dann — der engere oder der an der IFVG?
-- Wie groß ist das **News-Fenster** genau — 30 Minuten vor und nach dem Termin,
-  oder der ganze Tag?
 - Wie wird die **Positionsgröße** bestimmt — fester Prozentsatz des Kontos pro
   Trade, oder fester Betrag? Bei Prop-Firm-Konten zusätzlich relevant wegen der
   Daily-Loss-Limits.
