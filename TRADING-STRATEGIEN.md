@@ -58,7 +58,10 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
 4. Warten, bis eines dieser Level gesweept wird — **bevorzugt VAH oder VAL**.
 5. Bestätigung abwarten: IFVG mit Close außerhalb, oder Engulfing — im 15m-Chart.
 6. **Entry** auf Bestätigung.
-7. **Ziel: 2:1 RR.** SL nach dem Bestätigungsmodell oben (~25 % Puffer über der FVG).
+7. **Ziel: 2:1 RR, ungedeckelt.** Anders als in Strategie 2 wird hier nicht
+   vorzeitig geschlossen — der POC und das gegenüberliegende Value-Area-Level
+   gelten als Durchgangsstationen, nicht als Ziel. SL nach dem Bestätigungsmodell
+   oben (~25 % Puffer über der FVG).
 
 ---
 
@@ -101,7 +104,7 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
 - Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
   IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
-- Wird das 2:1-Ziel in **Strategie 1** ebenfalls am nächsten Level gedeckelt
-  (POC, gegenüberliegendes Value-Area-Level), so wie in Strategie 2?
+- Was gilt als „relevantes Level" für die **Deckelung in Strategie 2** — nur
+  Session-Level, oder auch HTF-Zonen und Volume-Profile-Level?
 - Werden **Teilgewinne** genommen (z. B. bei 1:1) oder der Stop auf Break-even
   gezogen, oder läuft die Position unangetastet bis zum Ziel?
