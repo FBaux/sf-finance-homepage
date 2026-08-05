@@ -114,6 +114,9 @@ Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR
 1. **1H- oder 4H-Order-Block** identifizieren — per Indikator oder manuell.
    Ebenso die **1H- bzw. 4H-FVG**.
 2. Warten auf den **Hit** der jeweiligen Zone (OB oder FVG).
+   Die Zone eines Order Blocks ist die **komplette Kerze von High bis Low**,
+   inklusive Dochte — nicht nur der Körper und nicht erst der 50-%-Punkt. Der
+   Hit zählt, sobald der Preis das äußere Ende der Zone berührt.
    Mehrfache Tests sind zulässig — eine schon einmal angetestete Zone bleibt
    gültig. Erst wenn der Preis **komplett durch die Zone geschlossen** hat, ist
    sie verbraucht und liefert kein Setup mehr.
