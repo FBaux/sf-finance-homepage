@@ -1,0 +1,81 @@
+# TRADING-STRATEGIEN — DayDom Performance Group
+
+Festgehaltener Stand der drei Setups, Diktat vom 05.08.2026.
+
+Die Begriffe sind aus der Sprachaufnahme in die übliche Schreibweise überführt:
+FVG = Fair Value Gap, IFVG = Inverse Fair Value Gap, OB = Order Block,
+VAH/VAL/POC = Value Area High / Value Area Low / Point of Control.
+
+---
+
+## Bestätigungsmodell (gilt für alle drei Strategien)
+
+Nach dem Auslöser wird nie direkt eingestiegen. Es braucht **eine** der beiden Bestätigungen:
+
+1. **IFVG** — eine bestehende FVG wird gegenläufig durchhandelt und invertiert.
+   Gültig erst, wenn die Kerze **außerhalb der IFVG schließt**. Ein Docht reicht nicht.
+2. **Engulfing** — Umkehrkerze, die den Körper der Vorkerze vollständig umschließt.
+
+Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
+
+**Stop Loss:** knapp jenseits der FVG, mit Puffer von rund **25 % der FVG-Größe**.
+Bei Long unter, bei Short über die Gap.
+
+---
+
+## Strategie 1 — Volume Profile der Asia Session
+
+**Auslöser: Sweep eines Volume-Profile-Levels.**
+
+1. Volume Profile über die **komplette Asia Session** ziehen.
+   Aktuell eingetragenes Fenster: **02:00–10:00**. Das Fenster ist die aktuelle
+   Einstellung, nicht Teil der Strategie-Definition — bei Broker- oder
+   Zeitzonenwechsel anpassen.
+2. Aus dem Profil ergeben sich **VAH**, **VAL** und **POC**.
+3. Warten, bis eines dieser Level gesweept wird — **bevorzugt VAH oder VAL**.
+4. Bestätigung abwarten: IFVG mit Close außerhalb, oder Engulfing.
+5. **Entry** auf Bestätigung.
+6. **Ziel: 2:1 RR.** SL nach dem Bestätigungsmodell oben (~25 % Puffer über der FVG).
+
+---
+
+## Strategie 2 — Session Sweep
+
+Der klassische Fall, gleiche Mechanik ohne Volume Profile.
+
+1. **Session High** oder **Session Low** wird gesweept — Liquidität wird rausgenommen.
+2. Bestätigung abwarten: IFVG oder Engulfing.
+3. **Entry** auf Bestätigung.
+4. SL nach dem Bestätigungsmodell.
+
+---
+
+## Strategie 3 — HTF Order Block / FVG Reaction
+
+Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR.
+
+1. **1H- oder 4H-Order-Block** identifizieren — per Indikator oder manuell.
+   Ebenso die **1H- bzw. 4H-FVG**.
+2. Warten auf den **Hit** der jeweiligen Zone (OB oder FVG).
+3. **Reaktion abwarten** — der Preis muss drehen.
+4. Bestätigung: IFVG oder Engulfing.
+5. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
+   - 4H-Setup → nächster 4H-OB; liegt eine 4H-FVG davor, ist die das Ziel.
+   - 1H-Setup → nächster 1H-OB; liegt eine 1H-FVG davor, ist die das Ziel.
+
+Der Zeitrahmen bleibt über Setup und Ziel hinweg konsistent — ein 4H-Einstieg
+targetiert keine 1H-Zone.
+
+---
+
+## Offene Punkte
+
+Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
+
+- Gilt das **2:1-RR-Ziel** aus Strategie 1 auch für Strategie 2? Bei Strategie 3
+  ist das Ziel strukturell definiert, dort greift es nicht.
+- Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
+  IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
+- Ist ein **Sweep** definiert als Docht durch das Level, oder braucht es einen
+  Close jenseits davon mit anschließendem Rückgewinn?
+- Gibt es ein **Zeitfenster** nach dem Sweep, in dem die Bestätigung kommen muss?
