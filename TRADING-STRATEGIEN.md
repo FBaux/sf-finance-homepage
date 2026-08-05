@@ -46,6 +46,11 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+**Positionsgröße:** fest **0,03 Lot** auf Vantage, in allen drei Strategien und
+unabhängig vom Setup. Damit schwankt das Risiko in Euro mit dem Stop-Abstand —
+eine große 15m-IFVG kostet im Stop ein Vielfaches einer kleinen. Wer die Setups
+später vergleichen will, muss also in R rechnen, nicht in Euro.
+
 **Bei Konfluenz:** fallen zwei Setups zusammen — etwa VAH und Session-High auf
 fast demselben Kurs — wird trotzdem nur **ein Trade in normaler Größe** genommen.
 Die Konfluenz erhöht die Qualität, nicht die Positionsgröße. Kein doppeltes
@@ -155,6 +160,3 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
 - Wenn **beide** Bestätigungen auftreten (Engulfing erzeugt eine IFVG): welcher
   Stop gilt dann — der engere oder der an der IFVG?
-- Wie wird die **Positionsgröße** bestimmt — fester Prozentsatz des Kontos pro
-  Trade, oder fester Betrag? Bei Prop-Firm-Konten zusätzlich relevant wegen der
-  Daily-Loss-Limits.
