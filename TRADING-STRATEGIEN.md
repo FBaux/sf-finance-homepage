@@ -32,8 +32,12 @@ Nach dem Auslöser wird nie direkt eingestiegen. Es braucht **eine** der beiden 
 
 Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 
-**Stop Loss:** knapp jenseits der FVG, mit Puffer von rund **25 % der FVG-Größe**.
-Bei Long unter, bei Short über die Gap.
+**Stop Loss** — hängt davon ab, welche der beiden Bestätigungen gegriffen hat:
+
+- **Nach IFVG:** knapp jenseits der FVG, mit Puffer von rund **25 % der FVG-Größe**.
+  Bei Long unter, bei Short über die Gap.
+- **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
+  ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
 Der Stop hängt damit immer an der **15m-Bestätigungs-Gap**, nie an der Zone, die
 den Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
@@ -102,8 +106,8 @@ targetiert keine 1H-Zone.
 
 Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
-- Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
-  IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
+- Wenn **beide** Bestätigungen auftreten (Engulfing erzeugt eine IFVG): welcher
+  Stop gilt dann — der engere oder der an der IFVG?
 - Was gilt als „relevantes Level" für die **Deckelung in Strategie 2** — nur
   Session-Level, oder auch HTF-Zonen und Volume-Profile-Level?
 - Werden **Teilgewinne** genommen (z. B. bei 1:1) oder der Stop auf Break-even
