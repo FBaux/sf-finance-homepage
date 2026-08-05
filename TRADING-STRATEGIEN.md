@@ -67,9 +67,12 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
 Der klassische Fall, gleiche Mechanik ohne Volume Profile.
 
 1. **Session High** oder **Session Low** wird gesweept — Liquidität wird rausgenommen.
-2. Bestätigung abwarten: IFVG oder Engulfing.
+2. Bestätigung abwarten: IFVG oder Engulfing — im 15m-Chart.
 3. **Entry** auf Bestätigung.
 4. SL nach dem Bestätigungsmodell.
+5. **Ziel: 2:1 RR, gedeckelt am nächsten relevanten Level.** Liegt eine Zone vor
+   dem rechnerischen 2:1-Ziel, wird dort geschlossen statt darauf zu hoffen,
+   dass der Preis durchläuft.
 
 ---
 
@@ -96,9 +99,9 @@ targetiert keine 1H-Zone.
 
 Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
-- Gilt das **2:1-RR-Ziel** aus Strategie 1 auch für Strategie 2? Bei Strategie 3
-  ist das Ziel strukturell definiert, dort greift es nicht.
 - Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
   IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
+- Wird das 2:1-Ziel in **Strategie 1** ebenfalls am nächsten Level gedeckelt
+  (POC, gegenüberliegendes Value-Area-Level), so wie in Strategie 2?
 - Werden **Teilgewinne** genommen (z. B. bei 1:1) oder der Stop auf Break-even
   gezogen, oder läuft die Position unangetastet bis zum Ziel?
