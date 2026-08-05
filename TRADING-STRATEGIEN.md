@@ -42,6 +42,11 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+**Bei Konfluenz:** fallen zwei Setups zusammen — etwa VAH und Session-High auf
+fast demselben Kurs — wird trotzdem nur **ein Trade in normaler Größe** genommen.
+Die Konfluenz erhöht die Qualität, nicht die Positionsgröße. Kein doppeltes
+Risiko auf derselben Idee.
+
 **Anzahl und News:** kein Tageslimit — jedes gültige Setup wird genommen. Rund um
 die großen Termine (**CPI, FOMC, NFP**) wird dagegen nicht gehandelt; bei Gold
 sind die Ausschläge dort zu groß für die engen Stops.
