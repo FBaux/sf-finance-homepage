@@ -112,6 +112,9 @@ Der klassische Fall, gleiche Mechanik ohne Volume Profile.
 5. **Ziel: 2:1 RR, gedeckelt am nächsten relevanten Level.** Liegt eine Zone vor
    dem rechnerischen 2:1-Ziel, wird dort geschlossen statt darauf zu hoffen,
    dass der Preis durchläuft.
+   Als Deckel zählen die **Session-Level** sowie die **1H-/4H-Zonen aus
+   Strategie 3** (Order Blocks und FVGs). Die Volume-Profile-Level aus
+   Strategie 1 deckeln hier **nicht**.
 
 ---
 
@@ -150,7 +153,8 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
 
 - Wenn **beide** Bestätigungen auftreten (Engulfing erzeugt eine IFVG): welcher
   Stop gilt dann — der engere oder der an der IFVG?
-- Was gilt als „relevantes Level" für die **Deckelung in Strategie 2** — nur
-  Session-Level, oder auch HTF-Zonen und Volume-Profile-Level?
 - Wie groß ist das **News-Fenster** genau — 30 Minuten vor und nach dem Termin,
   oder der ganze Tag?
+- Wie wird die **Positionsgröße** bestimmt — fester Prozentsatz des Kontos pro
+  Trade, oder fester Betrag? Bei Prop-Firm-Konten zusätzlich relevant wegen der
+  Daily-Loss-Limits.
