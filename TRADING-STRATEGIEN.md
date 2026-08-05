@@ -10,6 +10,11 @@ VAH/VAL/POC = Value Area High / Value Area Low / Point of Control.
 
 ## Bestätigungsmodell (gilt für alle drei Strategien)
 
+**Alle Bestätigungen werden im 15-Minuten-Chart gesucht.** Ohne Ausnahme, in
+allen drei Strategien — unabhängig davon, auf welchem Zeitrahmen der Auslöser
+liegt. Ein 4H-Order-Block wird also nicht auf einer 4H-Kerze bestätigt, sondern
+auf 15m.
+
 Nach dem Auslöser wird nie direkt eingestiegen. Es braucht **eine** der beiden Bestätigungen:
 
 1. **IFVG** — eine bestehende FVG wird gegenläufig durchhandelt und invertiert.
@@ -58,7 +63,7 @@ Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR
    Ebenso die **1H- bzw. 4H-FVG**.
 2. Warten auf den **Hit** der jeweiligen Zone (OB oder FVG).
 3. **Reaktion abwarten** — der Preis muss drehen.
-4. Bestätigung: IFVG oder Engulfing.
+4. Bestätigung: IFVG oder Engulfing — **im 15m-Chart**, nicht im Zeitrahmen der Zone.
 5. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
    - 4H-Setup → nächster 4H-OB; liegt eine 4H-FVG davor, ist die das Ziel.
    - 1H-Setup → nächster 1H-OB; liegt eine 1H-FVG davor, ist die das Ziel.
