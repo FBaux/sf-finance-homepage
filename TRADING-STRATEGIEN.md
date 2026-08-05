@@ -46,6 +46,10 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+Greifen beide Bestätigungen gleichzeitig — das Engulfing erzeugt selbst eine
+IFVG — gilt die **Engulfing-Regel**: der Stop sitzt über dem Hoch bzw. unter dem
+Tief der Kerze, nicht an der Gap.
+
 Der Stop hängt damit immer an der **15m-Bestätigung**, nie an der Zone, die den
 Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
 15m-IFVG — er liegt dann deutlich innerhalb der HTF-Zone. Das ist so gewollt:
@@ -155,7 +159,5 @@ targetiert keine 1H-Zone.
 
 ## Offene Punkte
 
-Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
-
-- Wenn **beide** Bestätigungen auftreten (Engulfing erzeugt eine IFVG): welcher
-  Stop gilt dann — der engere oder der an der IFVG?
+Aktuell keine. Alle Lücken aus dem ursprünglichen Diktat sind in der
+Rückfragerunde vom 05.08.2026 geschlossen worden.
