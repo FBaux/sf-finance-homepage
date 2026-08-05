@@ -42,6 +42,10 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 - **Nach Engulfing:** knapp jenseits von **Hoch bzw. Tief der Engulfing-Kerze**,
   ohne prozentualen Puffer. Hier gibt es keine FVG als Bezugsgröße.
 
+**Anzahl und News:** kein Tageslimit — jedes gültige Setup wird genommen. Rund um
+die großen Termine (**CPI, FOMC, NFP**) wird dagegen nicht gehandelt; bei Gold
+sind die Ausschläge dort zu groß für die engen Stops.
+
 **Entry-Ausführung:** Market, direkt beim **Close der 15m-Bestätigungskerze**.
 Es wird nicht auf einen Retest in die IFVG oder den Engulfing-Körper gewartet —
 lieber ein schlechterer Kurs als ein verpasstes Setup.
@@ -128,5 +132,5 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
   Stop gilt dann — der engere oder der an der IFVG?
 - Was gilt als „relevantes Level" für die **Deckelung in Strategie 2** — nur
   Session-Level, oder auch HTF-Zonen und Volume-Profile-Level?
-- Gibt es ein **Maximum an Trades pro Tag**, und wird bei Hochtief-News
-  (CPI, FOMC, NFP) pausiert? Bei Gold relevant.
+- Wie groß ist das **News-Fenster** genau — 30 Minuten vor und nach dem Termin,
+  oder der ganze Tag?
