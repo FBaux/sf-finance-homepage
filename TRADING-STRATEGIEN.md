@@ -10,6 +10,11 @@ VAH/VAL/POC = Value Area High / Value Area Low / Point of Control.
 
 ## Bestätigungsmodell (gilt für alle drei Strategien)
 
+**Was als Sweep gilt:** der Docht darf durch das Level laufen, die 15m-Kerze muss
+aber wieder **diesseits des Levels schließen**. Klassische Wick-Rejection. Ein
+Close jenseits des Levels ist kein Sweep, sondern ein Durchbruch — dann gibt es
+kein Setup.
+
 **Alle Bestätigungen werden im 15-Minuten-Chart gesucht.** Ohne Ausnahme, in
 allen drei Strategien — unabhängig davon, auf welchem Zeitrahmen der Auslöser
 liegt. Ein 4H-Order-Block wird also nicht auf einer 4H-Kerze bestätigt, sondern
@@ -91,6 +96,6 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
   ist das Ziel strukturell definiert, dort greift es nicht.
 - Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
   IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
-- Ist ein **Sweep** definiert als Docht durch das Level, oder braucht es einen
-  Close jenseits davon mit anschließendem Rückgewinn?
 - Gibt es ein **Zeitfenster** nach dem Sweep, in dem die Bestätigung kommen muss?
+  Auf 15m sind vier Kerzen eine Stunde — verfällt das Setup nach zwei Kerzen,
+  nach einer Stunde, oder erst zum Session-Ende?
