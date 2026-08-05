@@ -72,9 +72,11 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
 **Auslöser: Sweep eines Volume-Profile-Levels.**
 
 1. Volume Profile über die **komplette Asia Session** ziehen.
-   Aktuell eingetragenes Fenster: **02:00–10:00**. Das Fenster ist die aktuelle
-   Einstellung, nicht Teil der Strategie-Definition — bei Broker- oder
-   Zeitzonenwechsel anpassen.
+   Aktuell eingetragenes Fenster: **02:00–10:00 deutscher Zeit (MEZ/MESZ)**.
+   Da die Angabe an der lokalen Sommerzeit hängt, verschiebt sich die Session
+   zweimal jährlich gegenüber dem Markt — bei der Umstellung prüfen, ob das
+   Fenster noch die tatsächliche Asia-Session abdeckt. Das Fenster ist die
+   aktuelle Einstellung, nicht Teil der Strategie-Definition.
 2. Aus dem Profil ergeben sich **VAH**, **VAL** und **POC**.
 3. **Erst ab 10:00 gehandelt**, also nach Session-Ende. Bis dahin läuft das Profil
    noch, die Level stehen nicht fest. Ein Sweep innerhalb der Asia-Session zählt
