@@ -2,6 +2,9 @@
 
 Festgehaltener Stand der drei Setups, Diktat vom 05.08.2026.
 
+**Instrument: Gold (XAUUSD).** Alle Zeitangaben und Level-Definitionen beziehen
+sich darauf.
+
 Die Begriffe sind aus der Sprachaufnahme in die übliche Schreibweise überführt:
 FVG = Fair Value Gap, IFVG = Inverse Fair Value Gap, OB = Order Block,
 VAH/VAL/POC = Value Area High / Value Area Low / Point of Control.
