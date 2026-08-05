@@ -82,12 +82,14 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
    noch, die Level stehen nicht fest. Ein Sweep innerhalb der Asia-Session zählt
    nicht — gesucht wird der Sweep gegen die **abgeschlossene** Range, im
    London-/NY-Fenster.
-4. Warten, bis eines dieser Level gesweept wird — **bevorzugt VAH oder VAL**.
+4. Warten, bis **VAH oder VAL** gesweept wird. Nur diese beiden sind Auslöser.
+   Der **POC wird eingezeichnet, aber nie gehandelt** — er dient ausschließlich
+   der Orientierung im Profil.
 5. Bestätigung abwarten: IFVG mit Close außerhalb, oder Engulfing — im 15m-Chart.
 6. **Entry** auf Bestätigung.
 7. **Ziel: 2:1 RR, ungedeckelt.** Anders als in Strategie 2 wird hier nicht
-   vorzeitig geschlossen — der POC und das gegenüberliegende Value-Area-Level
-   gelten als Durchgangsstationen, nicht als Ziel. SL nach dem Bestätigungsmodell
+   vorzeitig geschlossen — POC und gegenüberliegendes Value-Area-Level sind
+   Durchgangsstationen, nicht Ziel. SL nach dem Bestätigungsmodell
    oben (~25 % Puffer über der FVG).
 
 ---
