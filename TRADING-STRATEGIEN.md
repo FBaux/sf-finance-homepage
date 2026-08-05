@@ -15,6 +15,10 @@ aber wieder **diesseits des Levels schließen**. Klassische Wick-Rejection. Ein
 Close jenseits des Levels ist kein Sweep, sondern ein Durchbruch — dann gibt es
 kein Setup.
 
+**Gültigkeitsfenster:** die Bestätigung muss innerhalb von **2–3 15m-Kerzen** nach
+dem Sweep kommen, also spätestens nach rund 45 Minuten. Danach ist das Setup
+verworfen — kommt die Reaktion nicht zügig, war sie nicht stark genug.
+
 **Alle Bestätigungen werden im 15-Minuten-Chart gesucht.** Ohne Ausnahme, in
 allen drei Strategien — unabhängig davon, auf welchem Zeitrahmen der Auslöser
 liegt. Ein 4H-Order-Block wird also nicht auf einer 4H-Kerze bestätigt, sondern
@@ -96,6 +100,5 @@ Nicht diktiert, bewusst nicht angenommen — vor der Umsetzung zu klären:
   ist das Ziel strukturell definiert, dort greift es nicht.
 - Gilt der **25-%-SL-Puffer** auch, wenn die Bestätigung ein Engulfing statt einer
   IFVG war? Dann fehlt die FVG als Bezugsgröße für den Puffer.
-- Gibt es ein **Zeitfenster** nach dem Sweep, in dem die Bestätigung kommen muss?
-  Auf 15m sind vier Kerzen eine Stunde — verfällt das Setup nach zwei Kerzen,
-  nach einer Stunde, oder erst zum Session-Ende?
+- Werden **Teilgewinne** genommen (z. B. bei 1:1) oder der Stop auf Break-even
+  gezogen, oder läuft die Position unangetastet bis zum Ziel?
