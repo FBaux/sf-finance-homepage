@@ -31,6 +31,8 @@ Nach dem Auslöser wird nie direkt eingestiegen. Es braucht **eine** der beiden 
 
 1. **IFVG** — eine bestehende FVG wird gegenläufig durchhandelt und invertiert.
    Gültig erst, wenn die Kerze **außerhalb der IFVG schließt**. Ein Docht reicht nicht.
+   Eine FVG, die aus dem Sweep-Move selbst stammt, ist das stärkere Signal; eine
+   ältere Gap, die zufällig am Level liegt, zählt aber ebenso.
 2. **Engulfing** — Umkehrkerze, die den Körper der Vorkerze vollständig umschließt.
 
 Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
