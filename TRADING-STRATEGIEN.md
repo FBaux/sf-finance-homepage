@@ -42,10 +42,14 @@ enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
    Einstellung, nicht Teil der Strategie-Definition — bei Broker- oder
    Zeitzonenwechsel anpassen.
 2. Aus dem Profil ergeben sich **VAH**, **VAL** und **POC**.
-3. Warten, bis eines dieser Level gesweept wird — **bevorzugt VAH oder VAL**.
-4. Bestätigung abwarten: IFVG mit Close außerhalb, oder Engulfing.
-5. **Entry** auf Bestätigung.
-6. **Ziel: 2:1 RR.** SL nach dem Bestätigungsmodell oben (~25 % Puffer über der FVG).
+3. **Erst ab 10:00 gehandelt**, also nach Session-Ende. Bis dahin läuft das Profil
+   noch, die Level stehen nicht fest. Ein Sweep innerhalb der Asia-Session zählt
+   nicht — gesucht wird der Sweep gegen die **abgeschlossene** Range, im
+   London-/NY-Fenster.
+4. Warten, bis eines dieser Level gesweept wird — **bevorzugt VAH oder VAL**.
+5. Bestätigung abwarten: IFVG mit Close außerhalb, oder Engulfing — im 15m-Chart.
+6. **Entry** auf Bestätigung.
+7. **Ziel: 2:1 RR.** SL nach dem Bestätigungsmodell oben (~25 % Puffer über der FVG).
 
 ---
 
