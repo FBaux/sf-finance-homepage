@@ -109,7 +109,8 @@ Der klassische Fall, gleiche Mechanik ohne Volume Profile.
 
 ## Strategie 3 — HTF Order Block / FVG Reaction
 
-Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR.
+Höherer Zeitrahmen. Das Ziel ergibt sich aus der Struktur statt aus einem festen
+RR — mit 1,5:1 als Untergrenze.
 
 1. **1H- oder 4H-Order-Block** identifizieren — per Indikator oder manuell.
    Ebenso die **1H- bzw. 4H-FVG**.
@@ -122,8 +123,11 @@ Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR
    sie verbraucht und liefert kein Setup mehr.
 3. **Reaktion abwarten** — der Preis muss drehen.
 4. Bestätigung: IFVG oder Engulfing — **im 15m-Chart**, nicht im Zeitrahmen der Zone.
-5. **Stop Loss:** 25 % jenseits der 15m-IFVG, nicht hinter der HTF-Zone.
-6. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
+5. **Stop Loss:** an der 15m-Bestätigung, nicht hinter der HTF-Zone — 25 %
+   jenseits der IFVG bzw. knapp hinter der Engulfing-Kerze.
+6. **Mindest-RR: 1,5:1.** Liegt die nächste Zone so nah, dass sich vom 15m-Stop
+   aus kein 1,5:1 ergibt, wird der Trade nicht genommen.
+7. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
    - 4H-Setup → nächster 4H-OB; liegt eine 4H-FVG davor, ist die das Ziel.
    - 1H-Setup → nächster 1H-OB; liegt eine 1H-FVG davor, ist die das Ziel.
 
