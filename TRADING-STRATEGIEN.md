@@ -26,6 +26,11 @@ Erst mit einer der beiden Bestätigungen wird der Entry gesetzt.
 **Stop Loss:** knapp jenseits der FVG, mit Puffer von rund **25 % der FVG-Größe**.
 Bei Long unter, bei Short über die Gap.
 
+Der Stop hängt damit immer an der **15m-Bestätigungs-Gap**, nie an der Zone, die
+den Auslöser geliefert hat. Auch bei einem 4H-Order-Block sitzt der Stop an der
+15m-IFVG — er liegt dann deutlich innerhalb der HTF-Zone. Das ist so gewollt:
+enger Stop, hohes RR, dafür bewusst mehr Fehlversuche.
+
 ---
 
 ## Strategie 1 — Volume Profile der Asia Session
@@ -64,7 +69,8 @@ Höherer Zeitrahmen, Ziel ergibt sich aus der Struktur statt aus einem festen RR
 2. Warten auf den **Hit** der jeweiligen Zone (OB oder FVG).
 3. **Reaktion abwarten** — der Preis muss drehen.
 4. Bestätigung: IFVG oder Engulfing — **im 15m-Chart**, nicht im Zeitrahmen der Zone.
-5. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
+5. **Stop Loss:** 25 % jenseits der 15m-IFVG, nicht hinter der HTF-Zone.
+6. **Take Profit:** die nächste Zone **im selben Zeitrahmen**.
    - 4H-Setup → nächster 4H-OB; liegt eine 4H-FVG davor, ist die das Ziel.
    - 1H-Setup → nächster 1H-OB; liegt eine 1H-FVG davor, ist die das Ziel.
 
