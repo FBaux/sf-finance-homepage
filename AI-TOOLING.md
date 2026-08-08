@@ -1,7 +1,7 @@
 # AI-TOOLING — Bewertung der „kostenlosen Alternativen"
 
-Bewertung vom 08.08.2026. Grundlage: fünf Karten aus einem Creator-Carousel
-(TikTok/Instagram, @digitalsaim), die je ein Bezahltool einer kostenlosen
+Bewertung vom 08.08.2026. Grundlage: zehn Karten aus zwei Creator-Carousels
+(@digitalsaim und @theromanknox), die je ein Bezahltool einer kostenlosen
 Alternative gegenüberstellen. Geprüft wurde nicht, ob die Tools gut sind,
 sondern ob sie zu dem passen, was dieses Repo tatsächlich braucht.
 
@@ -9,18 +9,44 @@ sondern ob sie zu dem passen, was dieses Repo tatsächlich braucht.
 
 ## Kurzfassung
 
-| # | Kategorie | Paid (Carousel) | Free (Carousel) | Bedarf hier | Urteil |
-|---|---|---|---|---|---|
-| 02 | Image Creation | Midjourney $60 | Nano Banana | **ja, laufend** | **Läuft bereits** — `assets/generate-images.sh` |
-| 03 | Cinematic Creation | Runway ML $76 | Stable Diffusion | nein | Kein Anwendungsfall im Repo |
-| 04 | Video Generation | Higgsfield $49 | Hailuo | **später** | Erst wenn Social-Content startet — Free-Tier unbrauchbar |
-| 05 | Presentation / Design | Canva $17 | Lovart | nein | Website ist handcodiert, keine Decks im Repo |
-| 07 | Voice Generation | ElevenLabs $99 | MiniMax | **später** | Für Kursvertonung — Free-Tier unbrauchbar |
+| Kategorie | Free-Alternative | Bedarf hier | Urteil |
+|---|---|---|---|
+| Image Creation | Nano Banana | **ja, laufend** | **Läuft bereits** — `assets/generate-images.sh` |
+| Image Generation | Google Flow | ja, laufend | Gleiche Modellfamilie, nur mit Oberfläche — kein Zugewinn |
+| Video Generation | Hailuo | später | Free-Tier ohne kommerzielle Rechte |
+| Video Generation | ArtFlow | später | Free-Tier mit Wasserzeichen |
+| Voice Generation | MiniMax | später | Free-Tier ohne kommerzielle Rechte |
+| Voice Cloning | FishAudio | **fraglich** | Open-Source-Modell ist **non-commercial** lizenziert |
+| Avatar Creation | Hedra | **fraglich** | Free-Tier ohne kommerzielle Rechte + Deepfake-Recht |
+| AI Avatar | HeyGen | **fraglich** | 3 Videos/Monat, Wasserzeichen + Deepfake-Recht |
+| Presentation / Design | Lovart | nein | Website ist handcodiert, keine Decks im Repo |
+| Cinematic Creation | Stable Diffusion | nein | Kein Anwendungsfall |
 
-**Ergebnis:** Von fünf Alternativen ist genau eine für dieses Projekt
-einsetzbar — und die ist bereits im Einsatz. Zwei sind später relevant, aber
-dann nicht in der kostenlosen Variante. Zwei lösen ein Problem, das wir nicht
-haben.
+**Ergebnis:** Von zehn Alternativen ist genau eine ohne Einschränkung
+einsetzbar — und die ist bereits im Einsatz. Zwei sind später relevant, dann
+aber nicht in der kostenlosen Variante. Drei berühren Persönlichkeitsrechte
+und sind keine reine Budgetfrage. Vier lösen ein Problem, das wir nicht haben.
+
+---
+
+## Warnung vorweg: die Zahlen der Carousels sind nicht belastbar
+
+Die beiden Carousels widersprechen sich gegenseitig bei denselben Produkten:
+
+| Produkt | @digitalsaim | @theromanknox | Tatsächlich |
+|---|---|---|---|
+| **HeyGen** | „Paid, $39/Monat" | „**Free**, $0/Monat" | Beides halb wahr: Free-Tier existiert, aber 3 Videos/Monat, 720p, Wasserzeichen, nicht kommerziell. Creator ab $29. |
+| **ElevenLabs** | „$99/Monat" | „$6/Monat" | Starter ab $5/Monat, enthält bereits kommerzielle Rechte. Die $99 sind der Pro-Tarif. |
+| **Higgsfield** | „$49/Monat" | „$19/Monat" | Je nach Tarifstufe — beide Karten greifen eine andere heraus. |
+
+Dasselbe Produkt steht einmal auf der teuren und einmal auf der kostenlosen
+Seite. Die Zahlen sind ausgewählte Tarifstufen, keine Vergleichsbasis. Für
+eine Budgetplanung taugen sie nicht.
+
+Zwei weitere sachliche Fehler: **Hailuo und MiniMax sind derselbe Anbieter**,
+werden aber als zwei unabhängige Empfehlungen geführt. Und **Google Flow ist
+kein Bildgenerator**, sondern Googles Filmmaking-Oberfläche auf Basis von
+Veo 3.1, in der ImageFX und Whisk aufgegangen sind.
 
 ---
 
@@ -28,144 +54,177 @@ haben.
 
 ### 1. Kommerzielle Nutzungsrechte
 
-fsfinance.de ist der Außenauftritt einer GbR. Jedes Bild, Video und Voiceover
-auf dieser Seite ist kommerzielle Nutzung — auch ohne direkten Verkauf. Die
-Free-Tiers der genannten Tools sind überwiegend Test-Kontingente ohne
-kommerzielle Lizenz:
+fsfinance.de ist der Außenauftritt einer GbR. Jedes Asset dort ist
+kommerzielle Nutzung — auch ohne direkten Verkauf. Die Free-Tiers sind
+überwiegend Test-Kontingente ohne kommerzielle Lizenz:
 
-- **Hailuo / MiniMax:** Free-Tier ohne kommerzielle Rechte, mit Wasserzeichen,
-  720p, Renders verfallen nach ca. drei Tagen. Kommerzielle Rechte erst ab
-  Paid (~$9,99/Monat).
-- **ElevenLabs:** Free-Tier ohne kommerzielle Lizenz, mit Attributionspflicht.
-- **Lovart:** 100 Credits täglich, kein dauerhaftes Gratis-Kontingent.
-- **Stable Diffusion:** je nach Modellversion. SD 1.5 / SDXL (CreativeML Open
-  RAIL-M) kommerziell frei. SD 3 / 3.5 laufen unter der Stability AI Community
-  License — kostenlos unter $1 Mio. Jahresumsatz, aber **mit Attributionspflicht**
-  („Powered by Stability AI") bei Weitergabe.
-- **Nano Banana** (Gemini Image, Google AI Studio): kommerzielle Nutzung im
-  Free-Tier erlaubt, aber Google verwendet Ein- und Ausgaben zur
-  Modellverbesserung, inklusive menschlicher Review. Für Website-Motive ohne
-  vertrauliche Inhalte unkritisch — für Kundendaten oder unveröffentlichte
-  Zahlen nicht.
+| Tool | Free-Tier | Kommerzielle Rechte ab |
+|---|---|---|
+| Hailuo / MiniMax | Wasserzeichen, 720p, Renders verfallen nach ~3 Tagen | ~$9,99/Monat |
+| ElevenLabs | keine kommerzielle Lizenz, Attributionspflicht | $5/Monat (Starter) |
+| FishAudio (Dienst) | „personal use only" | $11/Monat (Plus) |
+| FishAudio (fish-speech) | **CC-BY-NC-SA 4.0 — non-commercial** | nur per Einzelvereinbarung |
+| Hedra | Wasserzeichen, nicht kommerziell | $15/Monat (Basic) |
+| HeyGen | 3 Videos/Monat, 720p, Wasserzeichen | $29/Monat (Creator) |
+| ArtFlow | 100 Credits/Monat, Wasserzeichen | $8/Monat (mit Attribution) |
+| Google Flow | nutzbar, aber „Made with Veo"-Wasserzeichen im Export | Google-AI-Abo |
+| Lovart | 100 Credits täglich | Starter aufwärts |
+| Stable Diffusion | SD 1.5/SDXL frei; SD 3/3.5 unter $1 Mio. Umsatz frei | Attributionspflicht bei Weitergabe |
+| Nano Banana | **kommerziell erlaubt**, aber Google trainiert auf den Eingaben | Paid-Tier für Datenschutz |
+
+Der Sonderfall ist **FishAudio**: Das offene Modell `fish-speech` steht unter
+CC-BY-NC-SA 4.0 und ist damit ausdrücklich nicht für kommerzielle Nutzung
+lizenziert. „Open Source" heißt hier nicht „frei verwendbar". Wer das für
+einen bezahlten Kurs einsetzt, verletzt die Lizenz.
 
 ### 2. EU AI Act, Artikel 50 — seit 02.08.2026 anwendbar
 
-Die Transparenzpflichten gelten seit sechs Tagen. Relevant für uns:
-KI-generierte Bild-, Audio- und Videoinhalte müssen als solche erkennbar sein —
-in menschenlesbarer **und** maschinenlesbarer Form. Bußgeldrahmen bis
-15 Mio. EUR oder 3 % des weltweiten Jahresumsatzes.
+KI-generierte Bild-, Audio- und Videoinhalte müssen als solche erkennbar sein,
+menschenlesbar **und** maschinenlesbar. Bußgeldrahmen bis 15 Mio. EUR oder 3 %
+des weltweiten Jahresumsatzes. Vor dem 02.08.2026 erzeugte Inhalte fallen
+unter die Übergangsregel; die bestehenden Bilder in `assets/img/` sind damit
+nicht rückwirkend betroffen.
 
-Vor dem 02.08.2026 erzeugte Inhalte müssen nicht rückwirkend gekennzeichnet
-werden. Die bestehenden Bilder unter `assets/img/` stammen vom 04.08. bzw.
-früher und fallen damit in die Übergangsregel — die Kommission empfiehlt
-Kennzeichnung trotzdem.
+---
 
-Für eine Marke, deren Kernversprechen „Transparenz muss belegbar sein" lautet
-(`src/components.jsx`, `Credibility`), ist das ohnehin keine reine
-Rechtsfrage. Die Kennzeichnung ist hier Teil des Produkts.
+## Avatare und Voice Cloning sind eine andere Kategorie
+
+Die fünf neuen Karten verschieben das Thema von „Bilder generieren" zu
+„Personen nachbilden". Das ist rechtlich etwas völlig anderes.
+
+**Ein KI-Avatar, der eine reale Person als Sprecher zeigt, ist ein Deepfake im
+Sinne von Art. 50 Abs. 4 AI Act — auch dann, wenn es das eigene Gesicht ist,
+die Person zugestimmt hat und der Inhalt inhaltlich stimmt.** Dasselbe gilt für
+eine geklonte Stimme. Die Kennzeichnungspflicht greift unabhängig von der
+Einwilligung: Die Einwilligung regelt das Persönlichkeitsrecht, die
+Kennzeichnung die Transparenz gegenüber dem Publikum. Beides ist nötig, keins
+ersetzt das andere.
+
+Dazu kommen, unverändert neben dem AI Act: §§ 22, 23 KUG (Recht am eigenen
+Bild), Art. 6 und 9 DSGVO bei biometrischen Daten, §§ 823 ff. BGB.
+
+Praktisch heißt das für eine GbR mit drei Gründern: Bevor Gesicht oder Stimme
+eines Gründers geklont wird, braucht es eine dokumentierte, widerrufbare
+Einwilligung dieser Person — und zwar für den konkreten Verwendungszweck. Ein
+mündliches „mach mal" reicht nicht, wenn der Avatar später in bezahlten
+Kursinhalten oder Werbung auftaucht.
+
+---
+
+## Harte Grenze: keine KI-Personen als Lückenfüller
+
+Drei Stellen im Repo sehen nach einer Lücke aus, die ein Avatar-Tool
+„schnell schließen" könnte. Alle drei sind bewusst offen:
+
+1. **Gründerfotos** — `components.jsx`, `Team`: Platzhalter
+   „Foto folgt — {Name}" für drei real existierende Personen. Ein generiertes
+   Porträt oder ein Avatar-Standbild an dieser Stelle ist eine
+   Falschdarstellung auf einer Seite, die ins Impressum verlinkt. Drei
+   Handyfotos vor einer neutralen Wand lösen das Problem in zwanzig Minuten
+   und kosten nichts.
+2. **Testimonials** — im Code ausdrücklich als „replaces fabricated
+   testimonials" markiert und durch die `Credibility`-Sektion ersetzt. Ein
+   Avatar-Video mit einer erfundenen Kundenstimme wäre exakt das, was diese
+   Entscheidung verhindern sollte — und im Finanzumfeld zusätzlich ein
+   Wettbewerbsverstoß.
+3. **Performance-Belege** — die `MetricTile`-Kacheln stehen auf „Noch nicht
+   veröffentlicht" und „Verifizierung folgt". Belege sind Screenshots und
+   Kontoauszüge.
+
+Symbolbilder (Architektur, Skyline, abstrakte Charts) bleiben unproblematisch
+und sind genau das, was `generate-images.sh` heute erzeugt.
 
 ---
 
 ## Bewertung im Einzelnen
 
-### 02 — Image Creation: Nano Banana ✅ bereits im Einsatz
+### Bildgenerierung: Nano Banana ✅ / Google Flow ➖
 
 `assets/generate-images.sh` generiert seit dem Redesign fünf Website-Motive
-(Hero, drei Säulen-Bilder, Düsseldorf-Aufnahme) über Nano Banana mit
-`GEMINI_API_KEY`. Die Alternative aus dem Carousel ist also schon die gelebte
-Praxis — Midjourney wurde hier nie gebraucht.
+über Nano Banana mit `GEMINI_API_KEY`. Google Flow bündelt unter anderem
+Nano Banana 2 in einer Oberfläche — es ist dieselbe Modellfamilie, nur mit
+GUI statt Skript. Für einen reproduzierbaren Build ist das Skript im Repo die
+bessere Lösung: versioniert, nachvollziehbar, ohne Wasserzeichen im Export.
+GPT Image löst hier nichts, was nicht schon gelöst wäre.
 
-Offener Punkt aus `PLAN.md`: „Bilder auf WebP umstellen". Das ist ein
-Konvertierungsschritt (`cwebp`/`sharp`), kein Tool-Thema. Die PNG-Dateien im
-Repo sind teils über 1 MB, `logo_lion_shield_transparent.png` liegt bei 3,5 MB —
-da liegt mehr Ladezeit begraben als in der Wahl des Bildgenerators.
+Offener Punkt aus `PLAN.md` bleibt „Bilder auf WebP umstellen" — ein
+Konvertierungsschritt, kein Tool-Thema. `logo_lion_shield_transparent.png`
+liegt bei 3,5 MB; da steckt mehr Ladezeit drin als in der Wahl des Generators.
 
-### 03 — Cinematic Creation: Stable Diffusion ❌ kein Anwendungsfall
+### Videogenerierung: Hailuo / ArtFlow ⏳
 
-Die Karte ist inhaltlich schief: Stable Diffusion ist ein Bildmodell, nicht
-„image to video". Gemeint ist vermutlich Stable Video Diffusion. Unabhängig
-davon gibt es auf der Seite keine Stelle für cinematische Videos. Die offenen
-Hero-Effekte aus `HANDOFF.md` — Ken-Burns, Gold-Beams-Canvas, Scroll-Parallax —
-sind CSS und Canvas, kein generiertes Video. Ein Hintergrundvideo im Hero wäre
-zudem ein Rückschritt bei Ladezeit und `prefers-reduced-motion`, das in
-`components.jsx` bereits sauber respektiert wird.
+Relevanz ist real, aber noch nicht akut: `ContentPreview` zeigt drei
+Platzhalter mit Badge „Geplant", der Footer listet Instagram, TikTok und
+YouTube als „(folgt)", und `sync/fetch_data.py` zieht bereits IG- und
+TikTok-Kennzahlen (aktuell `available: false`, weil Tokens fehlen). Sobald die
+Kanäle starten, entsteht Bedarf an Kurzvideos — dann aber in einer Variante
+ohne Wasserzeichen und mit Rechten. Realistisch $8–10/Monat.
 
-### 04 — Video Generation: Hailuo ⏳ später, aber nicht kostenlos
-
-Relevanz ist real, aber noch nicht akut: Die Sektion `ContentPreview` zeigt
-drei Platzhalter-Kacheln mit Badge „Geplant", der Footer listet Instagram,
-TikTok und YouTube als „(folgt)", und `sync/fetch_data.py` zieht bereits
-Instagram- und TikTok-Kennzahlen (aktuell mit `available: false`, weil Tokens
-fehlen). Sobald diese Kanäle starten, entsteht Bedarf an Kurzvideos.
-
-Dann aber gilt: Free-Tier ohne kommerzielle Rechte und mit Wasserzeichen ist
-für einen Markenkanal nicht nutzbar. Realistisch sind ~$10/Monat.
-
-Anmerkung zum Carousel: **Hailuo und MiniMax sind dasselbe Unternehmen.**
-Karte 04 und Karte 07 verkaufen denselben Anbieter als zwei unabhängige
-Empfehlungen.
-
-### 05 — Presentation / Design: Lovart ❌ kein Anwendungsfall
-
-Die Website ist React plus handgeschriebenes CSS mit eigenen Design-Tokens
-(`assets/css/styles.css`, Dark-Navy/Gold). Es gibt keine Präsentation und kein
-Grafik-Asset im Repo, das aus einem Design-Tool käme. Ein KI-Design-Agent
-würde hier gegen das bestehende Designsystem arbeiten, nicht dafür.
-
-Falls später Pitch-Decks oder Social-Templates gebraucht werden, ist das ein
-Thema außerhalb dieses Repos.
-
-### 07 — Voice Generation: MiniMax ⏳ später, aber nicht kostenlos
+### Voice Cloning: FishAudio ⚠️
 
 Denkbarer Einsatz: Vertonung der Kursinhalte im Mitgliederbereich
 (`mitglieder/kurs.html` lädt `trading-kurs.html` aus einem privaten
-Supabase-Bucket). Bezahlte Kursinhalte mit synthetischer Stimme sind
-kommerzielle Nutzung — Free-Tier scheidet aus.
+Supabase-Bucket). Zwei getrennte Probleme:
 
-Die Preisangabe der Karte ist irreführend: ElevenLabs kostet nicht $99, um
-kommerzielle Rechte zu bekommen. Der Starter-Tarif liegt bei $5/Monat und
-enthält sie bereits. Der ehrliche Vergleich lautet also **$5 mit Rechten gegen
-$0 ohne Rechte**, nicht $99 gegen $0.
+- **Lizenz:** Das offene Modell ist non-commercial. Der gehostete Dienst
+  erlaubt kommerzielle Nutzung erst ab $11/Monat. Bezahlte Kursinhalte sind
+  eindeutig kommerziell.
+- **Recht:** Eine geklonte Gründerstimme in einem Bildungsprodukt ist
+  kennzeichnungspflichtig und braucht dokumentierte Einwilligung.
 
-Unabhängig vom Tool: Bei einem Bildungsangebot im Finanzbereich sollte eine
-synthetische Stimme gekennzeichnet sein — siehe Art. 50.
+ElevenLabs Starter kostet $5 und löst zumindest das Lizenzproblem sauberer.
 
----
+### Avatare: Hedra / HeyGen / Synthesia ⚠️
 
-## Harte Grenze: keine KI-Bilder für Personen und Belege
+Beide „kostenlosen" Optionen sind Trial-Tarife: Hedra mit Wasserzeichen und
+ohne kommerzielle Rechte, HeyGen mit 3 Videos pro Monat in 720p. Für einen
+Markenkanal unbrauchbar. Kommerziell nutzbar wird es ab $15 (Hedra Basic)
+bzw. $29 (HeyGen Creator).
 
-Drei Stellen im Repo sehen nach einer Lücke aus, die man mit einem
-Bildgenerator „schnell schließen" könnte. Alle drei sind bewusst offen:
+Die eigentliche Frage ist aber nicht der Preis. Laut `components.jsx` ist ein
+Gründer ausdrücklich für „Content-Produktion" zuständig. Eine echte Aufnahme
+dieser Person ist billiger als jedes Avatar-Abo, braucht keine
+Deepfake-Kennzeichnung, keine Einwilligungsdokumentation — und passt zu einer
+Marke, die mit „Struktur statt Inszenierung" wirbt. Ein Avatar löst hier ein
+Problem, das wir nicht haben, und schafft zwei neue.
 
-1. **Gründerfotos** — `components.jsx`, `Team`: Platzhalter „Foto folgt — {Name}"
-   für drei real existierende Personen. KI-generierte Porträts realer Gründer
-   auf einer Impressumsseite sind eine Falschdarstellung, unabhängig vom AI Act.
-2. **Testimonials** — im Code ausdrücklich als „replaces fabricated testimonials"
-   markiert und durch die `Credibility`-Sektion ersetzt. Diese Entscheidung
-   nicht rückgängig machen.
-3. **Performance-Belege** — die `MetricTile`-Kacheln stehen auf „Noch nicht
-   veröffentlicht" und „Verifizierung folgt". Belege sind Screenshots und
-   Kontoauszüge, keine generierten Bilder.
+Sinnvoll wäre ein Avatar-Tool am ehesten für **Lokalisierung**: bestehende,
+echt aufgenommene Kursinhalte in weitere Sprachen bringen. Das steht aktuell
+auf keiner Roadmap.
 
-Symbolbilder (Architektur, Skyline, abstrakte Charts) sind unproblematisch und
-genau das, was `generate-images.sh` heute erzeugt.
+### Design und Cinematic: Lovart / Stable Diffusion ❌
+
+Unverändert kein Anwendungsfall. Die Website ist React plus handgeschriebenes
+CSS mit eigenen Design-Tokens; es gibt kein Deck und kein Asset im Repo, das
+aus einem Design-Tool käme. Die offenen Hero-Effekte aus `HANDOFF.md`
+(Ken-Burns, Gold-Beams-Canvas, Parallax) sind CSS und Canvas, kein generiertes
+Video — ein Hintergrundvideo wäre zudem ein Rückschritt bei Ladezeit und beim
+`prefers-reduced-motion`-Handling, das in `components.jsx` sauber umgesetzt ist.
 
 ---
 
 ## Empfehlung
 
 **Jetzt:** nichts anschaffen. Der einzige laufende Bedarf — Bildgenerierung —
-ist mit Nano Banana gedeckt, und das kostenlos und kommerziell zulässig.
+ist mit Nano Banana gedeckt, kostenlos und kommerziell zulässig.
 
-**Wenn die Social-Kanäle starten:** ein Video-Tool im ~$10-Bereich (Hailuo
-Standard oder vergleichbar) und, falls vertont wird, ElevenLabs Starter für
-$5. Zusammen unter $15/Monat mit sauberen Rechten. Die Free-Tiers taugen zum
-Ausprobieren, nicht zum Veröffentlichen.
+**Wenn die Social-Kanäle starten:** ein Video-Tool im $8–10-Bereich, bei Bedarf
+ElevenLabs Starter für $5. Zusammen unter $15/Monat mit sauberen Rechten. Die
+Free-Tiers taugen zum Ausprobieren, nicht zum Veröffentlichen.
+
+**Avatare und Voice Cloning:** vorerst nicht. Erst wenn es einen konkreten
+Anlass gibt, der mit einer echten Aufnahme nicht lösbar ist — realistisch:
+Mehrsprachigkeit. Vorher zu klären: Einwilligung der betroffenen Gründer,
+schriftlich und zweckgebunden.
 
 **Vor der ersten Veröffentlichung von KI-Medien:** Kennzeichnungskonzept nach
-Art. 50 festlegen — sichtbarer Hinweis am Asset plus Metadaten. Am besten als
-fester Bestandteil des Risiko- und Affiliate-Hinweisblocks im Footer, wo die
-bestehenden Transparenzhinweise bereits stehen.
+Art. 50 festlegen — sichtbarer Hinweis am Asset plus Metadaten. Sinnvoller Ort
+ist der bestehende Risiko- und Affiliate-Hinweisblock im Footer, wo die
+Transparenzhinweise ohnehin stehen.
+
+Diese Bewertung ist eine technische und organisatorische Einschätzung, keine
+Rechtsberatung. Bevor Gesicht oder Stimme eines Gründers geklont wird, gehört
+das anwaltlich geprüft.
 
 ---
 
@@ -181,14 +240,32 @@ dazukommen.
 
 ## Quellen
 
-- [Hailuo/MiniMax Pricing und Lizenz](https://felloai.com/minimax-pricing/) ·
+**Tarife und Lizenzen**
+
+- [Hailuo/MiniMax Pricing](https://felloai.com/minimax-pricing/) ·
   [Hailuo 2.3 Pricing](https://magichour.ai/blog/hailuo-23-pricing)
 - [ElevenLabs Free Plan Limits](https://aivoicereview.com/guides/elevenlabs-free-plan-limits) ·
   [ElevenLabs Lizenzleitfaden](https://www.licenseorg.com/blog/elevenlabs-licensing-guide-ai-voices)
+- [FishAudio — Is Free Voice Cloning Really Free](https://fish.audio/blog/is-free-voice-cloning-really-free-2026-guide/) ·
+  [fish-speech Lizenz (CC-BY-NC-SA)](https://www.spheron.network/blog/deploy-open-source-tts-gpu-cloud-2026/)
+- [Hedra Pricing](https://www.hedra.com/pricing) ·
+  [Hedra Review 2026](https://fluxnote.io/guides/hedra-ai-review)
+- [HeyGen Pricing 2026](https://konabayev.com/blog/heygen-pricing/) ·
+  [HeyGen Free Trial Limits](https://avatar-video-ai.com/blog/heygen-ai-review)
+- [ArtFlow Pricing](https://www.saasworthy.com/product/artflow-ai/pricing) ·
+  [ArtFlow Review](https://aichief.com/ai-tools/artflow-ai/)
+- [Google Flow Pricing und Free Tier](https://whiskailabs.net/google-flow-ai-pricing/) ·
+  [Google Flow Guide](https://whiskailabs.net/google-flow-ai-filmmaking-tool-veo-guide-2026/)
 - [Lovart Pricing](https://www.lovart.ai/pricing)
 - [Stability AI Community License](https://stability.ai/license) ·
   [Stable Diffusion Output Rights](https://terms.law/ai-output-rights/stable-diffusion/)
 - [Gemini Free-Tier Datennutzung](https://docs.bswen.com/blog/2026-03-23-gemini-free-tier-data-privacy/)
+
+**Rechtlicher Rahmen**
+
 - [AI Act Art. 50 — Transparenzpflichten](https://artificialintelligenceact.eu/transparency-rules-article-50/) ·
-  [Leitlinien der EU-Kommission](https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content) ·
-  [Fristen und Bußgelder](https://datamatters.sidley.com/2026/06/24/eu-ai-act-transparency-obligations-preparing-for-compliance-by-2-august-2026/)
+  [Leitlinien der EU-Kommission](https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content)
+- [Fristen und Bußgelder](https://datamatters.sidley.com/2026/06/24/eu-ai-act-transparency-obligations-preparing-for-compliance-by-2-august-2026/)
+- [Deepfake-Kennzeichnung nach Art. 50 Abs. 4](https://www.crispycontent.de/blog/deepfake-kennzeichnung-ki-verordnung-artikel-50-compliance-bewegtbild) ·
+  [Deepfake-Recht — KUG, DSGVO, StGB](https://deepfake-recht.de/) ·
+  [Haufe: Kennzeichnungspflicht ab August 2026](https://www.haufe.de/recht/kanzleimanagement/kennzeichnungspflicht-fuer-ki-inhalte-gilt-ab-august-2026_222_681220.html)
