@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Autorisierung — SF Finance</title>
+<style>
+  :root {
+    --bg: #0d1521;
+    --card: #16202f;
+    --line: #26374f;
+    --text: #e8eef6;
+    --muted: #8ea3bd;
+    --gold: #c9a227;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px;
+  }
+  .card {
+    width: 100%; max-width: 620px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 28px;
+  }
+  h1 { margin: 0 0 4px; font-size: 20px; }
+  p.sub { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+  .label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  code {
+    display: block; word-break: break-all;
+    background: #0a1119; border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  button {
+    margin-top: 12px; width: 100%;
+    background: var(--gold); color: #12100a; border: 0; border-radius: 8px;
+    padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button:active { transform: translateY(1px); }
+  .err { color: #ff8080; }
+  .hint { margin-top: 20px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>TikTok Autorisierung</h1>
+  <p class="sub">Diese Seite empfängt den Autorisierungs-Code. Kopieren und im Terminal einfügen.</p>
+  <div id="out"></div>
+  <div class="hint">
+    Der Code ist nur wenige Minuten gültig und kann genau einmal eingelöst werden.
+    Danach kann dieses Fenster geschlossen werden.
+  </div>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  const code  = params.get("code");
+  const state = params.get("state");
+  const error = params.get("error");
+  const desc  = params.get("error_description");
+  const out   = document.getElementById("out");
+
+  if (error) {
+    out.innerHTML =
+      '<div class="label">Fehler</div>' +
+      '<code class="err"></code>';
+    out.querySelector("code").textContent = error + (desc ? " — " + desc : "");
+  } else if (code) {
+    out.innerHTML =
+      '<div class="label">Authorization Code</div>' +
+      '<code id="code"></code>' +
+      '<button id="copy">Code kopieren</button>' +
+      (state ? '<div class="label" style="margin-top:16px">State</div><code id="state"></code>' : "");
+    document.getElementById("code").textContent = code;
+    if (state) document.getElementById("state").textContent = state;
+    document.getElementById("copy").addEventListener("click", async () => {
+      const btn = document.getElementById("copy");
+      try {
+        await navigator.clipboard.writeText(code);
+        btn.textContent = "Kopiert";
+      } catch {
+        btn.textContent = "Kopieren fehlgeschlagen — manuell markieren";
+      }
+      setTimeout(() => { btn.textContent = "Code kopieren"; }, 2500);
+    });
+  } else {
+    out.innerHTML =
+      '<div class="label">Kein Code empfangen</div>' +
+      '<code>Diese Seite direkt aufgerufen? Den Login-Link aus dem Terminal verwenden.</code>';
+  }
+</script>
+</body>
+</html>
