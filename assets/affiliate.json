@@ -1,0 +1,11 @@
+{
+  "_hinweis": "Einzige Stelle, an der Affiliate-Links gepflegt werden. Sobald ein Partnerprogramm freigeschaltet ist, hier die Tracking-URL eintragen — der Button auf vergleich.html wird dadurch automatisch aktiv. Leerer String = Button bleibt sichtbar deaktiviert (kein toter #-Link).",
+  "_rechtliches": "Links werden mit rel='sponsored nofollow noopener' ausgeliefert. Der Affiliate-Hinweis auf vergleich.html ist Pflicht und muss stehen bleiben (§ 5a UWG, Kennzeichnungspflicht).",
+  "links": {
+    "lucid": "",
+    "ftmo": "",
+    "myfundedfx": "",
+    "thefundedtrader": "",
+    "topstep": ""
+  }
+}

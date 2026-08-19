@@ -1322,3 +1322,12 @@ html.sf-gsap .fi { transition: none; }
   pointer-events: none; z-index: 2;
 }
 .founder-card:hover .founder-portrait::after { left: 150%; }
+
+/* Affiliate-CTA ohne hinterlegten Partnerlink — sichtbar inaktiv statt toter #-Link.
+   Wird von assets/js/affiliate.js gesetzt, sobald assets/affiliate.json den Link nicht kennt. */
+.btn-pending {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(1);
+}
