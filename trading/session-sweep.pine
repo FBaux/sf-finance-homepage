@@ -1,0 +1,413 @@
+//@version=6
+// =============================================================================
+// DayDom — Strategie 2: Session Sweep                     (XAUUSD, 15m)
+// -----------------------------------------------------------------------------
+// Regelwerk: ../TRADING-STRATEGIEN.md
+//
+// Dieses Skript ist zugleich das Grundgeruest fuer Strategie 1 und 3. Die
+// gemeinsame Bestaetigungs-Engine (FVG, IFVG, Engulfing, Sweep, SL, Entry,
+// News-Filter) liegt in eigenen Bloecken und wird von den anderen beiden
+// Strategien spaeter unveraendert mitbenutzt — dort wechselt nur, woher die
+// Level kommen.
+//
+// ACHTUNG, ANNAHMEN: alles unter "OFFENE ANNAHMEN" am Dateiende stand nicht im
+// Regelwerk und ist hier mit einem Default belegt. Vor dem Scharfschalten
+// pruefen.
+// =============================================================================
+
+strategy(
+     title                   = "DayDom — Session Sweep (Strategie 2)",
+     shorttitle              = "DD Session Sweep",
+     overlay                 = true,
+     pyramiding              = 0,
+     initial_capital         = 10000,
+     default_qty_type        = strategy.fixed,
+     default_qty_value       = 3,
+     process_orders_on_close = true,
+     calc_on_every_tick      = false,
+     commission_type         = strategy.commission.cash_per_contract,
+     commission_value        = 0.0)
+
+const string TZ = "Europe/Berlin"
+
+// =============================================================================
+// INPUTS
+// =============================================================================
+
+// --- Sessions (deutsche Zeit) ------------------------------------------------
+// Nur das Asia-Fenster ist im Regelwerk definiert. London und NY sind hier
+// gesetzte Annahmen — siehe Dateiende.
+gSess = "Sessions (deutsche Zeit)"
+sessAsia   = input.session("0200-1000", "Asia",   group = gSess)
+sessLondon = input.session("1000-1800", "London", group = gSess)
+sessNY     = input.session("1530-2200", "New York", group = gSess)
+useAsia    = input.bool(true, "Asia handeln",   group = gSess, inline = "use")
+useLondon  = input.bool(true, "London handeln", group = gSess, inline = "use")
+useNY      = input.bool(true, "NY handeln",     group = gSess, inline = "use")
+
+// --- Bestaetigung ------------------------------------------------------------
+gConf = "Bestaetigung"
+maxBars  = input.int(3, "Gueltigkeitsfenster in 15m-Kerzen", minval = 1, maxval = 20, group = gConf,
+     tooltip = "Regelwerk: 2-3 Kerzen. Die Sweep-Kerze selbst zaehlt als erste.")
+useIFVG  = input.bool(true, "IFVG als Bestaetigung",      group = gConf, inline = "conf")
+useEng   = input.bool(true, "Engulfing als Bestaetigung", group = gConf, inline = "conf")
+minGap   = input.float(0.50, "Mindestgroesse einer FVG (Preis)", minval = 0.0, step = 0.05, group = gConf,
+     tooltip = "Ohne Filter findet der Bot auf Gold dutzende Mikro-Gaps pro Tag. Nicht im Regelwerk definiert.")
+
+// --- Risiko ------------------------------------------------------------------
+gRisk = "Risiko"
+qtyUnits   = input.float(3.0, "Positionsgroesse in Einheiten", minval = 0.001, step = 0.001, group = gRisk,
+     tooltip = "0,03 Lot bei Vantage = 3 Unzen. Auf TradingView entspricht 1 Kontrakt XAUUSD i. d. R. 1 Unze.")
+slBufPct   = input.float(25.0, "SL-Puffer nach IFVG (% der Gap-Groesse)", minval = 0.0, group = gRisk)
+slBufEng   = input.float(0.10, "SL-Puffer nach Engulfing (Preis)", minval = 0.0, step = 0.01, group = gRisk)
+rrTarget   = input.float(2.0, "Ziel-RR", minval = 0.1, step = 0.1, group = gRisk)
+capAtLevel = input.bool(true, "Ziel am naechsten Level deckeln", group = gRisk)
+minRR      = input.float(0.0, "Mindest-RR (0 = aus)", minval = 0.0, step = 0.1, group = gRisk,
+     tooltip = "Nicht im Regelwerk definiert. Ohne Untergrenze kann die Deckelung Trades mit sehr kleinem RR erzeugen.")
+
+// --- News --------------------------------------------------------------------
+gNews = "News-Filter"
+useNews  = input.bool(true, "News-Blackouts aktiv", group = gNews)
+newsPad  = input.int(15, "Blackout +/- Minuten", minval = 0, group = gNews)
+autoNfp  = input.bool(true, "NFP automatisch (erster Freitag im Monat)", group = gNews,
+     tooltip = "Der einzige der drei Termine mit fester Kalenderregel. CPI und FOMC wandern und muessen unten eingetragen werden.")
+nfpHour  = input.int(14, "NFP Stunde", minval = 0, maxval = 23, group = gNews, inline = "nfp")
+nfpMin   = input.int(30, "Minute",     minval = 0, maxval = 59, group = gNews, inline = "nfp")
+newsList = input.text_area("", "CPI- und FOMC-Termine, je Zeile: YYYY-MM-DD HH:MM (Berliner Zeit)", group = gNews,
+     tooltip = "Pine hat keinen Zugriff auf den TradingView-Wirtschaftskalender — der ist reine Chart-Oberflaeche und fuer Skripte nicht lesbar. Termine aus dem BLS- und dem Fed-Kalender uebernehmen, beide erscheinen ein Jahr im Voraus.")
+
+// --- Darstellung -------------------------------------------------------------
+gView = "Darstellung"
+showLevels = input.bool(true, "Session-Level zeichnen", group = gView)
+showSignals = input.bool(true, "Sweeps und Bestaetigungen markieren", group = gView)
+
+// =============================================================================
+// GUARD — das Regelwerk schreibt 15m fuer alle Bestaetigungen fest
+// =============================================================================
+if timeframe.period != "15"
+    runtime.error("Dieses Skript gehoert auf den 15-Minuten-Chart. Alle Bestaetigungen des Regelwerks sind 15m.")
+
+// =============================================================================
+// NEWS-BLACKOUTS — Textfeld einmalig in Timestamps parsen
+// =============================================================================
+var array<int> blackouts = array.new<int>()
+
+if barstate.isfirst and useNews and str.length(newsList) > 0
+    rows = str.split(newsList, "\n")
+    for i = 0 to array.size(rows) - 1
+        row = array.get(rows, i)
+        parts = str.split(row, " ")
+        if array.size(parts) >= 2
+            dParts = str.split(array.get(parts, 0), "-")
+            tParts = str.split(array.get(parts, 1), ":")
+            if array.size(dParts) == 3 and array.size(tParts) >= 2
+                y  = str.tonumber(array.get(dParts, 0))
+                mo = str.tonumber(array.get(dParts, 1))
+                dd = str.tonumber(array.get(dParts, 2))
+                hh = str.tonumber(array.get(tParts, 0))
+                mi = str.tonumber(array.get(tParts, 1))
+                if not na(y) and not na(mo) and not na(dd) and not na(hh) and not na(mi)
+                    array.push(blackouts, timestamp(TZ, int(y), int(mo), int(dd), int(hh), int(mi)))
+
+// NFP folgt als einziger der drei Termine einer Kalenderregel: erster Freitag
+// im Monat, 14:30 deutscher Zeit. Die Uhrzeit ist ganzjaehrig stabil, weil sich
+// US- und EU-Sommerzeit gegeneinander aufheben — ausser in den zwei bis drei
+// Wochen im Maerz und Ende Oktober, in denen die Umstellungen auseinanderlaufen.
+// Dann liegt der Termin eine Stunde frueher oder spaeter.
+isNfpDay = dayofweek(time, TZ) == dayofweek.friday and dayofmonth(time, TZ) <= 7
+
+inBlackout() =>
+    bool hit = false
+    pad = newsPad * 60 * 1000
+    if useNews
+        if array.size(blackouts) > 0
+            for i = 0 to array.size(blackouts) - 1
+                t = array.get(blackouts, i)
+                if time_close > t - pad and time < t + pad
+                    hit := true
+        if autoNfp and isNfpDay
+            nfpT = timestamp(TZ, year(time, TZ), month(time, TZ), dayofmonth(time, TZ), nfpHour, nfpMin)
+            if time_close > nfpT - pad and time < nfpT + pad
+                hit := true
+    hit
+
+// =============================================================================
+// SESSION-TRACKING
+// =============================================================================
+type SessionState
+    float curHigh  = na
+    float curLow   = na
+    float doneHigh = na
+    float doneLow  = na
+    bool  highLive = false
+    bool  lowLive  = false
+
+// Aktualisiert die laufende Range und friert sie beim Session-Ende ein.
+// Ab dem Einfrieren ist das Hoch/Tief als Liquiditaetsziel scharf.
+updateSession(SessionState s, bool nowIn, bool prevIn) =>
+    if nowIn and not prevIn
+        s.curHigh := high
+        s.curLow  := low
+    else if nowIn
+        s.curHigh := math.max(nz(s.curHigh, high), high)
+        s.curLow  := math.min(nz(s.curLow,  low),  low)
+    if prevIn and not nowIn
+        s.doneHigh := s.curHigh
+        s.doneLow  := s.curLow
+        s.highLive := true
+        s.lowLive  := true
+
+var SessionState asia   = SessionState.new()
+var SessionState london = SessionState.new()
+var SessionState ny     = SessionState.new()
+
+inAsia   = not na(time(timeframe.period, sessAsia,   TZ))
+inLondon = not na(time(timeframe.period, sessLondon, TZ))
+inNY     = not na(time(timeframe.period, sessNY,     TZ))
+
+updateSession(asia,   inAsia,   inAsia[1])
+updateSession(london, inLondon, inLondon[1])
+updateSession(ny,     inNY,     inNY[1])
+
+// =============================================================================
+// SWEEP-ERKENNUNG
+// Regelwerk: Docht darf durch das Level, der 15m-Close muss diesseits liegen.
+// Ein Close jenseits ist ein Durchbruch und verbraucht das Level ersatzlos.
+// =============================================================================
+checkHigh(SessionState s, bool enabled) =>
+    bool swept = false
+    if enabled and s.highLive and not na(s.doneHigh)
+        if high > s.doneHigh and close < s.doneHigh
+            swept      := true
+            s.highLive := false
+        else if close > s.doneHigh
+            s.highLive := false
+    swept
+
+checkLow(SessionState s, bool enabled) =>
+    bool swept = false
+    if enabled and s.lowLive and not na(s.doneLow)
+        if low < s.doneLow and close > s.doneLow
+            swept     := true
+            s.lowLive := false
+        else if close < s.doneLow
+            s.lowLive := false
+    swept
+
+// Kein Setup, solange die zugehoerige Session selbst noch laeuft.
+// Jede Pruefung wird einzeln zugewiesen: die Funktionen fuehren Zustand mit und
+// muessen auf jeder Kerze laufen, nicht nur wenn eine vorherige false ergab.
+swAsiaHi   = checkHigh(asia,   useAsia   and not inAsia)
+swLondonHi = checkHigh(london, useLondon and not inLondon)
+swNyHi     = checkHigh(ny,     useNY     and not inNY)
+swAsiaLo   = checkLow(asia,    useAsia   and not inAsia)
+swLondonLo = checkLow(london,  useLondon and not inLondon)
+swNyLo     = checkLow(ny,      useNY     and not inNY)
+
+sweepShort = swAsiaHi or swLondonHi or swNyHi
+sweepLong  = swAsiaLo or swLondonLo or swNyLo
+
+// =============================================================================
+// FAIR VALUE GAPS
+// Klassische 3-Kerzen-Definition: die mittlere Kerze laesst eine Luecke
+// zwischen Kerze 1 und Kerze 3 offen.
+// =============================================================================
+var array<float> fvgTop = array.new<float>()
+var array<float> fvgBot = array.new<float>()
+var array<int>   fvgDir = array.new<int>()   // +1 = bullische Gap, -1 = baerische Gap
+
+bullGap = low > high[2] and (low - high[2]) >= minGap
+bearGap = high < low[2] and (low[2] - high) >= minGap
+
+if bullGap
+    array.push(fvgBot, high[2])
+    array.push(fvgTop, low)
+    array.push(fvgDir, 1)
+if bearGap
+    array.push(fvgBot, high)
+    array.push(fvgTop, low[2])
+    array.push(fvgDir, -1)
+
+// Speicher begrenzen
+while array.size(fvgDir) > 60
+    array.shift(fvgTop)
+    array.shift(fvgBot)
+    array.shift(fvgDir)
+
+// --- Inversion pruefen -------------------------------------------------------
+// Eine bullische Gap, die mit Close nach unten durchbrochen wird, invertiert
+// zur baerischen IFVG — und umgekehrt. Der Close muss ausserhalb liegen,
+// ein Docht reicht nicht.
+float ifvgTop = na
+float ifvgBot = na
+int   ifvgSig = 0
+
+if array.size(fvgDir) > 0
+    for i = array.size(fvgDir) - 1 to 0
+        d = array.get(fvgDir, i)
+        t = array.get(fvgTop, i)
+        b = array.get(fvgBot, i)
+        bool used = false
+        if d == 1 and close < b
+            ifvgSig := -1
+            ifvgTop := t
+            ifvgBot := b
+            used    := true
+        else if d == -1 and close > t
+            ifvgSig := 1
+            ifvgTop := t
+            ifvgBot := b
+            used    := true
+        if used
+            array.remove(fvgTop, i)
+            array.remove(fvgBot, i)
+            array.remove(fvgDir, i)
+
+// =============================================================================
+// ENGULFING — Koerper ueber Koerper, Dochte irrelevant
+// =============================================================================
+bearEng = close < open and close[1] > open[1] and close <= open[1] and open >= close[1]
+bullEng = close > open and close[1] < open[1] and close >= open[1] and open <= close[1]
+
+confShort = (useIFVG and ifvgSig == -1) or (useEng and bearEng)
+confLong  = (useIFVG and ifvgSig ==  1) or (useEng and bullEng)
+
+// Bei Gleichzeitigkeit hat die Engulfing-Regel Vorrang (Regelwerk).
+shortViaEng = useEng and bearEng
+longViaEng  = useEng and bullEng
+
+// =============================================================================
+// SETUP-ZUSTAND
+// =============================================================================
+var int   pendingDir  = 0
+var int   pendingAge  = 0
+
+if pendingDir != 0
+    pendingAge += 1
+    if pendingAge > maxBars
+        pendingDir := 0
+
+if sweepShort
+    pendingDir := -1
+    pendingAge := 1
+else if sweepLong
+    pendingDir := 1
+    pendingAge := 1
+
+// =============================================================================
+// ZIEL-DECKELUNG
+// Als Deckel zaehlen die Session-Level. Die 1H-/4H-Zonen aus Strategie 3
+// deckeln laut Regelwerk ebenfalls — die haengen an der noch nicht gebauten
+// HTF-Engine und werden hier spaeter eingehaengt (siehe TODO unten).
+// =============================================================================
+capForShort(float entry, float raw) =>
+    float best = raw
+    lv = array.from(asia.doneHigh, asia.doneLow, london.doneHigh, london.doneLow, ny.doneHigh, ny.doneLow)
+    for i = 0 to array.size(lv) - 1
+        v = array.get(lv, i)
+        if not na(v) and v < entry and v > best
+            best := v
+    best
+
+capForLong(float entry, float raw) =>
+    float best = raw
+    lv = array.from(asia.doneHigh, asia.doneLow, london.doneHigh, london.doneLow, ny.doneHigh, ny.doneLow)
+    for i = 0 to array.size(lv) - 1
+        v = array.get(lv, i)
+        if not na(v) and v > entry and v < best
+            best := v
+    best
+
+// =============================================================================
+// ENTRY
+// Market beim Close der Bestaetigungskerze (process_orders_on_close = true).
+// =============================================================================
+flat = strategy.opentrades == 0
+
+// Fuer die Marker festhalten, bevor pendingDir beim Entry zurueckgesetzt wird.
+armedShort = pendingDir == -1 and confShort
+armedLong  = pendingDir ==  1 and confLong
+
+if flat and not inBlackout() and pendingDir == -1 and confShort
+    entry = close
+    // SL: nach Engulfing ueber das Hoch der Kerze, sonst 25 % ueber die Gap.
+    float sl = shortViaEng ? high + slBufEng : ifvgTop + (ifvgTop - ifvgBot) * slBufPct / 100.0
+    if not na(sl) and sl > entry
+        risk = sl - entry
+        float tp = entry - risk * rrTarget
+        if capAtLevel
+            tp := capForShort(entry, tp)
+        rr = (entry - tp) / risk
+        if rr >= minRR and tp < entry
+            strategy.entry("Short", strategy.short, qty = qtyUnits)
+            strategy.exit("Short X", from_entry = "Short", stop = sl, limit = tp)
+            pendingDir := 0
+
+if flat and not inBlackout() and pendingDir == 1 and confLong
+    entry = close
+    float sl = longViaEng ? low - slBufEng : ifvgBot - (ifvgTop - ifvgBot) * slBufPct / 100.0
+    if not na(sl) and sl < entry
+        risk = entry - sl
+        float tp = entry + risk * rrTarget
+        if capAtLevel
+            tp := capForLong(entry, tp)
+        rr = (tp - entry) / risk
+        if rr >= minRR and tp > entry
+            strategy.entry("Long", strategy.long, qty = qtyUnits)
+            strategy.exit("Long X", from_entry = "Long", stop = sl, limit = tp)
+            pendingDir := 0
+
+// =============================================================================
+// DARSTELLUNG
+// =============================================================================
+plot(showLevels and asia.highLive     ? asia.doneHigh   : na, "Asia High",   color.new(color.orange, 0), 1, plot.style_linebr)
+plot(showLevels and asia.lowLive      ? asia.doneLow    : na, "Asia Low",    color.new(color.orange, 0), 1, plot.style_linebr)
+plot(showLevels and london.highLive   ? london.doneHigh : na, "London High", color.new(color.blue, 0),   1, plot.style_linebr)
+plot(showLevels and london.lowLive    ? london.doneLow  : na, "London Low",  color.new(color.blue, 0),   1, plot.style_linebr)
+plot(showLevels and ny.highLive       ? ny.doneHigh     : na, "NY High",     color.new(color.purple, 0), 1, plot.style_linebr)
+plot(showLevels and ny.lowLive        ? ny.doneLow      : na, "NY Low",      color.new(color.purple, 0), 1, plot.style_linebr)
+
+plotshape(showSignals and sweepShort, "Sweep High", shape.triangledown, location.abovebar, color.new(color.red, 20), size = size.tiny)
+plotshape(showSignals and sweepLong,  "Sweep Low",  shape.triangleup,   location.belowbar, color.new(color.green, 20), size = size.tiny)
+plotshape(showSignals and armedShort, "Bestaetigung Short", shape.xcross, location.abovebar, color.new(color.maroon, 0), size = size.tiny)
+plotshape(showSignals and armedLong,  "Bestaetigung Long",  shape.xcross, location.belowbar, color.new(color.teal, 0),   size = size.tiny)
+
+// =============================================================================
+// TODO — Andockpunkte fuer die anderen beiden Strategien
+// -----------------------------------------------------------------------------
+// Strategie 1: VAH/VAL aus dem Asia-Volume-Profile ersetzen lediglich die
+//   Level-Quelle. Sweep-, Bestaetigungs- und SL-Logik bleiben unveraendert.
+//   Unterschied: dort wird das 2:1-Ziel NICHT gedeckelt (capAtLevel = false).
+//   Das Profil selbst muss ueber request.security_lower_tf() gebaut werden.
+// Strategie 3: 1H-/4H-OB und -FVG liefern die Zonen; TP ist die naechste Zone
+//   im selben Zeitrahmen statt eines RR-Ziels, Mindest-RR 1,5:1. Sobald die
+//   Zonen-Arrays stehen, muessen sie zusaetzlich in capForShort/capForLong
+//   einfliessen — laut Regelwerk deckeln sie auch Strategie 2.
+//
+// OFFENE ANNAHMEN — standen nicht im Regelwerk
+// -----------------------------------------------------------------------------
+// 1. London- und NY-Fenster (10:00-18:00 / 15:30-22:00 deutscher Zeit).
+//    Nur das Asia-Fenster war definiert.
+// 2. Mindestgroesse einer FVG: 0,50 Preiseinheiten.
+// 3. SL-Puffer nach Engulfing: 0,10 statt nur "knapp".
+// 4. Kein Mindest-RR fuer Strategie 2. Die Deckelung kann dadurch Trades mit
+//    sehr kleinem Chance-Risiko-Verhaeltnis erzeugen.
+// 5. Eine Position zur Zeit; ein neues Setup waehrend eines laufenden Trades
+//    wird verworfen.
+// 6. Ein Session-Level ist nach Sweep oder Durchbruch verbraucht und wird
+//    nicht erneut gehandelt.
+// 7. NFP wird als erster Freitag im Monat um 14:30 angenommen. Das BLS weicht
+//    davon in seltenen Faellen ab, und in den Wochen mit versetzter
+//    Sommerzeitumstellung liegt der Termin eine Stunde daneben.
+//
+// WARUM DER NEWS-FILTER MANUELL IST
+// -----------------------------------------------------------------------------
+// Pine hat keinen Zugriff auf den TradingView-Wirtschaftskalender. Die
+// Termin-Fahnen unter dem Chart und das Kalender-Panel sind Oberflaeche, kein
+// Skript-API. request.economic() liefert volkswirtschaftliche Datenreihen
+// (CPI-Wert, Arbeitslosenquote), nicht die Veroeffentlichungszeitpunkte — und
+// stempelt sie nach Referenzperiode statt nach Release-Minute. Fuer ein
+// 15-Minuten-Fenster unbrauchbar. Im spaeteren Live-Betrieb gehoert der
+// News-Filter daher besser in die Webhook-Bridge, die einen Kalender-Feed
+// abfragen kann.
+// =============================================================================
