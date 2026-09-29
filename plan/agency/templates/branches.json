@@ -1,0 +1,68 @@
+{
+  "beauty": {
+    "title_suffix": "Kosmetik & Nails",
+    "meta_desc": "{name} in {city}: Kosmetik, Nägel und Wimpern. Termin online anfragen – schnell bestätigt.",
+    "eyebrow": "Kosmetikstudio",
+    "headline": "Zeit für dich. Termin in 30 Sekunden.",
+    "subline": "Kosmetik, Nägel und Wimpern mit Ruhe und Sorgfalt – buch deinen Wunschtermin online, auch abends und am Wochenende.",
+    "cta": "Termin buchen",
+    "facts": [["24/7", "online anfragen"], ["Erinnerung", "per SMS vor dem Termin"]],
+    "svc_title": "Behandlungen & Preise",
+    "svc_sub": "Transparente Preise, keine Überraschungen.",
+    "services": [
+      ["Klassische Gesichtsbehandlung", "Reinigung, Peeling, Maske, Pflege – ca. 60 Min.", "ab 59 €"],
+      ["Maniküre mit Shellac", "Form, Nagelhaut, langhaltender Farblack – ca. 45 Min.", "ab 35 €"],
+      ["Wimpernlifting & Färben", "Natürlich geschwungen für bis zu 6 Wochen – ca. 50 Min.", "ab 49 €"],
+      ["Augenbrauen-Styling", "Zupfen, Formen, Färben – ca. 20 Min.", "ab 19 €"]
+    ],
+    "why_title": "Warum {name}?",
+    "about": "Ein kleines Studio mit festen Ansprechpartnerinnen, hochwertigen Produkten und genug Zeit für jede Behandlung.",
+    "why": [
+      ["Online buchen, jederzeit", "Kein Warten in der Telefonschleife – Termin wählen, fertig."],
+      ["Erinnerung inklusive", "Du bekommst am Vortag eine kurze Erinnerung – und kannst bequem verschieben."],
+      ["Hygiene & Qualität", "Sterilisierte Instrumente, Einweg-Material, geprüfte Produkte."]
+    ],
+    "book_title": "Termin anfragen",
+    "book_sub": "Wähle deine Behandlung und deinen Wunschtag – wir bestätigen schnellstmöglich.",
+    "form_select_label": "Behandlung",
+    "form_extra": [],
+    "arrival": "Gut erreichbar mit Bahn und Bus; Parkmöglichkeiten in der Umgebung.",
+    "logo_ls": ".02em",
+    "c": {"bg": "#fbf8f5", "surface": "#f3ece6", "ink": "#2b2320", "muted": "#6e625c", "acc": "#9c5b4a", "acc_ink": "#ffffff", "line": "#e2d6cd"},
+    "schema_type": "BeautySalon"
+  },
+  "kfz": {
+    "title_suffix": "Kfz-Meisterwerkstatt",
+    "meta_desc": "{name} in {city}: Inspektion, HU/AU-Vorbereitung, Reifen, Reparatur aller Marken. Werkstatttermin online anfragen.",
+    "eyebrow": "Meisterwerkstatt · alle Marken",
+    "headline": "Werkstatttermin ohne Warteschleife.",
+    "subline": "Inspektion, Reifen, Bremsen, Klima und Reparaturen für alle Marken – Termin online anfragen, Festpreis vorab.",
+    "cta": "Termin anfragen",
+    "facts": [["Festpreis", "vor Auftrag"], ["Alle Marken", "Herstellervorgaben"]],
+    "svc_title": "Leistungen",
+    "svc_sub": "Klare Preise vorab – Zusatzarbeiten nur nach Rücksprache.",
+    "services": [
+      ["Inspektion nach Herstellervorgabe", "Garantie bleibt erhalten, digitales Serviceheft.", "Festpreis auf Anfrage"],
+      ["HU/AU-Vorbereitung", "Vorab-Check und Abnahme durch Prüforganisation im Haus.", ""],
+      ["Reifenwechsel & Einlagerung", "Wechsel, Wuchten, Einlagerung inkl. Wäsche.", "ab 39 €"],
+      ["Bremsen & Fahrwerk", "Beläge, Scheiben, Stoßdämpfer – mit Kostenvoranschlag.", ""],
+      ["Klimaservice", "Desinfektion, Befüllung, Dichtheitsprüfung.", "ab 79 €"],
+      ["Fehlerdiagnose", "Motorkontrollleuchte? Wir lesen aus und erklären verständlich.", "ab 49 €"]
+    ],
+    "why_title": "Warum {name}?",
+    "about": "Inhabergeführte Meisterwerkstatt – Sie sprechen direkt mit dem, der an Ihrem Auto schraubt.",
+    "why": [
+      ["Kostenvoranschlag vorab", "Keine Überraschung auf der Rechnung – Zusatzarbeiten nur nach Ihrer Freigabe."],
+      ["Termin online anfragen", "Rund um die Uhr, mit Kennzeichen und Wunschtag – wir melden uns mit Festpreis."],
+      ["Erinnerung an HU & Reifen", "Auf Wunsch erinnern wir rechtzeitig an HU und Reifenwechsel."]
+    ],
+    "book_title": "Werkstatttermin anfragen",
+    "book_sub": "Kurz Fahrzeug und Anliegen angeben – Sie erhalten Terminvorschlag und Preis.",
+    "form_select_label": "Anliegen",
+    "form_extra": ["Fahrzeug (Marke, Modell, Baujahr)", "Kennzeichen (optional)"],
+    "arrival": "Kundenparkplätze direkt vor der Werkstatt. Hol- und Bringservice nach Absprache.",
+    "logo_ls": "-.01em",
+    "c": {"bg": "#f6f7f9", "surface": "#eceff3", "ink": "#101828", "muted": "#475467", "acc": "#c2410c", "acc_ink": "#ffffff", "line": "#d0d5dd"},
+    "schema_type": "AutoRepair"
+  }
+}

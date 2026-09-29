@@ -165,7 +165,7 @@ def on_page(c, doc):
     c.saveState()
     c.setFont(FONT, 7.5)
     c.setFillColor(MUTED)
-    c.drawString(18 * mm, 10 * mm, "Projekt DIAMANT · Masterplan V1 · Stand 29.09.2026")
+    c.drawString(18 * mm, 10 * mm, "Projekt DIAMANT · Masterplan V1.1 · Stand 29.09.2026")
     c.drawRightString(192 * mm, 10 * mm, f"Seite {doc.page}")
     c.setStrokeColor(ACC)
     c.setLineWidth(1.2)
@@ -190,7 +190,7 @@ def on_first(c, doc):
                  "", "Szenario: Alternative Welt. Startkapital 500 € über 3 Monate.",
                  "Regel: legal, sauber, am Limit. Druck formt Diamanten.",
                  "", "Erstellt von: CEO-Agent (Claude) für den Founder",
-                 "Stand: 29. September 2026 · Version V1 (Konzept, freigabepflichtig)"]:
+                 "Stand: 29. September 2026 · Version V1.1 (Nische, Region, Preis festgelegt)"]:
         c.drawString(20 * mm, y, line)
         y -= 7 * mm
     c.setFillColor(GOLD)
@@ -210,6 +210,13 @@ story += [p("1 · Executive Summary", H1),
               "Dienstleistungsbetriebe</b> (Engine A, Cashflow ab Woche 3) und bauen daraus ab Monat 3 ein "
               "<b>eigenes SaaS-Produkt „Anfrage-Autopilot“</b> (Engine B, skalierbares Asset). "
               "Content „KI im Handwerk“ (Engine C) liefert ab Monat 2 Inbound-Leads zum Nulltarif."),
+          Spacer(1, 6),
+          box("<b>V1.1 · Entscheidungen des Founders (29.09.2026):</b> Zielgruppe = <b>Betriebe mit vielen Terminen</b>. "
+              "Welle 1: Kosmetik-, Nagel- und Wimpernstudios (No-Show-Quote ~8–15 %, ohne Erinnerungen bis ~25 %; ~40 % der "
+              "Online-Buchungen außerhalb der Öffnungszeiten). Welle 2 (A/B-Test): freie Kfz-Werkstätten. Bewusst <b>nicht</b>: "
+              "Physio/Ärzte (Gesundheitsdaten Art. 9 DSGVO, Heilmittelwerbegesetz). Region: <b>Düsseldorf + Neuss, Meerbusch, "
+              "Ratingen, Hilden, Erkrath, Langenfeld</b>. Preis: <b>490 € Starter</b>. Angebot geschärft: Website + Online-Termin "
+              "(vorhandenes Buchungstool einbinden statt ersetzen) + Google-Button \u201eTermin buchen\u201c + Erinnerungen gegen No-Shows.", GOLD),
           Spacer(1, 6),
           p("<b>Warum genau das?</b>"),
           *bl(["<b>Geringster Kapitalbedarf pro € Umsatz:</b> Die Produktion (Website, Texte, Automationen) "
@@ -238,7 +245,7 @@ story += [p("1 · Executive Summary", H1),
 story += [p("2 · Strategie-Auswahl: Was wir NICHT machen – und warum", H1),
           p("Bewertet wurden 9 Geschäftsmodelle nach Time-to-Cash, Kapitalbedarf, Risiko, Skalierung und Rechtssicherheit "
             "(1 = schlecht, 5 = sehr gut). Gewichtung: Time-to-Cash ×2, weil Phase 1 überlebenswichtig ist."),
-          table([["Option", "Cash-Speed", "Kapital", "Risiko", "Skalierung", "Recht", "Score", "Urteil"],
+          table([["Option", "Speed", "Kap.", "Risiko", "Skal.", "Recht", "Score", "Urteil"],
                  ["A · KI-Digitalagentur lokal (Pre-Build)", "5", "5", "4", "3", "4", "26", "<b>PRIMÄR</b>"],
                  ["B · Nischen-SaaS (Anfrage-Autopilot)", "1", "4", "3", "5", "4", "18", "<b>ab M3 aus A</b>"],
                  ["C · Content/Personal Brand", "1", "5", "4", "5", "4", "20", "<b>Lead-Motor</b>"],
@@ -414,7 +421,7 @@ story += [p("6 · Budget & Finanzplan", H1),
 story += [p("7 · 90-Tage-Roadmap", H1),
           p("Phase 1 · Tag 1–30 · „Kosten rein“", H2),
           table([["Tag", "Was", "Wer", "Output"],
-                 ["1", "Gewerbe anmelden, Geschäftskonto (kostenlos), Claude Pro, Nische wählen (Start: SHK + Elektro, Radius 30 km)", "Founder + CEO", "Rechtsträger steht"],
+                 ["1", "Gewerbe anmelden, Geschäftskonto (kostenlos), Claude Pro; Nische: Termin-Betriebe (Kosmetik/Nails + Kfz), Düsseldorf + Umland", "Founder + CEO", "Rechtsträger steht"],
                  ["2–3", "Eigene Website + 2 Branchen-Templates, Rechtstexte, Vertragsvorlage, Angebots-PDF", "Delivery, Design, QM", "Verkaufsfähiges Setup"],
                  ["3–4", "Lead-Research: 150 Betriebe, Scoring → Top-40", "Sales", "Priorisierte Liste"],
                  ["5–7", "20 Pre-Build-Demos + 20 Briefe mit QR; parallel 10 Vor-Ort-Besuche (Founder, 1 Nachmittag)", "Sales + Founder", "Erste Welle raus"],

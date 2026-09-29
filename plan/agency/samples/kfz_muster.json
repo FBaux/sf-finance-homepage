@@ -1,0 +1,12 @@
+{
+  "branch": "kfz",
+  "name": "Autotechnik Muster GmbH",
+  "district": "Düsseldorf-Reisholz",
+  "street": "Beispielweg 7",
+  "zip": "40599",
+  "city": "Düsseldorf",
+  "phone": "0211 111111",
+  "email": "werkstatt@example.com",
+  "hours": ["07:30–17:30", "07:30–17:30", "07:30–17:30", "07:30–17:30", "07:30–16:00", "nach Vereinbarung", "geschlossen"],
+  "quotes": []
+}

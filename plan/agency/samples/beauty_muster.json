@@ -1,0 +1,14 @@
+{
+  "branch": "beauty",
+  "name": "Studio Lumière (Muster)",
+  "district": "Düsseldorf-Pempelfort",
+  "street": "Musterstraße 12",
+  "zip": "40477",
+  "city": "Düsseldorf",
+  "phone": "0211 000000",
+  "email": "hallo@example.com",
+  "instagram": "studio.muster",
+  "booking_url": "",
+  "hours": ["geschlossen", "10:00–19:00", "10:00–19:00", "10:00–20:00", "10:00–19:00", "09:00–15:00", "geschlossen"],
+  "quotes": []
+}
