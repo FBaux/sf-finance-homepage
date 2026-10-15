@@ -1,0 +1,44 @@
+name: Red Folder Alert
+
+on:
+  schedule:
+    - cron: '30 4 * * 1-5'   # daily  06:30 Berlin (Sommer)
+    - cron: '30 5 * * 1-5'   # daily  06:30 Berlin (Winter)
+    - cron: '5 5 * * 1-5'    # remind 05:45–09:45 UTC
+    - cron: '5 9 * * 1-5'    # remind 09:45–13:45 UTC
+    - cron: '5 13 * * 1-5'   # remind 13:45–17:45 UTC
+    - cron: '5 17 * * 1-5'   # remind 17:45–21:45 UTC
+    - cron: '0 17 * * 0'     # weekly Sonntag abend
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [daily, remind, weekly]
+        default: daily
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          COUNTRIES:          ${{ vars.RED_FOLDER_COUNTRIES || 'USD' }}
+          BUFFER_MIN:         ${{ vars.RED_FOLDER_BUFFER_MIN || '5' }}
+          LEAD_MIN:           ${{ vars.RED_FOLDER_LEAD_MIN || '10' }}
+          CRON_SCHEDULE:      ${{ github.event.schedule }}
+          MODE_INPUT:         ${{ inputs.mode }}
+        run: |
+          case "$CRON_SCHEDULE" in
+            "5 "*)       MODE=remind ;;
+            "0 17 * * 0") MODE=weekly ;;
+            "")          MODE="${MODE_INPUT:-daily}" ;;
+            *)           MODE=daily ;;
+          esac
+          python news/red_folder.py "$MODE"

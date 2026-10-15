@@ -19,3 +19,6 @@ node_modules/
 # ── Werkzeug-Zustand / erzeugte Datenbanken ──
 .claude-flow/
 *.db
+
+# ── Python ──
+__pycache__/
