@@ -60,9 +60,9 @@ class T(unittest.TestCase):
     def test_daily_dst_dedupe(self):
         os.environ["GITHUB_EVENT_NAME"] = "schedule"
         summer = datetime.now(r.TZ).utcoffset() == timedelta(hours=2)
-        os.environ["CRON_SCHEDULE"] = "30 4 * * 1-5"
+        os.environ["CRON_SCHEDULE"] = "0 5 * * 1-5"
         self.assertEqual(r.due_daily(), summer)
-        os.environ["CRON_SCHEDULE"] = "30 5 * * 1-5"
+        os.environ["CRON_SCHEDULE"] = "0 6 * * 1-5"
         self.assertEqual(r.due_daily(), not summer)
 
 
