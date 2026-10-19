@@ -166,7 +166,7 @@ def due_daily():
         return True
     utc_hour = int(sched.split()[1])
     offset_h = datetime.now(TZ).utcoffset() // timedelta(hours=1)
-    return (utc_hour + offset_h) % 24 == int(os.getenv("SEND_HOUR", "6"))
+    return (utc_hour + offset_h) % 24 == int(os.getenv("SEND_HOUR", "7"))
 
 
 def main(mode="daily"):
