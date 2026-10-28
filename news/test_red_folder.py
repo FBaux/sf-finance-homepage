@@ -2,6 +2,7 @@ import os, sys, unittest
 from datetime import date, datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(__file__))
+os.environ["COUNTRIES"] = "USD"
 import red_folder as r
 
 RAW = [
@@ -57,14 +58,25 @@ class T(unittest.TestCase):
         s, e = r.remind_window(late)
         self.assertEqual((f"{s:%H:%M}", f"{e:%H:%M}"), ("13:45", "17:45"))
 
-    def test_daily_dst_dedupe(self):
-        os.environ["GITHUB_EVENT_NAME"] = "schedule"
-        summer = datetime.now(r.TZ).utcoffset() == timedelta(hours=2)
-        os.environ["CRON_SCHEDULE"] = "0 5 * * 1-5"
-        self.assertEqual(r.due_daily(), summer)
-        os.environ["CRON_SCHEDULE"] = "0 6 * * 1-5"
-        self.assertEqual(r.due_daily(), not summer)
+    def test_all_countries_and_overnight(self):
+        import importlib
+        os.environ["COUNTRIES"] = "ALL"
+        a = importlib.reload(r)
+        try:
+            raw = RAW + [{"title": "CPI q/q", "country": "AUD", "date": "2026-10-15T19:30:00-04:00", "impact": "High", "forecast": "1.0%", "previous": "0.8%"}]
+            msg = a.build_daily(a.red(raw), date(2026, 10, 15))
+            self.assertIn("German ZEW", msg)
+            self.assertIn("Fr 01:30</b> · AUD", msg)
+            self.assertIn("alle Währungen", msg)
+        finally:
+            os.environ["COUNTRIES"] = "USD"
+            importlib.reload(r)
 
+    def test_wait_for_send_hour_noop_when_late(self):
+        from unittest import mock
+        with mock.patch.object(r.time, "sleep") as sl, mock.patch.object(r, "SEND_HOUR", 0):
+            r.wait_for_send_hour()
+        sl.assert_not_called()
 
 if __name__ == "__main__":
     unittest.main()
