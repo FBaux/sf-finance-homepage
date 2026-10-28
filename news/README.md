@@ -17,7 +17,7 @@ Telegram-Alerts für High-Impact-Events (ForexFactory „Red Folder“). Läuft 
 4. Test: Actions → „Red Folder Alert“ → Run workflow (Modus `daily` / `weekly`).
 
 Optionale Variables (gleiche Seite, Tab „Variables“):
-- `RED_FOLDER_COUNTRIES` – Default `USD`, z. B. `USD,EUR`
+- `RED_FOLDER_COUNTRIES` – Default `ALL` (alle Währungen), z. B. `USD,EUR` zum Einschränken
 - `RED_FOLDER_BUFFER_MIN` – Sperrzeit ± Minuten, Default `5`
 - `RED_FOLDER_LEAD_MIN` – Reminder-Vorlauf, Default `10`
 

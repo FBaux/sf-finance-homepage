@@ -11,7 +11,8 @@ from zoneinfo import ZoneInfo
 
 FEED = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
 TZ = ZoneInfo(os.getenv("TZ_NAME", "Europe/Berlin"))
-COUNTRIES = {c.strip().upper() for c in os.getenv("COUNTRIES", "USD").split(",") if c.strip()}
+COUNTRIES = {c.strip().upper() for c in os.getenv("COUNTRIES", "ALL").split(",") if c.strip()} - {"ALL"}  # leer = alle Währungen
+SEND_HOUR = int(os.getenv("SEND_HOUR", "7"))
 BUFFER = int(os.getenv("BUFFER_MIN", "5"))   # Sperrzeit ± Minuten ums Event
 LEAD = int(os.getenv("LEAD_MIN", "10"))      # Reminder x Minuten vorher
 REMIND_SPAN = timedelta(hours=4)             # jeder Reminder-Lauf deckt 4h ab
@@ -63,23 +64,31 @@ def expectation(e):
 def red(events):
     """High-Impact-Events der gewählten Länder als sortierte (lokale Zeit, Event)-Liste."""
     out = [(datetime.fromisoformat(e["date"]).astimezone(TZ), e) for e in events
-           if e.get("impact") == "High" and e.get("country", "").upper() in COUNTRIES]
+           if e.get("impact") == "High" and (not COUNTRIES or e.get("country", "").upper() in COUNTRIES)]
     return sorted(out, key=lambda x: x[0])
+
+
+def scope():
+    return ", ".join(sorted(COUNTRIES)) if COUNTRIES else "alle Währungen"
 
 
 def day_label(d):
     return f"{WEEKDAYS[d.weekday()]}, {d:%d.%m.}"
 
 
-def event_lines(t, e):
-    lines = [f"<b>{t:%H:%M}</b> · {e['country']} · {html.escape(e['title'])}"]
+def hm(t, today=None):
+    return f"{t:%H:%M}" if today is None or t.date() == today else f"{WEEKDAYS[t.weekday()]} {t:%H:%M}"
+
+
+def event_lines(t, e, today=None):
+    lines = [f"<b>{hm(t, today)}</b> · {e['country']} · {html.escape(e['title'])}"]
     if e.get("forecast") or e.get("previous"):
         lines.append(f"    Prognose {html.escape(e.get('forecast') or '–')} | Vorher {html.escape(e.get('previous') or '–')}")
     lines.append(f"    {expectation(e)}")
     return lines
 
 
-def blocks(events):
+def blocks(events, today=None):
     """Zeitfenster ±BUFFER, überlappende zusammengefasst."""
     out = []
     for t, _ in events:
@@ -88,24 +97,26 @@ def blocks(events):
             out[-1][1] = max(out[-1][1], e)
         else:
             out.append([s, e])
-    return " · ".join(f"{s:%H:%M}–{e:%H:%M}" for s, e in out)
+    return " · ".join(f"{hm(s, today)}–{e:%H:%M}" for s, e in out)
 
 
 def build_daily(events, today):
-    events = [x for x in events if x[0].date() == today]
+    """Heute + kommende Nacht bis SEND_HOUR (Asien-Session)."""
+    tomorrow = today + timedelta(days=1)
+    events = [x for x in events if x[0].date() == today or (x[0].date() == tomorrow and x[0].hour < SEND_HOUR)]
     if not events:
-        return f"✅ <b>Keine Red-Folder-Events heute</b> ({day_label(today)}, {', '.join(sorted(COUNTRIES))})"
-    lines = [f"🔴 <b>Red Folder heute</b> ({day_label(today)})", ""]
+        return f"✅ <b>Keine Red-Folder-Events heute</b> ({day_label(today)}, {scope()})"
+    lines = [f"🔴 <b>Red Folder heute</b> ({day_label(today)}, {scope()})", ""]
     for t, e in events:
-        lines += event_lines(t, e)
-    lines += ["", f"⛔ Sperrzeit: {blocks(events)}", f"🔔 Reminder kommt {LEAD} min vorher."]
+        lines += event_lines(t, e, today)
+    lines += ["", f"⛔ Sperrzeit: {blocks(events, today)}", f"🔔 Reminder kommt {LEAD} min vorher (07:45–23:45)."]
     return "\n".join(lines)
 
 
 def build_weekly(events, today):
     events = [x for x in events if x[0].date() >= today]
     if not events:
-        return (f"📅 <b>Wochenvorschau:</b> keine kommenden Red-Folder-Events im Feed ({', '.join(sorted(COUNTRIES))}). "
+        return (f"📅 <b>Wochenvorschau:</b> keine kommenden Red-Folder-Events im Feed ({scope()}). "
                 "Montag früh kommt die Tagesübersicht.")
     by_day = defaultdict(list)
     for t, e in events:
@@ -159,20 +170,18 @@ def run_remind(events):
         send(build_reminder(t, group))
 
 
-def due_daily():
-    """Cron läuft 2x (CET/CEST); nur der Lauf senden, der gerade SEND_HOUR Ortszeit trifft."""
-    sched = os.getenv("CRON_SCHEDULE", "")
-    if os.getenv("GITHUB_EVENT_NAME") != "schedule" or not sched:
-        return True
-    utc_hour = int(sched.split()[1])
-    offset_h = datetime.now(TZ).utcoffset() // timedelta(hours=1)
-    return (utc_hour + offset_h) % 24 == int(os.getenv("SEND_HOUR", "7"))
+def wait_for_send_hour():
+    """GitHub-Cron startet nachts (oft Stunden verspätet) → bis SEND_HOUR Ortszeit schlafen."""
+    now = datetime.now(TZ)
+    target = now.replace(hour=SEND_HOUR, minute=0, second=0, microsecond=0)
+    if now < target:
+        print(f"Warte bis {target:%H:%M}")
+        time.sleep((target - now).total_seconds())
 
 
 def main(mode="daily"):
-    if mode == "daily" and not due_daily():
-        print("Nicht dran (DST-Duplikat) – skip.")
-        return
+    if mode == "daily" and os.getenv("GITHUB_EVENT_NAME") == "schedule":
+        wait_for_send_hour()
     events = red(fetch())
     if mode == "remind":
         return run_remind(events)
