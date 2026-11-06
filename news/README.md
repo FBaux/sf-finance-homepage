@@ -7,8 +7,19 @@ Telegram-Alerts für High-Impact-Events (ForexFactory „Red Folder“). Läuft 
 | Mo–Fr 07:00 | Tagesübersicht: Zeit, Event, Prognose vs. Vorwert, Richtung, Sperrzeit ±5 min |
 | 10 min vor jedem Event | 🚨 Reminder „jetzt flat gehen“ |
 | So abends | Wochenvorschau |
+| nach Daily/Weekly | 2. Nachricht: TradingView-Liste (nur USD, High, feste Uhrzeit), siehe unten |
 | Kein Event | „✅ Keine Red-Folder-Events heute“ → bleibt die Nachricht aus, ist der Bot kaputt |
 | Feed down | „⚠️ manuell prüfen“ |
+
+## TradingView-Liste
+Eigene Nachricht als Code-Block (antippen = kopieren), eine Zeile je Termin, Berliner Zeit:
+```
+2026-11-12 14:30 Core CPI / CPI
+```
+- Daily: heute bis Sonntag. Weekly: kommende Woche Mo–So.
+- Gleiche Minute zusammengefasst mit ` / `, Namen gekürzt (`m/m`, `y/y` weg; NFP, Core PCE …), keine Kommas.
+- Ohne feste Uhrzeit (All Day, Tentative, Wahlen, Platzhalterzeit außerhalb des 5-Min-Rasters) → nicht in der Liste.
+- Quelle hat nur die laufende Woche → Liste nie weiter als bis Sonntag.
 
 ## Setup
 1. Telegram: @BotFather → `/newbot` → Token. Dem Bot einmal schreiben.
@@ -45,4 +56,4 @@ GitHub-Cron ist oft Stunden verspätet. Deshalb triggert cron-job.org den Workfl
 - „bullish/bearish“ = erwartete Richtung der **Währung** aus Prognose vs. Vorwert. Für Indizes oft invers (heiße Inflation → USD ↑, NQ/ES ↓).
 - Reminder decken 07:45–23:45 Berlin ab; frühere Events nur in der Morgenübersicht.
 - Token läuft ab → Bot verstummt. Vor Ablauf neuen Token in cron-job.org eintragen.
-- Tests: `python news/test_red_folder.py`
+- Tests: `python news/test_red_folder.py && python news/test_pine_list.py`
