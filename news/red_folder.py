@@ -9,7 +9,10 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
+import pine_list
+
 FEED = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
+FEED_XML = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml"  # nur für „All Day“/„Tentative“-Erkennung
 TZ = ZoneInfo(os.getenv("TZ_NAME", "Europe/Berlin"))
 COUNTRIES = {c.strip().upper() for c in os.getenv("COUNTRIES", "ALL").split(",") if c.strip()} - {"ALL"}  # leer = alle Währungen
 SEND_HOUR = int(os.getenv("SEND_HOUR", "7"))
@@ -179,16 +182,32 @@ def wait_for_send_hour():
         time.sleep((target - now).total_seconds())
 
 
+def send_pine(raw, mode, today):
+    """Eigene Nachricht nur mit der TradingView-Liste (USD, High, feste Uhrzeit)."""
+    try:
+        untimed = pine_list.untimed_titles(http(FEED_XML))
+    except Exception as ex:
+        print(f"XML-Feed nicht nutzbar ({type(ex).__name__}) – nur Zeit-Heuristik")
+        untimed = set()
+    rng = pine_list.weekly_range(today) if mode == "weekly" else pine_list.daily_range(today)
+    msg = pine_list.message(pine_list.lines(raw, *rng, untimed))
+    print(msg or "Pine-Liste leer – nichts gesendet.")
+    if msg:
+        send(msg)
+
+
 def main(mode="daily"):
     if mode == "daily" and os.getenv("GITHUB_EVENT_NAME") == "schedule":
         wait_for_send_hour()
-    events = red(fetch())
+    raw = fetch()
+    events = red(raw)
     if mode == "remind":
         return run_remind(events)
     today = datetime.now(TZ).date()
     msg = build_weekly(events, today) if mode == "weekly" else build_daily(events, today)
     print(msg)
     send(msg)
+    send_pine(raw, mode, today)
 
 
 if __name__ == "__main__":
