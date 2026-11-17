@@ -16,3 +16,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python news/test_red_folder.py -v
+      - run: python news/test_pine_list.py -v
